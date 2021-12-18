@@ -1,12 +1,13 @@
 ﻿namespace Axis.Libra.Query
 {
     /// <summary>
-    /// 
+    /// Represens the result of a specific query.
     /// </summary>
-    /// <typeparam name="TResult"></typeparam>
-    public interface IQueryResult<TResult>
+    public interface IQueryResult
     {
+        /// <summary>
+        /// Signature of the query that generated this result
+        /// </summary>
         string QuerySignature { get; }
-        TResult Result { get; }
     }
 }

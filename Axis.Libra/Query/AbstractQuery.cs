@@ -1,5 +1,6 @@
 ﻿using Axis.Libra.Utils;
 using Axis.Luna.Extensions;
+using System;
 using System.Linq;
 using System.Text;
 
@@ -20,6 +21,8 @@ namespace Axis.Libra.Query
 
         byte[] IBinarySerializable.Serialize() => Serialize();
 
-        public string QuerySignature() => HashDepot.XXHash.Hash64(Serialize()).ToSignatureString();
+        public string QuerySignature => HashDepot.XXHash.Hash64(Serialize()).ToSignatureString();
+
+        public override int GetHashCode() => HashCode.Combine(QuerySignature);
     }
 }

@@ -1,0 +1,5 @@
+
+2021/12/17 ===============================================================
+
+1. Since commands are by design, asynchronious - i.e, each command execution only returns the Command Signature which is used to query for the result,
+   Every command must come with a corresponding/counterpart Query which will be used to retrieve the result of the command.

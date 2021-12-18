@@ -33,30 +33,32 @@ namespace Axis.Libra.Utils
             {
                 null => Array.Empty<byte>(),
 
-                short => BitConverter.GetBytes((short)value),
-                ushort => BitConverter.GetBytes((ushort)value),
+                short s => BitConverter.GetBytes(s),
+                ushort us => BitConverter.GetBytes(us),
 
-                int => BitConverter.GetBytes((int)value),
-                uint => BitConverter.GetBytes((uint)value),
+                int i => BitConverter.GetBytes(i),
+                uint ui => BitConverter.GetBytes(ui),
 
-                long => BitConverter.GetBytes((long)value),
-                ulong => BitConverter.GetBytes((ulong)value),
+                long l => BitConverter.GetBytes(l),
+                ulong ul => BitConverter.GetBytes(ul),
 
-                float => BitConverter.GetBytes((float)value),
-                double => BitConverter.GetBytes((double)value),
+                float f => BitConverter.GetBytes(f),
+                double d => BitConverter.GetBytes(d),
 
-                char => BitConverter.GetBytes((char)value),
-                bool => BitConverter.GetBytes((bool)value),
+                char c => BitConverter.GetBytes(c),
+                bool b => BitConverter.GetBytes(b),
 
-                decimal => decimal
-                    .GetBits((decimal)value)
+                decimal d => decimal
+                    .GetBits(d)
                     .Select(BitConverter.GetBytes)
                     .SelectMany()
                     .ToArray(),
 
-                string => Encoding.Unicode.GetBytes(value as string),
+                string s => Encoding.Unicode.GetBytes(s),
 
-                IBinarySerializable => value.As<IBinarySerializable>().Serialize(),
+                Type t => Encoding.Unicode.GetBytes(t.FullName),
+
+                IBinarySerializable bs => bs.Serialize(),
 
                 _ => Encoding.Unicode.GetBytes(value.ToString())
             };

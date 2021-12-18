@@ -1,19 +1,20 @@
 ﻿using Axis.Luna.Operation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Axis.Libra.Command
 {
     /// <summary>
-    /// 
+    /// A command handler encapsualtes logic that processes a specific <see cref="ICommand"/> instance.
     /// </summary>
-    /// <typeparam name="TCommand"></typeparam>
+    /// <typeparam name="TCommand">The type of the command handled by this handler</typeparam>
     public interface ICommandHandler<TCommand>
     where TCommand: ICommand
     {
-        Operation<CommandResult> ExecuteCommand(TCommand command);
+        /// <summary>
+        /// Executes the command and returns a string representing the command's signature. This signature can be used to create a <see cref="CommandResultQuery{TCommand}"/>
+        /// object to query for the commands status/result.
+        /// </summary>
+        /// <param name="command">The command instance</param>
+        /// <returns>The command's signature</returns>
+        Operation<string> ExecuteCommand(TCommand command);
     }
 }

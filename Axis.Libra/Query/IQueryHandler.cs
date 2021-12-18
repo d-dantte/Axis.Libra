@@ -1,9 +1,4 @@
 ﻿using Axis.Luna.Operation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Axis.Libra.Query
 {
@@ -11,9 +6,10 @@ namespace Axis.Libra.Query
     /// 
     /// </summary>
     /// <typeparam name="TQuery"></typeparam>
-    public interface IQueryHandler<TQuery, TResult>
+    public interface IQueryHandler<in TQuery, TQueryResult>
     where TQuery: IQuery
+    where TQueryResult: IQueryResult
     {
-        Operation<IQueryResult<TResult>> ExecuteQuery(TQuery query);
+        Operation<TQueryResult> ExecuteQuery(TQuery query);
     }
 }
