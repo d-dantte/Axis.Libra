@@ -6,7 +6,7 @@ namespace Axis.Libra.Command
     /// A command handler encapsualtes logic that processes a specific <see cref="ICommand"/> instance.
     /// </summary>
     /// <typeparam name="TCommand">The type of the command handled by this handler</typeparam>
-    public interface ICommandHandler<TCommand>
+    public interface ICommandHandler<in TCommand>
     where TCommand: ICommand
     {
         /// <summary>

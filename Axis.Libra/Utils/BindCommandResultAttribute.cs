@@ -1,14 +1,15 @@
-﻿using Axis.Luna.Extensions;
+﻿using Axis.Libra.Command;
+using Axis.Luna.Extensions;
 using System;
 
 namespace Axis.Libra.Utils
 {
     /// <summary>
-    /// Every command instance must be decorated with an instance of this attribute, effectively letting the system know what result type will be returned when
+    /// Every <see cref="Command.ICommand"/> instance must be decorated with an instance of this attribute, effectively letting the system know what result type will be returned when
     /// the decorated command's result is queried. The result type must be an instance of <see cref="ICommandResult"/>.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class|AttributeTargets.Struct, AllowMultiple = false, Inherited = false)]
-    public class BindResultAttribute: Attribute
+    public class BindCommandResultAttribute: Attribute
     {
         /// <summary>
         /// The <see cref="Type"/> of the command's result.
@@ -18,8 +19,7 @@ namespace Axis.Libra.Utils
         /// <summary>
         /// Creates a new instance of this attribute, given a type that implements <see cref="ICommandResult"/>
         /// </summary>
-        /// <param name="resultType"></param>
-        public BindResultAttribute(Type resultType)
+        public BindCommandResultAttribute(Type resultType)
         {
             ResultType = resultType
                 .ThrowIfNull(new ArgumentNullException(nameof(resultType)))
