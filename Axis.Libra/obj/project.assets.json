@@ -48,7 +48,7 @@
           "lib/netcoreapp3.1/Axis.Luna.Operation.dll": {}
         }
       },
-      "Axis.Proteus/5.0.0": {
+      "Axis.Proteus/6.0.0": {
         "type": "package",
         "dependencies": {
           "Axis.Luna.Extensions": "5.1.1",
@@ -1509,7 +1509,7 @@
           "lib/net5.0/Axis.Luna.Operation.dll": {}
         }
       },
-      "Axis.Proteus/5.0.0": {
+      "Axis.Proteus/6.0.0": {
         "type": "package",
         "dependencies": {
           "Axis.Luna.Extensions": "5.1.1",
@@ -2981,18 +2981,17 @@
         "lib/netstandard2.1/Axis.Luna.Operation.dll"
       ]
     },
-    "Axis.Proteus/5.0.0": {
-      "sha512": "QzRLoPwnVKkQoqnmZxv+xWdrQAKPobCql9MbD1TCtgq/xKmMtT+qVGCmejROYhe68A0HnH/7wGOSTvxFHvORDQ==",
+    "Axis.Proteus/6.0.0": {
+      "sha512": "PSPjXP3dJ0djUvr83RfWbZ667C+XFJ4viWyyDrnAOHw0+DwTEhHXhw22il8DOvtc4m7YZPAfuCmf8pa+vg5gOg==",
       "type": "package",
-      "path": "axis.proteus/5.0.0",
+      "path": "axis.proteus/6.0.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "axis.proteus.5.0.0.nupkg.sha512",
+        "axis.proteus.6.0.0.nupkg.sha512",
         "axis.proteus.nuspec",
         "lib/net5.0/Axis.Proteus.dll",
-        "lib/netcoreapp3.1/Axis.Proteus.dll",
-        "lib/netstandard2.1/Axis.Proteus.dll"
+        "lib/netcoreapp3.1/Axis.Proteus.dll"
       ]
     },
     "Castle.Core/4.4.1": {
@@ -6729,13 +6728,13 @@
     ".NETCoreApp,Version=v3.1": [
       "Axis.Luna.FInvoke >= 5.1.1",
       "Axis.Luna.Operation >= 5.1.1",
-      "Axis.Proteus >= 5.0.0",
+      "Axis.Proteus >= 6.0.0",
       "HashDepot >= 2.0.3"
     ],
     "net5.0": [
       "Axis.Luna.FInvoke >= 5.1.1",
       "Axis.Luna.Operation >= 5.1.1",
-      "Axis.Proteus >= 5.0.0",
+      "Axis.Proteus >= 6.0.0",
       "HashDepot >= 2.0.3"
     ]
   },
@@ -6799,7 +6798,7 @@
           },
           "Axis.Proteus": {
             "target": "Package",
-            "version": "[5.0.0, )"
+            "version": "[6.0.0, )"
           },
           "HashDepot": {
             "target": "Package",
@@ -6836,7 +6835,7 @@
           },
           "Axis.Proteus": {
             "target": "Package",
-            "version": "[5.0.0, )"
+            "version": "[6.0.0, )"
           },
           "HashDepot": {
             "target": "Package",

@@ -7,9 +7,9 @@ namespace Axis.Libra.Query
 {
     public class QueryDispatcher
     {
-        private readonly IServiceResolver _serviceResolver;
+        private readonly ServiceResolver _serviceResolver;
 
-        public QueryDispatcher(IServiceResolver serviceResolver)
+        public QueryDispatcher(ServiceResolver serviceResolver)
         {
             _serviceResolver = serviceResolver ?? throw new ArgumentNullException(nameof(serviceResolver));
         }

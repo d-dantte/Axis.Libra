@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "DE3LwdFJJ3LPFkSSsHG9XODwklHxjtBykSMlsevIPBGQGKbs+JfsjFCgW4zDWqnCALlwtQf7SV2rthRVtbrygg==",
+  "dgSpecHash": "KgSCK33i2fEhnixzvKHnlje75VxR46ce90DRQWJ2g968gk0EnpYvb0p/9kuMfxJKqTuACT8L1tRRjADOA/re4Q==",
   "success": true,
   "projectFilePath": "C:\\Dantte\\Dev\\Repos\\Axis.Libra\\Axis.Libra.Tests\\Axis.Libra.Tests.csproj",
   "expectedPackageFiles": [
@@ -8,9 +8,9 @@
     "C:\\Users\\stanl\\.nuget\\packages\\axis.luna.extensions\\5.1.1\\axis.luna.extensions.5.1.1.nupkg.sha512",
     "C:\\Users\\stanl\\.nuget\\packages\\axis.luna.finvoke\\5.1.1\\axis.luna.finvoke.5.1.1.nupkg.sha512",
     "C:\\Users\\stanl\\.nuget\\packages\\axis.luna.operation\\5.1.1\\axis.luna.operation.5.1.1.nupkg.sha512",
-    "C:\\Users\\stanl\\.nuget\\packages\\axis.proteus\\5.0.0\\axis.proteus.5.0.0.nupkg.sha512",
+    "C:\\Users\\stanl\\.nuget\\packages\\axis.proteus\\6.0.0\\axis.proteus.6.0.0.nupkg.sha512",
     "C:\\Users\\stanl\\.nuget\\packages\\castle.core\\4.4.1\\castle.core.4.4.1.nupkg.sha512",
-    "C:\\Users\\stanl\\.nuget\\packages\\coverlet.collector\\3.0.2\\coverlet.collector.3.0.2.nupkg.sha512",
+    "C:\\Users\\stanl\\.nuget\\packages\\coverlet.collector\\3.1.0\\coverlet.collector.3.1.0.nupkg.sha512",
     "C:\\Users\\stanl\\.nuget\\packages\\hashdepot\\2.0.3\\hashdepot.2.0.3.nupkg.sha512",
     "C:\\Users\\stanl\\.nuget\\packages\\microsoft.codecoverage\\16.9.4\\microsoft.codecoverage.16.9.4.nupkg.sha512",
     "C:\\Users\\stanl\\.nuget\\packages\\microsoft.csharp\\4.0.1\\microsoft.csharp.4.0.1.nupkg.sha512",

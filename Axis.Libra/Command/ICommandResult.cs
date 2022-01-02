@@ -5,7 +5,7 @@ using System;
 namespace Axis.Libra.Command
 {
     /// <summary>
-    /// Represens the result of querying the result of a dispatched command.
+    /// Represens the outcome of querying the result of a dispatched command.
     /// </summary>
     public interface ICommandResult: IQueryResult
     {
@@ -18,11 +18,25 @@ namespace Axis.Libra.Command
     /// <summary>
     /// "Default" implementation of the <see cref="ICommandResult"/>. This implementation returns no real result, besides announcing the <see cref="CommandStatus"/>
     /// of the dispatched command.
+    /// <para>
+    /// For commands that do not have any any data result, instances of this struct can be used to report on the status of the command.
+    /// </para>
     /// </summary>
     public readonly struct CommandStatusResult : ICommandResult
     {
+        /// <summary>
+        /// The signature of the command who's result is being queried
+        /// </summary>
         public string CommandSignature { get; }
+
+        /// <summary>
+        /// The signature of the <see cref="CommandResultQuery"/> instance that was used to initiate the query.
+        /// </summary>
         public string QuerySignature { get; }
+
+        /// <summary>
+        /// The status of the command
+        /// </summary>
         public CommandStatus Status { get; }
 
         public CommandStatusResult(CommandStatus status, string commandSignature, string querySignature)

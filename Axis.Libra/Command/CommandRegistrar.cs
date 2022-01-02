@@ -51,11 +51,11 @@ namespace Axis.Libra.Command
         /// <param name="scope">registration scope</param>
         /// <param name="interceptorProfile">interception profile applied to resolved instances of this registration</param>
         /// <returns>this instance of the registrar</returns>
-        public CommandRegistrar AddHandlerRegistration<THandler, TCommand>(
+        public CommandRegistrar AddHandlerRegistration<THandlerImplementation, TCommand>(
             RegistryScope? scope = null,
             InterceptorProfile? interceptorProfile = null)
         where TCommand: ICommand
-        where THandler: class, ICommandHandler<TCommand>
+        where THandlerImplementation : class, ICommandHandler<TCommand>
         {
             if (Manifest != null)
                 throw new InvalidOperationException("Cannot add new registrations after manifest has been built");
@@ -64,7 +64,7 @@ namespace Axis.Libra.Command
 
             RegistrationsCache
                 .GetOrAdd(typeof(ICommandHandler<TCommand>), key => new HashSet<(Type, RegistryScope?, InterceptorProfile?)>())
-                .Add((typeof(THandler), scope, interceptorProfile));
+                .Add((typeof(THandlerImplementation), scope, interceptorProfile));
 
             return this;
         }
@@ -72,30 +72,29 @@ namespace Axis.Libra.Command
         /// <summary>
         /// Register a specific command handler type
         /// </summary>
-        /// <param name="commandHandlerType"></param>
+        /// <param name="commandHandlerImplementationType"></param>
         /// <param name="scope">registration scope</param>
         /// <param name="interceptorProfile">interception profile applied to resolved instances of this registration</param>
         /// <returns>this instance of the registrar</returns>
         public CommandRegistrar AddHandlerRegistration(
-            Type commandHandlerType,
+            Type commandHandlerImplementationType,
             RegistryScope? scope = null,
             InterceptorProfile? interceptorProfile = null)
         {
             if (Manifest != null)
                 throw new InvalidOperationException("Cannot add new registrations after manifest has been built");
 
-            commandHandlerType
-                .ThrowIfNull(new ArgumentNullException(nameof(commandHandlerType)))
-                .ThrowIf(
-                    t => !t.ImplementsGenericInterface(typeof(ICommandHandler<>)),
-                    new ArgumentException($"Type must implement {typeof(ICommandHandler<>)}"))
+            commandHandlerImplementationType
+                .ValidateCommandHandlerImplementation()
                 .GetInterfaces()
-                .Where(@interface => @interface.IsGenericType && @interface.GetGenericTypeDefinition() == typeof(ICommandHandler<>))
+                .Where(@interface => @interface.IsGenericType)
+                .Where(@interface => @interface.GetGenericTypeDefinition() == typeof(ICommandHandler<>))
+                // for each of the implemented command handlers, register the implementation type
                 .ForAll(@interface =>
                 {
                     RegistrationsCache
                         .GetOrAdd(@interface, key => new HashSet<(Type, RegistryScope?, InterceptorProfile?)>())
-                        .Add((commandHandlerType, scope, interceptorProfile));
+                        .Add((commandHandlerImplementationType, scope, interceptorProfile));
                 });
 
             return this;
@@ -107,11 +106,13 @@ namespace Axis.Libra.Command
         /// <param name="namespace">the namespace to search within</param>
         /// <param name="scope">registration scope</param>
         /// <param name="interceptorProfile">interception profile applied to resolved instances of this registration</param>
+        /// <param name="recursiveSearch">Indicates if recursive namespace search is required</param>
         /// <returns>this instance of the registrar</returns>
         public CommandRegistrar AddNamespaceHandlerRegistrations(
             string @namespace,
             RegistryScope? scope = null,
-            InterceptorProfile? interceptorProfile = null)
+            InterceptorProfile? interceptorProfile = null,
+            bool recursiveSearch = false)
         {
             if (Manifest != null)
                 throw new InvalidOperationException("Cannot add new registrations after manifest has been built");
@@ -120,7 +121,8 @@ namespace Axis.Libra.Command
                 new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Assembly,
                 @namespace,
                 scope,
-                interceptorProfile);
+                interceptorProfile,
+                recursiveSearch);
         }
 
         /// <summary>
@@ -130,12 +132,14 @@ namespace Axis.Libra.Command
         /// <param name="namespace">the namespace to search within</param>
         /// <param name="scope">registration scope</param>
         /// <param name="interceptorProfile">interception profile applied to resolved instances of this registration</param>
+        /// <param name="recursiveSearch">Indicates if recursive namespace search is required</param>
         /// <returns>this instance of the registrar</returns>
         public CommandRegistrar AddNamespaceHandlerRegistrations(
             Assembly assembly,
             string @namespace,
             RegistryScope? scope = null,
-            InterceptorProfile? interceptorProfile = null)
+            InterceptorProfile? interceptorProfile = null,
+            bool recursiveSearch = false)
         {
             if (Manifest != null)
                 throw new InvalidOperationException("Cannot add new registrations after manifest has been built");
@@ -146,7 +150,7 @@ namespace Axis.Libra.Command
 
             assembly
                 .GetExportedTypes()
-                .Where(t => t.Namespace.Equals(@namespace))
+                .Where(t => recursiveSearch ? t.Namespace.IsChildNamespaceOf(@namespace) : t.Namespace.Equals(@namespace, StringComparison.InvariantCulture))
                 .Where(t => t.ImplementsGenericInterface(typeof(ICommandHandler<>)))
                 .ForAll(t => AddHandlerRegistration(t, scope, interceptorProfile));
 
@@ -178,8 +182,11 @@ namespace Axis.Libra.Command
             return this;
         }
 
-
-        public CommandManifest BuildManifest()
+        /// <summary>
+        /// Commits all the added registrations to the underlying IoC container, and builds a manifest for the commited registrations.
+        /// </summary>
+        /// <returns>the command manifest</returns>
+        public CommandManifest CommitRegistrations()
         {
             if(Manifest == null)
             {
@@ -196,9 +203,7 @@ namespace Axis.Libra.Command
             foreach(var kvp in RegistrationsCache)
             {
                 foreach(var registration in kvp.Value)
-                    IocRegistrar.Register(kvp.Key, registration.Item1, registration.Item2);
-
-                //IocRegistrar.RegisterCollection(kvp.Key, registration.Item1, registration.Item2, kvp.Value);
+                    IocRegistrar.Register(kvp.Key, registration.Item1, registration.Item2, registration.Item3);
             }
         }
     }
@@ -209,8 +214,14 @@ namespace Axis.Libra.Command
     /// </summary>
     public class CommandManifest
     {
+        /// <summary>
+        /// A list of <see cref="CommandInfo"/> types representing all commands registered.
+        /// </summary>
         public IEnumerable<CommandInfo> Commands { get; }
 
+        /// <summary>
+        /// A list of <see cref="Type"/> representing all of the <see cref="ICommandHandler{TCommand}"/> interface types registered.
+        /// </summary>
         public IEnumerable<Type> CommandHandlers { get; }
 
         /// <summary>
@@ -223,9 +234,7 @@ namespace Axis.Libra.Command
             {
                 lists.Item1.Add(next);
 
-                var commandType = next
-                    .GetGenericInterface(typeof(ICommandHandler<>))
-                    .GetGenericArguments()[0];
+                var commandType = next.GetGenericArguments()[0];
                 var commandResutType = commandType
                     .GetAttribute<BindCommandResultAttribute>()
                     .ResultType;

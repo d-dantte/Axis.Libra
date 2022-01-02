@@ -1,7 +1,10 @@
 ﻿namespace Axis.Libra.Command
 {
     /// <summary>
-    /// A command
+    /// A command. 
+    /// <para>
+    /// Note that all concrete implementations of this interface MUST be decorated with the <see cref="Utils.BindCommandResultAttribute"/> attribute
+    /// </para>
     /// </summary>
     public interface ICommand
     {

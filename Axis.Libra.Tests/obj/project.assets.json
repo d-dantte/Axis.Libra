@@ -48,7 +48,7 @@
           "lib/net5.0/Axis.Luna.Operation.dll": {}
         }
       },
-      "Axis.Proteus/5.0.0": {
+      "Axis.Proteus/6.0.0": {
         "type": "package",
         "dependencies": {
           "Axis.Luna.Extensions": "5.1.1",
@@ -82,7 +82,7 @@
           "lib/netstandard1.5/Castle.Core.dll": {}
         }
       },
-      "coverlet.collector/3.0.2": {
+      "coverlet.collector/3.1.0": {
         "type": "package",
         "build": {
           "build/netstandard1.0/coverlet.collector.targets": {}
@@ -1885,7 +1885,7 @@
         "dependencies": {
           "Axis.Luna.FInvoke": "5.1.1",
           "Axis.Luna.Operation": "5.1.1",
-          "Axis.Proteus": "5.0.0",
+          "Axis.Proteus": "6.0.0",
           "HashDepot": "2.0.3"
         },
         "compile": {
@@ -1954,18 +1954,17 @@
         "lib/netstandard2.1/Axis.Luna.Operation.dll"
       ]
     },
-    "Axis.Proteus/5.0.0": {
-      "sha512": "QzRLoPwnVKkQoqnmZxv+xWdrQAKPobCql9MbD1TCtgq/xKmMtT+qVGCmejROYhe68A0HnH/7wGOSTvxFHvORDQ==",
+    "Axis.Proteus/6.0.0": {
+      "sha512": "PSPjXP3dJ0djUvr83RfWbZ667C+XFJ4viWyyDrnAOHw0+DwTEhHXhw22il8DOvtc4m7YZPAfuCmf8pa+vg5gOg==",
       "type": "package",
-      "path": "axis.proteus/5.0.0",
+      "path": "axis.proteus/6.0.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "axis.proteus.5.0.0.nupkg.sha512",
+        "axis.proteus.6.0.0.nupkg.sha512",
         "axis.proteus.nuspec",
         "lib/net5.0/Axis.Proteus.dll",
-        "lib/netcoreapp3.1/Axis.Proteus.dll",
-        "lib/netstandard2.1/Axis.Proteus.dll"
+        "lib/netcoreapp3.1/Axis.Proteus.dll"
       ]
     },
     "Castle.Core/4.4.1": {
@@ -1993,10 +1992,10 @@
         "readme.txt"
       ]
     },
-    "coverlet.collector/3.0.2": {
-      "sha512": "iBvPAIDaI7j/iMx/DzCGCJ3rdiOmel9VINEfaTiBv/NKIGHOP4X3hqc6Q1wgMtArEshlhXexQknP17SK4vXb1w==",
+    "coverlet.collector/3.1.0": {
+      "sha512": "YzYqSRrjoP5lULBhTDcTOjuM4IDPPi6PhFsl4w8EI4WdZhE6llt7E38Tg4CHyrS+QKwyu1+9OwkdDgluOdoBTw==",
       "type": "package",
-      "path": "coverlet.collector/3.0.2",
+      "path": "coverlet.collector/3.1.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2040,7 +2039,7 @@
         "build/netstandard1.0/coverlet.core.dll",
         "build/netstandard1.0/coverlet.core.pdb",
         "coverlet-icon.png",
-        "coverlet.collector.3.0.2.nupkg.sha512",
+        "coverlet.collector.3.1.0.nupkg.sha512",
         "coverlet.collector.nuspec"
       ]
     },
@@ -6767,12 +6766,12 @@
       "Axis.Libra >= 1.0.0",
       "Axis.Luna.FInvoke >= 5.1.1",
       "Axis.Luna.Operation >= 5.1.1",
-      "Axis.Proteus >= 5.0.0",
+      "Axis.Proteus >= 6.0.0",
       "HashDepot >= 2.0.3",
       "MSTest.TestAdapter >= 2.2.3",
       "MSTest.TestFramework >= 2.2.3",
       "Microsoft.NET.Test.Sdk >= 16.9.4",
-      "coverlet.collector >= 3.0.2"
+      "coverlet.collector >= 3.1.0"
     ]
   },
   "packageFolders": {
@@ -6833,7 +6832,7 @@
           },
           "Axis.Proteus": {
             "target": "Package",
-            "version": "[5.0.0, )"
+            "version": "[6.0.0, )"
           },
           "HashDepot": {
             "target": "Package",
@@ -6852,8 +6851,10 @@
             "version": "[16.9.4, )"
           },
           "coverlet.collector": {
+            "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+            "suppressParent": "All",
             "target": "Package",
-            "version": "[3.0.2, )"
+            "version": "[3.1.0, )"
           }
         },
         "imports": [

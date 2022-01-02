@@ -54,29 +54,132 @@ namespace Axis.Libra
                 .ThrowIfNull(new ArgumentNullException(nameof(queryType)))
                 .ThrowIf(t => t.IsAbstract, new Exception($"{queryType} cannot be abstract"))
                 // this may be redundant as only structs and classes can implement interfaces
-                .ThrowIf(t => !(t.IsClass || t.IsValueType), new Exception($"{queryType} must be a struct or class"))
-                .ThrowIf(t => 
-                    t.GetAttribute<BindQueryResultAttribute>() == null,
-                    new Exception($"{queryType} must be bound to an instance of {typeof(IQueryResult)} using the {typeof(BindQueryResultAttribute)}."));
+                .ThrowIf(t => !(t.IsClass || t.IsValueType), new Exception($"{queryType} must be a struct or class"));
         }
 
         /// <summary>
-        /// 
+        /// Checks that the given poco is a proper implementation of the <see cref="IQueryHandler{TQuery, TQueryResult}"/> type.
         /// </summary>
-        /// <param name="type"></param>
-        /// <param name="genericDefinitionInterface"></param>
-        /// <returns></returns>
-        public static Type GetGenericInterface(this Type type, Type genericDefinitionInterface)
+        /// <param name="queryHandlerType">the type to validate</param>
+        public static Type ValidateQueryHandlerImplementation(this Type queryHandlerType)
         {
-            genericDefinitionInterface
-                .ThrowIf(t => !t.IsGenericTypeDefinition, new ArgumentException("interface is not a generic type definition"))
-                .ThrowIf(t => !t.IsInterface, new ArgumentException($"supplied {nameof(genericDefinitionInterface)} type is not an interface"));
+            if (queryHandlerType == null)
+                throw new ArgumentNullException(nameof(queryHandlerType));
 
-            return type
+            if (queryHandlerType.IsStructural())
+                throw new ArgumentException($"{queryHandlerType} must not be a struct");
+
+            if (queryHandlerType.IsInterface)
+                throw new ArgumentException($"{queryHandlerType} must not be an interface");
+
+            if (queryHandlerType.IsAbstract)
+                throw new ArgumentException($"{queryHandlerType} must not be abstract");
+
+            if (queryHandlerType.Extends(typeof(Delegate)))
+                throw new ArgumentException($"{queryHandlerType} must not be a delegate");
+
+            queryHandlerType
                 .GetInterfaces()
-                .Where(_i => _i.IsGenericType)
-                .Where(_i => _i.GetGenericTypeDefinition() == genericDefinitionInterface)
-                .FirstOrDefault();
+                .Where(@interface => @interface.IsGenericType)
+                .Where(@interface => @interface.GetGenericTypeDefinition() == typeof(IQueryHandler<,>))
+                .Any()
+                .ThrowIf(false, new ArgumentException($"{nameof(queryHandlerType)} must implement {typeof(IQueryHandler<,>)}"));
+
+            return queryHandlerType;
+        }
+
+        public static bool TryValidateQueryHandlerImplementation(this Type queryHandlerType)
+        {
+            try
+            {
+                _ = queryHandlerType.ValidateQueryHandlerImplementation();
+                return true;
+            }
+            catch
+            { }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checks that the given poco is a valid QueryHandler, and also that it's <c>TQuery</c> arg is a <see cref="CommandResultQuery"/>, and it's <c>TQueryResult</c> arg is a <see cref="ICommandResult"/>.
+        /// </summary>
+        /// <param name="commandResultQueryHandlerType"></param>
+        /// <returns></returns>
+        public static Type ValidateCommandResultQueryHandlerImplementation(this Type commandResultQueryHandlerType)
+        {
+            _ = commandResultQueryHandlerType.ValidateQueryHandlerImplementation();
+            commandResultQueryHandlerType
+                .GetInterfaces()
+                .Where(@interface => @interface.IsGenericType)
+                .Where(@interface => @interface.GetGenericTypeDefinition() == typeof(IQueryHandler<,>))
+                .Where(@interface =>
+                {
+                    var gargs = @interface.GetGenericArguments();
+                    return gargs[0] == typeof(CommandResultQuery)
+                        && gargs[1].Implements(typeof(ICommandResult));
+                })
+                .Any()
+                .ThrowIf(false, new ArgumentException($"{nameof(commandResultQueryHandlerType)} must implement {typeof(IQueryHandler<,>)}"));
+
+            return commandResultQueryHandlerType;
+        }
+
+        public static bool TryValidateCommandResultQueryHandlerImplementation(this Type commandResultQueryHandlerType)
+        {
+            try
+            {
+                _ = commandResultQueryHandlerType.ValidateCommandResultQueryHandlerImplementation();
+                return true;
+            }
+            catch
+            { }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checks that the given poco is a proper implementation of the <see cref="ICommandHandler{TCommand}"/> type.
+        /// </summary>
+        /// <param name="commandHandlerType">the type to validate</param>
+        public static Type ValidateCommandHandlerImplementation(this Type commandHandlerType)
+        {
+            if (commandHandlerType == null)
+                throw new ArgumentNullException(nameof(commandHandlerType));
+
+            if (commandHandlerType.IsStructural())
+                throw new ArgumentException($"{commandHandlerType} must not be a struct");
+
+            if (commandHandlerType.IsInterface)
+                throw new ArgumentException($"{commandHandlerType} must not be an interface");
+
+            if (commandHandlerType.IsAbstract)
+                throw new ArgumentException($"{commandHandlerType} must not be abstract");
+
+            if (commandHandlerType.Extends(typeof(Delegate)))
+                throw new ArgumentException($"{commandHandlerType} must not be a delegate");
+
+            commandHandlerType
+                .GetInterfaces()
+                .Where(@interface => @interface.IsGenericType)
+                .Where(@interface => @interface.GetGenericTypeDefinition() == typeof(ICommandHandler<>))
+                .Any()
+                .ThrowIf(false, new ArgumentException($"{nameof(commandHandlerType)} must implement {typeof(ICommandHandler<>)}"));
+
+            return commandHandlerType;
+        }
+
+        public static bool TryValidateCommandHandlerImplementation(this Type commandHandlerType)
+        {
+            try
+            {
+                _ = commandHandlerType.ValidateCommandHandlerImplementation();
+                return true;
+            }
+            catch
+            { }
+
+            return false;
         }
     }
 }

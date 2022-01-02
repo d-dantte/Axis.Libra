@@ -7,9 +7,9 @@ namespace Axis.Libra.Command
 {
     public class CommandDispatcher
     {
-        private readonly IServiceResolver _serviceResolver;
+        private readonly ServiceResolver _serviceResolver;
 
-        public CommandDispatcher(IServiceResolver serviceResolver)
+        public CommandDispatcher(ServiceResolver serviceResolver)
         {
             _serviceResolver = serviceResolver ?? throw new ArgumentNullException(nameof(serviceResolver));
         }
