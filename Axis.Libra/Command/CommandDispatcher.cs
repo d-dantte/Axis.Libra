@@ -1,4 +1,5 @@
 ﻿using Axis.Libra.Exceptions;
+using Axis.Libra.URI;
 using Axis.Luna.Operation;
 using Axis.Proteus.IoC;
 using System;
@@ -7,9 +8,9 @@ namespace Axis.Libra.Command
 {
     public class CommandDispatcher
     {
-        private readonly ServiceResolver _serviceResolver;
+        private readonly IResolverContract _serviceResolver;
 
-        public CommandDispatcher(ServiceResolver serviceResolver)
+        public CommandDispatcher(IResolverContract serviceResolver)
         {
             _serviceResolver = serviceResolver ?? throw new ArgumentNullException(nameof(serviceResolver));
         }
@@ -20,8 +21,8 @@ namespace Axis.Libra.Command
         /// <typeparam name="TQuery"></typeparam>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="command"></param>
-        /// <returns></returns>
-        public Operation<string> Dispatch<TCommand>(TCommand command)
+        /// <returns>An <see cref="Operation{TResult}"/> encapsulating the command signature used to query for it's results</returns>
+        public IOperation<InstructionURI> Dispatch<TCommand>(TCommand command)
         where TCommand : ICommand => Operation.Try(() =>
         {
             if (command == null)
@@ -30,7 +31,7 @@ namespace Axis.Libra.Command
             return this
                 .HandlerFor<TCommand>()
                 ?.ExecuteCommand(command)
-                ?? throw new RegistrationNotFoundException(typeof(ICommandHandler<TCommand>));
+                ?? throw new UnknownResolverException(typeof(ICommandHandler<TCommand>));
         });
 
         private ICommandHandler<TCommand> HandlerFor<TCommand>()

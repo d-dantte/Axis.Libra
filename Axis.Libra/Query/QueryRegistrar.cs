@@ -1,5 +1,4 @@
 ﻿using Axis.Libra.Command;
-using Axis.Libra.Utils;
 using Axis.Luna.Extensions;
 using Axis.Proteus.Interception;
 using Axis.Proteus.IoC;
@@ -18,7 +17,7 @@ namespace Axis.Libra.Query
         /// <summary>
         /// The underlying IoC registrar.
         /// </summary>
-        private ServiceRegistrar IocRegistrar { get; }
+        private IRegistrarContract IocRegistrar { get; }
 
         /// <summary>
         /// The registration cache. A dictionary of <see cref="IQueryHandler{TQuery, TQueryResult}"/> types mapped to their implementations and registration information
@@ -34,10 +33,10 @@ namespace Axis.Libra.Query
         /// Return a new <see cref="QueryRegistrar"/> that is ready to register queries.
         /// </summary>
         /// <param name="iocRegistrar">The underlying IoC Registrar into which the instances are registered</param>
-        public static QueryRegistrar BeginRegistration(ServiceRegistrar iocRegistrar) => new QueryRegistrar(iocRegistrar);
+        public static QueryRegistrar BeginRegistration(IRegistrarContract iocRegistrar) => new QueryRegistrar(iocRegistrar);
 
 
-        private QueryRegistrar(ServiceRegistrar iocRegistrar)
+        private QueryRegistrar(IRegistrarContract iocRegistrar)
         {
             IocRegistrar = iocRegistrar ?? throw new ArgumentNullException(nameof(iocRegistrar));
         }
@@ -60,7 +59,7 @@ namespace Axis.Libra.Query
             if (Manifest != null)
                 throw new InvalidOperationException("Cannot add new registrations after manifest has been built");
 
-            typeof(IQuery).ValidateQueryType();
+            typeof(TQuery).ValidateInstructionType();
 
             RegistrationsCache
                 .GetOrAdd(typeof(IQueryHandler<TQuery, TQueryResult>), key => new HashSet<(Type, RegistryScope?, InterceptorProfile?)>())
@@ -104,15 +103,15 @@ namespace Axis.Libra.Query
         /// Registers all instances of <see cref="IQueryHandler{TQuery}"/> found within the given namespace alone, for the assembly of the CALLING method
         /// </summary>
         /// <param name="namespace">the namespace to search within</param>
+        /// <param name="recursiveSearch">Indicates if recursive namespace search is required</param>
         /// <param name="scope">registration scope</param>
         /// <param name="interceptorProfile">interception profile applied to resolved instances of this registration</param>
-        /// <param name="recursiveSearch">Indicates if recursive namespace search is required</param>
         /// <returns>this instance of the registrar</returns>
         public QueryRegistrar AddNamespaceHandlerRegistrations(
             string @namespace,
+            bool recursiveSearch = false,
             RegistryScope? scope = null,
-            InterceptorProfile? interceptorProfile = null,
-            bool recursiveSearch = false)
+            InterceptorProfile? interceptorProfile = null)
         {
             if (Manifest != null)
                 throw new InvalidOperationException("Cannot add new registrations after manifest has been built");
@@ -120,26 +119,26 @@ namespace Axis.Libra.Query
             return AddNamespaceHandlerRegistrations(
                 new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Assembly,
                 @namespace,
+                recursiveSearch,
                 scope,
-                interceptorProfile,
-                recursiveSearch);
+                interceptorProfile);
         }
 
         /// <summary>
         /// Registers all instances of <see cref="IQueryHandler{TQuery}"/> found within the given namespace alone, for the supplied assembly.
         /// </summary>
-        /// <param name="assembly">assembly to search within</param>
+        /// <param name="assembly">assembly to search within. Make sure this assembly is loaded into the same context as the executing code.</param>
         /// <param name="namespace">the namespace to search within</param>
+        /// <param name="recursiveSearch">Indicates if recursive namespace search is required</param>
         /// <param name="scope">registration scope</param>
         /// <param name="interceptorProfile">interception profile applied to resolved instances of this registration</param>
-        /// <param name="recursiveSearch">Indicates if recursive namespace search is required</param>
         /// <returns>this instance of the registrar</returns>
         public QueryRegistrar AddNamespaceHandlerRegistrations(
             Assembly assembly,
             string @namespace,
+            bool recursiveSearch = false,
             RegistryScope? scope = null,
-            InterceptorProfile? interceptorProfile = null,
-            bool recursiveSearch = false)
+            InterceptorProfile? interceptorProfile = null)
         {
             if (Manifest != null)
                 throw new InvalidOperationException("Cannot add new registrations after manifest has been built");
@@ -149,8 +148,11 @@ namespace Axis.Libra.Query
                 new ArgumentException($"Invalid {nameof(@namespace)}"));
 
             assembly
+                .ThrowIfNull(new ArgumentNullException(nameof(assembly)))
                 .GetExportedTypes()
-                .Where(t => recursiveSearch? t.Namespace.IsChildNamespaceOf(@namespace): t.Namespace.Equals(@namespace, StringComparison.InvariantCulture))
+                .Where(t => recursiveSearch
+                    ? t.Namespace.IsChildNamespaceOf(@namespace)
+                    : t.Namespace.Equals(@namespace, StringComparison.InvariantCulture))
                 .Where(t => t.ImplementsGenericInterface(typeof(IQueryHandler<,>)))
                 .ForAll(t => AddHandlerRegistration(t, scope, interceptorProfile));
 
@@ -203,13 +205,19 @@ namespace Axis.Libra.Query
             foreach (var kvp in RegistrationsCache)
             {
                 foreach (var registration in kvp.Value)
-                    IocRegistrar.Register(
+                    _ = IocRegistrar.Register(
                         kvp.Key,
                         registration.Item1,
-                        registration.Item2,
-                        registration.Item3);
+                        registration.Item2 ?? default,
+                        registration.Item3 ?? default);
             }
         }
+    }
+    
+
+    public class QueryManifestBuilder
+    {
+
     }
 
     /// <summary>
@@ -226,12 +234,6 @@ namespace Axis.Libra.Query
         /// A list of <see cref="Type"/> representing all of the <see cref="IQueryHandler{TQuery, TQueryResult}"/> interface types registered.
         /// </summary>
         public IEnumerable<Type> QueryHandlers { get; }
-
-        /// <summary>
-        /// A list of <see cref="Type"/> representing a subset of all <see cref="QueryManifest.QueryHandlers"/> which implement <see cref="IQueryHandler{TQuery, TQueryResult}"/>
-        /// where <c>TQuery</c> is <see cref="CommandResultQuery"/>, and <c>TQueryResult</c> is <see cref="ICommandResult"/>.
-        /// </summary>
-        public IEnumerable<Type> CommandResultHandlers => QueryHandlers.Where(TypeExtensions.TryValidateCommandResultQueryHandlerImplementation);
 
         /// <summary>
         /// Creates a new instance of the <see cref="QueryManifest"/>

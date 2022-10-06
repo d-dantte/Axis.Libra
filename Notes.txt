@@ -1,5 +1,18 @@
 
-2021/12/17 ===============================================================
+2021/Dec/17 ===============================================================
 
 1. Since commands are by design, asynchronious - i.e, each command execution only returns the Command Signature which is used to query for the result,
    Every command must come with a corresponding/counterpart Query which will be used to retrieve the result of the command.
+
+
+2022/Sept/06 ==============================================================
+1. Disallow multiple registrations for a specific Command/Query/Request handler.
+	1. Registrar methods will be changed from 'AddxxxHandlerRegistration' to 'RegisterxxxHandler'.
+	2. Duplicate registrations will throw exceptions.
+2. Consider using the command/query/request manifest as the input into the dispatchers, and subsequently,
+   the means to resolve registrations. This means the manifests will in turn hold a reference to the ServiceResolver, and each resolution call
+   will in turn be passed unto the internal resolver.
+
+
+   2022/Sept/19 ===========================================================
+   1. Make sure that all instruction namespaces within a Query/Request/Command Registrar are unique.

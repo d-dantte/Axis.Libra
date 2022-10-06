@@ -1,14 +1,16 @@
-﻿namespace Axis.Libra.Query
+﻿using Axis.Libra.URI;
+
+namespace Axis.Libra.Query
 {
     /// <summary>
-    /// A query
+    /// A query. Represents instructions (parameters) that causes a system to retrieve data/information SYNCHRONIOUSLY. 
     /// </summary>
-    public interface IQuery
+    public interface IQuery : IInstruction
     {
         /// <summary>
-        /// A unique signature representing this query, typically built by getting a hash of the Query's properties.
+        /// A unique signature representing this query, in the following format: <code>qry:&lt;namespace&gt;/&lt;property hash&gt;</code>
         /// </summary>
         /// <returns></returns>
-        string QuerySignature { get; }
+        InstructionURI QueryURI { get; }
     }
 }

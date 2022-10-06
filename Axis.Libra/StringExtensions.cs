@@ -20,5 +20,16 @@ namespace Axis.Libra
             return parent.Equals(child, StringComparison.InvariantCulture)
                 || child.StartsWith($"{parent}.");
         }
+
+        public static bool IsNullOrEqual(this
+            string first,
+            string second,
+            StringComparison stringComparison = StringComparison.InvariantCulture)
+        {
+            if (first == null && second == null)
+                return true;
+
+            else return first?.Equals(second, stringComparison) ?? false;
+        }
     }
 }

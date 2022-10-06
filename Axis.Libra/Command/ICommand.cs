@@ -1,16 +1,18 @@
-﻿namespace Axis.Libra.Command
+﻿using Axis.Libra.URI;
+
+namespace Axis.Libra.Command
 {
     /// <summary>
-    /// A command. 
+    /// A command. Represents instructions (parameters) that cause a system to act, and ultimately modify it's internal state ASYNCHRONIOUSLY.
     /// <para>
-    /// Note that all concrete implementations of this interface MUST be decorated with the <see cref="Utils.BindCommandResultAttribute"/> attribute
+    /// Note that all concrete implementations of this interface MUST be decorated with the <see cref="CommandStatusAttribute"/> attribute
     /// </para>
     /// </summary>
-    public interface ICommand
+    public interface ICommand: IInstruction
     {
         /// <summary>
-        /// A unique signature representing this command, typically built by getting a hash of the Command's properties.
+        /// A unique signature representing this command, in the following format: <code>cmd:&lt;namespace&gt;/&lt;property hash&gt;</code>
         /// </summary>
-        string CommandSignature { get; }
+        InstructionURI CommandURI { get; }
     }
 }

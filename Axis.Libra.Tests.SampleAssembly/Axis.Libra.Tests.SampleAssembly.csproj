@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Reuests\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Axis.Luna.FInvoke" Version="6.0.0" />
+    <PackageReference Include="Axis.Luna.Operation" Version="6.0.1" />
+    <PackageReference Include="Axis.Proteus" Version="6.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Axis.Libra\Axis.Libra.csproj" />
+  </ItemGroup>
+
+</Project>

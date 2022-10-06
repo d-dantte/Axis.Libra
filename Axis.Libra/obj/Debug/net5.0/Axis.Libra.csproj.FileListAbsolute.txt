@@ -1,6 +1,5 @@
 C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\bin\Debug\net5.0\Axis.Libra.deps.json
 C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\bin\Debug\net5.0\Axis.Libra.dll
-C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\bin\Debug\net5.0\ref\Axis.Libra.dll
 C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\bin\Debug\net5.0\Axis.Libra.pdb
 C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\obj\Debug\net5.0\Axis.Libra.csproj.AssemblyReference.cache
 C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\obj\Debug\net5.0\Axis.Libra.GeneratedMSBuildEditorConfig.editorconfig
@@ -8,5 +7,6 @@ C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\obj\Debug\net5.0\Axis.Libra.AssemblyIn
 C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\obj\Debug\net5.0\Axis.Libra.AssemblyInfo.cs
 C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\obj\Debug\net5.0\Axis.Libra.csproj.CoreCompileInputs.cache
 C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\obj\Debug\net5.0\Axis.Libra.dll
-C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\obj\Debug\net5.0\ref\Axis.Libra.dll
+C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\obj\Debug\net5.0\refint\Axis.Libra.dll
 C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\obj\Debug\net5.0\Axis.Libra.pdb
+C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\obj\Debug\net5.0\ref\Axis.Libra.dll

@@ -16,6 +16,6 @@ namespace Axis.Libra.Query
     where TQuery: IQuery
     where TQueryResult: IQueryResult
     {
-        Operation<TQueryResult> ExecuteQuery(TQuery query);
+        IOperation<TQueryResult> ExecuteQuery(TQuery query);
     }
 }

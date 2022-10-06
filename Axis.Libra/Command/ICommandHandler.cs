@@ -1,4 +1,5 @@
-﻿using Axis.Luna.Operation;
+﻿using Axis.Libra.URI;
+using Axis.Luna.Operation;
 
 namespace Axis.Libra.Command
 {
@@ -15,6 +16,6 @@ namespace Axis.Libra.Command
         /// </summary>
         /// <param name="command">The command instance</param>
         /// <returns>The command's signature</returns>
-        Operation<string> ExecuteCommand(TCommand command);
+        IOperation<InstructionURI> ExecuteCommand(TCommand command);
     }
 }

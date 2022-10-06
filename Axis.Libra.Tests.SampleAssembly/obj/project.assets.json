@@ -1,0 +1,573 @@
+{
+  "version": 3,
+  "targets": {
+    "net6.0": {
+      "Axis.Luna.Common/6.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Axis.Luna.Extensions": "6.0.0"
+        },
+        "compile": {
+          "lib/net6.0/Axis.Luna.Common.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/Axis.Luna.Common.dll": {}
+        }
+      },
+      "Axis.Luna.Extensions/6.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/Axis.Luna.Extensions.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/Axis.Luna.Extensions.dll": {}
+        }
+      },
+      "Axis.Luna.FInvoke/6.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Sigil": "5.0.0"
+        },
+        "compile": {
+          "lib/net6.0/Axis.Luna.FInvoke.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/Axis.Luna.FInvoke.dll": {}
+        }
+      },
+      "Axis.Luna.Operation/6.0.1": {
+        "type": "package",
+        "dependencies": {
+          "Axis.Luna.Common": "6.0.0",
+          "Axis.Luna.Extensions": "6.0.1"
+        },
+        "compile": {
+          "lib/net6.0/Axis.Luna.Operation.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/Axis.Luna.Operation.dll": {}
+        }
+      },
+      "Axis.Proteus/6.2.1": {
+        "type": "package",
+        "dependencies": {
+          "Axis.Luna.Extensions": "6.0.0",
+          "Castle.Core": "5.1.0"
+        },
+        "compile": {
+          "lib/net6.0/Axis.Proteus.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/Axis.Proteus.dll": {}
+        }
+      },
+      "Castle.Core/5.1.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Diagnostics.EventLog": "6.0.0"
+        },
+        "compile": {
+          "lib/net6.0/Castle.Core.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/Castle.Core.dll": {}
+        }
+      },
+      "HashDepot/2.0.3": {
+        "type": "package",
+        "dependencies": {
+          "System.Memory": "4.5.3",
+          "System.Runtime": "4.3.1"
+        },
+        "compile": {
+          "lib/netstandard2.0/HashDepot.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/HashDepot.dll": {}
+        }
+      },
+      "Microsoft.NETCore.Platforms/1.1.1": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard1.0/_._": {}
+        },
+        "runtime": {
+          "lib/netstandard1.0/_._": {}
+        }
+      },
+      "Microsoft.NETCore.Targets/1.1.3": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard1.0/_._": {}
+        },
+        "runtime": {
+          "lib/netstandard1.0/_._": {}
+        }
+      },
+      "Sigil/5.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.1/Sigil.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.1/Sigil.dll": {}
+        }
+      },
+      "System.Diagnostics.EventLog/6.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/System.Diagnostics.EventLog.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/System.Diagnostics.EventLog.dll": {}
+        },
+        "build": {
+          "buildTransitive/netcoreapp3.1/_._": {}
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/net6.0/System.Diagnostics.EventLog.Messages.dll": {
+            "assetType": "runtime",
+            "rid": "win"
+          },
+          "runtimes/win/lib/net6.0/System.Diagnostics.EventLog.dll": {
+            "assetType": "runtime",
+            "rid": "win"
+          }
+        }
+      },
+      "System.Memory/4.5.3": {
+        "type": "package",
+        "compile": {
+          "ref/netcoreapp2.1/_._": {}
+        },
+        "runtime": {
+          "lib/netcoreapp2.1/_._": {}
+        }
+      },
+      "System.Runtime/4.3.1": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.1.1",
+          "Microsoft.NETCore.Targets": "1.1.3"
+        },
+        "compile": {
+          "ref/netstandard1.5/System.Runtime.dll": {}
+        }
+      },
+      "Axis.Libra/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "dependencies": {
+          "Axis.Luna.FInvoke": "6.0.0",
+          "Axis.Luna.Operation": "6.0.1",
+          "Axis.Proteus": "6.2.1",
+          "HashDepot": "2.0.3"
+        },
+        "compile": {
+          "bin/placeholder/Axis.Libra.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Axis.Libra.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Axis.Luna.Common/6.0.0": {
+      "sha512": "/nneffT/Rg/OgTvhN2Ne6xFiYE6JXO9bsvBzrfrbiXDbJqAE0bo4n/bVDkMuvddsB4AGc5QkbJqdDAISfywjnQ==",
+      "type": "package",
+      "path": "axis.luna.common/6.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "axis.luna.common.6.0.0.nupkg.sha512",
+        "axis.luna.common.nuspec",
+        "lib/net5.0/Axis.Luna.Common.dll",
+        "lib/net6.0/Axis.Luna.Common.dll",
+        "lib/netcoreapp3.1/Axis.Luna.Common.dll"
+      ]
+    },
+    "Axis.Luna.Extensions/6.0.1": {
+      "sha512": "u5DWGvLdsSvNF2iBhpWCx2GXZMf2kiWCM6bcmqJaCXuOT8u/hKxtWG6UwvgyADj65BGkJ3X4QiJK11s+1sUHlQ==",
+      "type": "package",
+      "path": "axis.luna.extensions/6.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "axis.luna.extensions.6.0.1.nupkg.sha512",
+        "axis.luna.extensions.nuspec",
+        "lib/net5.0/Axis.Luna.Extensions.dll",
+        "lib/net6.0/Axis.Luna.Extensions.dll",
+        "lib/netcoreapp3.1/Axis.Luna.Extensions.dll"
+      ]
+    },
+    "Axis.Luna.FInvoke/6.0.0": {
+      "sha512": "g9LioahjKo4hUjIbGMC5C7iuqBxRkdR/Hp20PjRLKeIjQMVvQM6mJeEXs+RSpfiHwhW+W24HCqewHWYKwjONeA==",
+      "type": "package",
+      "path": "axis.luna.finvoke/6.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "axis.luna.finvoke.6.0.0.nupkg.sha512",
+        "axis.luna.finvoke.nuspec",
+        "lib/net5.0/Axis.Luna.FInvoke.dll",
+        "lib/net6.0/Axis.Luna.FInvoke.dll",
+        "lib/netcoreapp3.1/Axis.Luna.FInvoke.dll"
+      ]
+    },
+    "Axis.Luna.Operation/6.0.1": {
+      "sha512": "3G0zg+lx/mwRhY1hsndPcRnyDGggmVGrWbMJSX+qNlEIrp+hc76p13CeRCv/zQa6YPrAmVWh1ca+j44NTGrLyw==",
+      "type": "package",
+      "path": "axis.luna.operation/6.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "axis.luna.operation.6.0.1.nupkg.sha512",
+        "axis.luna.operation.nuspec",
+        "lib/net5.0/Axis.Luna.Operation.dll",
+        "lib/net6.0/Axis.Luna.Operation.dll",
+        "lib/netcoreapp3.1/Axis.Luna.Operation.dll"
+      ]
+    },
+    "Axis.Proteus/6.2.1": {
+      "sha512": "o8q0x6drTQfajEqIKvlSdjmJhgp2fKx7zB6SaPmtEkic6ZuiCuP7p1UIOF4ks9e2j1uc4XVJ0Yb6YwYmRTTDDg==",
+      "type": "package",
+      "path": "axis.proteus/6.2.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "axis.proteus.6.2.1.nupkg.sha512",
+        "axis.proteus.nuspec",
+        "lib/net5.0/Axis.Proteus.dll",
+        "lib/net6.0/Axis.Proteus.dll",
+        "lib/netcoreapp3.1/Axis.Proteus.dll"
+      ]
+    },
+    "Castle.Core/5.1.0": {
+      "sha512": "31UJpTHOiWq95CDOHazE3Ub/hE/PydNWsJMwnEVTqFFP4WhAugwpaVGxzOxKgNeSUUeqS2W6lxV+q7u1pAOfXg==",
+      "type": "package",
+      "path": "castle.core/5.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "ASL - Apache Software Foundation License.txt",
+        "CHANGELOG.md",
+        "LICENSE",
+        "castle-logo.png",
+        "castle.core.5.1.0.nupkg.sha512",
+        "castle.core.nuspec",
+        "lib/net462/Castle.Core.dll",
+        "lib/net462/Castle.Core.xml",
+        "lib/net6.0/Castle.Core.dll",
+        "lib/net6.0/Castle.Core.xml",
+        "lib/netstandard2.0/Castle.Core.dll",
+        "lib/netstandard2.0/Castle.Core.xml",
+        "lib/netstandard2.1/Castle.Core.dll",
+        "lib/netstandard2.1/Castle.Core.xml",
+        "readme.txt"
+      ]
+    },
+    "HashDepot/2.0.3": {
+      "sha512": "K033sUok3i8MhGM/10tX6Bq/7MTWZJxS3eAU1z+zFv6k2+1FV9+gEAuvZYHYYJeB4v8rbkaL9fHzLoHBZOTXDA==",
+      "type": "package",
+      "path": "hashdepot/2.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE/LICENSE",
+        "hashdepot.2.0.3.nupkg.sha512",
+        "hashdepot.nuspec",
+        "lib/netstandard2.0/HashDepot.dll",
+        "lib/netstandard2.0/HashDepot.xml"
+      ]
+    },
+    "Microsoft.NETCore.Platforms/1.1.1": {
+      "sha512": "TMBuzAHpTenGbGgk0SMTwyEkyijY/Eae4ZGsFNYJvAr/LDn1ku3Etp3FPxChmDp5HHF3kzJuoaa08N0xjqAJfQ==",
+      "type": "package",
+      "path": "microsoft.netcore.platforms/1.1.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "ThirdPartyNotices.txt",
+        "dotnet_library_license.txt",
+        "lib/netstandard1.0/_._",
+        "microsoft.netcore.platforms.1.1.1.nupkg.sha512",
+        "microsoft.netcore.platforms.nuspec",
+        "runtime.json"
+      ]
+    },
+    "Microsoft.NETCore.Targets/1.1.3": {
+      "sha512": "3Wrmi0kJDzClwAC+iBdUBpEKmEle8FQNsCs77fkiOIw/9oYA07bL1EZNX0kQ2OMN3xpwvl0vAtOCYY3ndDNlhQ==",
+      "type": "package",
+      "path": "microsoft.netcore.targets/1.1.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "ThirdPartyNotices.txt",
+        "dotnet_library_license.txt",
+        "lib/netstandard1.0/_._",
+        "microsoft.netcore.targets.1.1.3.nupkg.sha512",
+        "microsoft.netcore.targets.nuspec",
+        "runtime.json"
+      ]
+    },
+    "Sigil/5.0.0": {
+      "sha512": "9376TkXVKwEJNDOpnAunqjqlto9v0RZX/YNBGfWUVl9eyBNS1rmP49HgjPH5xr4rdVI+qT0p/+ngCNc/sM3PPA==",
+      "type": "package",
+      "path": "sigil/5.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net461/Sigil.dll",
+        "lib/net461/Sigil.pdb",
+        "lib/net461/Sigil.xml",
+        "lib/netstandard2.0/Sigil.dll",
+        "lib/netstandard2.0/Sigil.pdb",
+        "lib/netstandard2.0/Sigil.xml",
+        "lib/netstandard2.1/Sigil.dll",
+        "lib/netstandard2.1/Sigil.pdb",
+        "lib/netstandard2.1/Sigil.xml",
+        "sigil.5.0.0.nupkg.sha512",
+        "sigil.nuspec"
+      ]
+    },
+    "System.Diagnostics.EventLog/6.0.0": {
+      "sha512": "lcyUiXTsETK2ALsZrX+nWuHSIQeazhqPphLfaRxzdGaG93+0kELqpgEHtwWOlQe7+jSFnKwaCAgL4kjeZCQJnw==",
+      "type": "package",
+      "path": "system.diagnostics.eventlog/6.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/netcoreapp2.0/System.Diagnostics.EventLog.targets",
+        "buildTransitive/netcoreapp3.1/_._",
+        "lib/net461/System.Diagnostics.EventLog.dll",
+        "lib/net461/System.Diagnostics.EventLog.xml",
+        "lib/net6.0/System.Diagnostics.EventLog.dll",
+        "lib/net6.0/System.Diagnostics.EventLog.xml",
+        "lib/netcoreapp3.1/System.Diagnostics.EventLog.dll",
+        "lib/netcoreapp3.1/System.Diagnostics.EventLog.xml",
+        "lib/netstandard2.0/System.Diagnostics.EventLog.dll",
+        "lib/netstandard2.0/System.Diagnostics.EventLog.xml",
+        "paket-installmodel.cache",
+        "runtimes/win/lib/net6.0/System.Diagnostics.EventLog.Messages.dll",
+        "runtimes/win/lib/net6.0/System.Diagnostics.EventLog.dll",
+        "runtimes/win/lib/net6.0/System.Diagnostics.EventLog.xml",
+        "runtimes/win/lib/netcoreapp3.1/System.Diagnostics.EventLog.Messages.dll",
+        "runtimes/win/lib/netcoreapp3.1/System.Diagnostics.EventLog.dll",
+        "runtimes/win/lib/netcoreapp3.1/System.Diagnostics.EventLog.xml",
+        "system.diagnostics.eventlog.6.0.0.nupkg.sha512",
+        "system.diagnostics.eventlog.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "System.Memory/4.5.3": {
+      "sha512": "3oDzvc/zzetpTKWMShs1AADwZjQ/36HnsufHRPcOjyRAAMLDlu2iD33MBI2opxnezcVUtXyqDXXjoFMOU9c7SA==",
+      "type": "package",
+      "path": "system.memory/4.5.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/netcoreapp2.1/_._",
+        "lib/netstandard1.1/System.Memory.dll",
+        "lib/netstandard1.1/System.Memory.xml",
+        "lib/netstandard2.0/System.Memory.dll",
+        "lib/netstandard2.0/System.Memory.xml",
+        "ref/netcoreapp2.1/_._",
+        "system.memory.4.5.3.nupkg.sha512",
+        "system.memory.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
+    },
+    "System.Runtime/4.3.1": {
+      "sha512": "abhfv1dTK6NXOmu4bgHIONxHyEqFjW8HwXPmpY9gmll+ix9UNo4XDcmzJn6oLooftxNssVHdJC1pGT9jkSynQg==",
+      "type": "package",
+      "path": "system.runtime/4.3.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "ThirdPartyNotices.txt",
+        "dotnet_library_license.txt",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net45/_._",
+        "lib/net462/System.Runtime.dll",
+        "lib/portable-net45+win8+wp80+wpa81/_._",
+        "lib/win8/_._",
+        "lib/wp80/_._",
+        "lib/wpa81/_._",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net45/_._",
+        "ref/net462/System.Runtime.dll",
+        "ref/netcore50/System.Runtime.dll",
+        "ref/netcore50/System.Runtime.xml",
+        "ref/netcore50/de/System.Runtime.xml",
+        "ref/netcore50/es/System.Runtime.xml",
+        "ref/netcore50/fr/System.Runtime.xml",
+        "ref/netcore50/it/System.Runtime.xml",
+        "ref/netcore50/ja/System.Runtime.xml",
+        "ref/netcore50/ko/System.Runtime.xml",
+        "ref/netcore50/ru/System.Runtime.xml",
+        "ref/netcore50/zh-hans/System.Runtime.xml",
+        "ref/netcore50/zh-hant/System.Runtime.xml",
+        "ref/netstandard1.0/System.Runtime.dll",
+        "ref/netstandard1.0/System.Runtime.xml",
+        "ref/netstandard1.0/de/System.Runtime.xml",
+        "ref/netstandard1.0/es/System.Runtime.xml",
+        "ref/netstandard1.0/fr/System.Runtime.xml",
+        "ref/netstandard1.0/it/System.Runtime.xml",
+        "ref/netstandard1.0/ja/System.Runtime.xml",
+        "ref/netstandard1.0/ko/System.Runtime.xml",
+        "ref/netstandard1.0/ru/System.Runtime.xml",
+        "ref/netstandard1.0/zh-hans/System.Runtime.xml",
+        "ref/netstandard1.0/zh-hant/System.Runtime.xml",
+        "ref/netstandard1.2/System.Runtime.dll",
+        "ref/netstandard1.2/System.Runtime.xml",
+        "ref/netstandard1.2/de/System.Runtime.xml",
+        "ref/netstandard1.2/es/System.Runtime.xml",
+        "ref/netstandard1.2/fr/System.Runtime.xml",
+        "ref/netstandard1.2/it/System.Runtime.xml",
+        "ref/netstandard1.2/ja/System.Runtime.xml",
+        "ref/netstandard1.2/ko/System.Runtime.xml",
+        "ref/netstandard1.2/ru/System.Runtime.xml",
+        "ref/netstandard1.2/zh-hans/System.Runtime.xml",
+        "ref/netstandard1.2/zh-hant/System.Runtime.xml",
+        "ref/netstandard1.3/System.Runtime.dll",
+        "ref/netstandard1.3/System.Runtime.xml",
+        "ref/netstandard1.3/de/System.Runtime.xml",
+        "ref/netstandard1.3/es/System.Runtime.xml",
+        "ref/netstandard1.3/fr/System.Runtime.xml",
+        "ref/netstandard1.3/it/System.Runtime.xml",
+        "ref/netstandard1.3/ja/System.Runtime.xml",
+        "ref/netstandard1.3/ko/System.Runtime.xml",
+        "ref/netstandard1.3/ru/System.Runtime.xml",
+        "ref/netstandard1.3/zh-hans/System.Runtime.xml",
+        "ref/netstandard1.3/zh-hant/System.Runtime.xml",
+        "ref/netstandard1.5/System.Runtime.dll",
+        "ref/netstandard1.5/System.Runtime.xml",
+        "ref/netstandard1.5/de/System.Runtime.xml",
+        "ref/netstandard1.5/es/System.Runtime.xml",
+        "ref/netstandard1.5/fr/System.Runtime.xml",
+        "ref/netstandard1.5/it/System.Runtime.xml",
+        "ref/netstandard1.5/ja/System.Runtime.xml",
+        "ref/netstandard1.5/ko/System.Runtime.xml",
+        "ref/netstandard1.5/ru/System.Runtime.xml",
+        "ref/netstandard1.5/zh-hans/System.Runtime.xml",
+        "ref/netstandard1.5/zh-hant/System.Runtime.xml",
+        "ref/portable-net45+win8+wp80+wpa81/_._",
+        "ref/win8/_._",
+        "ref/wp80/_._",
+        "ref/wpa81/_._",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "ref/xamarintvos10/_._",
+        "ref/xamarinwatchos10/_._",
+        "system.runtime.4.3.1.nupkg.sha512",
+        "system.runtime.nuspec"
+      ]
+    },
+    "Axis.Libra/1.0.0": {
+      "type": "project",
+      "path": "../Axis.Libra/Axis.Libra.csproj",
+      "msbuildProject": "../Axis.Libra/Axis.Libra.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net6.0": [
+      "Axis.Libra >= 1.0.0",
+      "Axis.Luna.FInvoke >= 6.0.0",
+      "Axis.Luna.Operation >= 6.0.1",
+      "Axis.Proteus >= 6.2.1"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\stanl\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "C:\\Dantte\\Dev\\Repos\\Axis.Libra\\Axis.Libra.Tests.SampleAssembly\\Axis.Libra.Tests.SampleAssembly.csproj",
+      "projectName": "Axis.Libra.Tests.SampleAssembly",
+      "projectPath": "C:\\Dantte\\Dev\\Repos\\Axis.Libra\\Axis.Libra.Tests.SampleAssembly\\Axis.Libra.Tests.SampleAssembly.csproj",
+      "packagesPath": "C:\\Users\\stanl\\.nuget\\packages\\",
+      "outputPath": "C:\\Dantte\\Dev\\Repos\\Axis.Libra\\Axis.Libra.Tests.SampleAssembly\\obj\\",
+      "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
+      "configFilePaths": [
+        "C:\\Users\\stanl\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net6.0"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "projectReferences": {
+            "C:\\Dantte\\Dev\\Repos\\Axis.Libra\\Axis.Libra\\Axis.Libra.csproj": {
+              "projectPath": "C:\\Dantte\\Dev\\Repos\\Axis.Libra\\Axis.Libra\\Axis.Libra.csproj"
+            }
+          }
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "net6.0": {
+        "targetAlias": "net6.0",
+        "dependencies": {
+          "Axis.Luna.FInvoke": {
+            "target": "Package",
+            "version": "[6.0.0, )"
+          },
+          "Axis.Luna.Operation": {
+            "target": "Package",
+            "version": "[6.0.1, )"
+          },
+          "Axis.Proteus": {
+            "target": "Package",
+            "version": "[6.2.1, )"
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.303\\RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}

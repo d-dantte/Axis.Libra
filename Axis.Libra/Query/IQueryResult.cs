@@ -1,4 +1,6 @@
-﻿namespace Axis.Libra.Query
+﻿using Axis.Libra.URI;
+
+namespace Axis.Libra.Query
 {
     /// <summary>
     /// Represens the result of a specific query.
@@ -8,6 +10,6 @@
         /// <summary>
         /// Signature of the query that generated this result
         /// </summary>
-        string QuerySignature { get; }
+        InstructionURI QueryURI { get; }
     }
 }
