@@ -1,0 +1,10 @@
+C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\bin\Release\netcoreapp3.1\Axis.Libra.deps.json
+C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\bin\Release\netcoreapp3.1\Axis.Libra.dll
+C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\bin\Release\netcoreapp3.1\Axis.Libra.pdb
+C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\obj\Release\netcoreapp3.1\Axis.Libra.csproj.AssemblyReference.cache
+C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\obj\Release\netcoreapp3.1\Axis.Libra.GeneratedMSBuildEditorConfig.editorconfig
+C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\obj\Release\netcoreapp3.1\Axis.Libra.AssemblyInfoInputs.cache
+C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\obj\Release\netcoreapp3.1\Axis.Libra.AssemblyInfo.cs
+C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\obj\Release\netcoreapp3.1\Axis.Libra.csproj.CoreCompileInputs.cache
+C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\obj\Release\netcoreapp3.1\Axis.Libra.dll
+C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\obj\Release\netcoreapp3.1\Axis.Libra.pdb

@@ -5,7 +5,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
-    <Version>1.0.0</Version>
+    <Version>0.2.0</Version>
     <Authors>Dantte</Authors>
     <Company>Axiis</Company>
     <PackageTags>CQS Command Query Segregation Domain Services Framework</PackageTags>
@@ -17,8 +17,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Axis.Luna.FInvoke" Version="6.0.0" />
-    <PackageReference Include="Axis.Luna.Operation" Version="6.0.1" />
+    <PackageReference Include="Axis.Luna.FInvoke" Version="6.0.2" />
+    <PackageReference Include="Axis.Luna.Operation" Version="6.0.2" />
     <PackageReference Include="Axis.Proteus" Version="7.1.0" />
     <PackageReference Include="HashDepot" Version="2.0.3" />
   </ItemGroup>

@@ -1,6 +1,5 @@
 ﻿using Axis.Libra.URI;
 using Axis.Libra.Utils;
-using HashDepot;
 using System;
 
 namespace Axis.Libra.Command
@@ -14,14 +13,14 @@ namespace Axis.Libra.Command
         /// Ultimately, the aim of this method is to generate a unique ID representing this command. The uniqueness of commands depends on use-case.
         /// </para>
         /// <para>
-        /// Note that his method excludes the <see cref="ICommand.CommandURI"/> from the serialization to avoid endless recrussion. This follows for any
-        /// properties that depend on the <see cref="ICommand.CommandURI"/> property: override this method and exclude them from the serialization.
+        /// Note that his method excludes the <see cref="ICommand.InstructionURI"/> from the serialization to avoid endless recrussion. This follows for any
+        /// properties that depend on the <see cref="ICommand.InstructionURI"/> property: override this method and exclude them from the serialization.
         /// </para>
         /// </summary>
         /// <returns>byte array representing the class name and property values serialized</returns>
         protected virtual byte[] Serialize() => PropertySerializer.Serialize(
             this,
-            nameof(ICommand.CommandURI));
+            nameof(ICommand.InstructionURI));
 
         // <inheritdoc/>
         byte[] IBinarySerializable.Serialize() => Serialize();
@@ -29,8 +28,8 @@ namespace Axis.Libra.Command
         /// <summary>
         /// The command hash is made from concatenating the hash of the command type's full-name, with the result of hashing the outcome of serializing the instance.
         /// </summary>
-        public InstructionURI CommandURI => new InstructionURI(Scheme.Command, this.InstructionNamespace(), Serialize());
+        public InstructionURI InstructionURI => new InstructionURI(Scheme.Command, this.InstructionNamespace(), Serialize());
 
-        public override int GetHashCode() => HashCode.Combine(CommandURI);
+        public override int GetHashCode() => HashCode.Combine(InstructionURI);
     }
 }

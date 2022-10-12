@@ -1,86 +1,40 @@
 ﻿using Axis.Libra.Exceptions;
-using Axis.Luna.Extensions;
-using Axis.Luna.FInvoke;
-using Axis.Luna.Operation;
+using Axis.Luna.Common;
 using Axis.Proteus.IoC;
 using System;
-using System.Collections.Concurrent;
-using System.Linq;
-using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Axis.Libra.Query
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class QueryDispatcher
     {
-        private static readonly MethodInfo _GenericDipatchMethod = typeof(QueryDispatcher)
-            .GetMethods()
-            .Where(method => method.IsPublic)
-            .Where(method => !method.IsStatic)
-            .Where(method => method.Name.Equals(nameof(Dispatch)))
-            .Where(method => method.IsGenericMethodDefinition)
-            .Where(method => method.GetGenericArguments().Length == 2)
-            .Where(method => method.GetParameters().Length == 1)
-            .FirstOrDefault();
+        private readonly QueryManifest _manifest;
 
-        // This cache is unnecessary since Axis.FInvoke already caches the invokers using the method
-        // instance as the key
-        private static readonly ConcurrentDictionary<(Type queryType, Type resultType), InstanceInvoker> _InvokerCache = new ConcurrentDictionary<(Type, Type), InstanceInvoker>();
-
-
-        private readonly IResolverContract _serviceResolver;
-
-        public QueryDispatcher(IResolverContract serviceResolver)
+        public QueryDispatcher(QueryManifest manifest)
         {
-            _serviceResolver = serviceResolver ?? throw new ArgumentNullException(nameof(serviceResolver));
+            _manifest = manifest ?? throw new ArgumentNullException(nameof(manifest));
         }
 
         /// <summary>
-        /// Dispatches the query to a registered handler
+        /// Dispatches the command to be handled immediately by the registered handler
         /// </summary>
         /// <typeparam name="TQuery"></typeparam>
         /// <typeparam name="TResult"></typeparam>
-        /// <param name="query"></param>
-        /// <returns></returns>
-        public IOperation<TQueryResult> Dispatch<TQuery, TQueryResult>(TQuery query)
-        where TQuery : IQuery
-        where TQueryResult : IQueryResult
-        => Operation.Try(() =>
+        /// <param name="command"></param>
+        /// <returns>An <see cref="Operation{TResult}"/> encapsulating the command signature used to query for it's results</returns>
+        public Task<IResult<TResult>> Dispatch<TQuery, TResult>(TQuery command)
+        where TQuery : IQuery<TResult>
         {
-            if (query == null)
-                throw new ArgumentNullException(nameof(query));
+            if (command == null)
+                throw new ArgumentNullException(nameof(command));
 
-            return this
-                .HandlerFor<TQuery, TQueryResult>()
-                ?.ExecuteQuery(query)
-                ?? throw new UnknownResolverException(typeof(IQueryHandler<TQuery, TQueryResult>));
-        });
-
-        /// <summary>
-        /// Dispatches the query for a commands status to a registered handler
-        /// </summary>
-        /// <param name="query"></param>
-        /// <param name="commandManifest"></param>
-        /// <returns></returns>
-        public IOperation<Command.ICommandStatusResult> Dispatch(
-           Command.CommandStatusQuery query,
-           Command.CommandManifest commandManifest)
-        {
-            var resultType = commandManifest.StatusResultFor(query.CommandURI.Namespace);
-            var invoker = _InvokerCache.GetOrAdd((typeof(Command.CommandStatusQuery), resultType), tuple =>
-            {
-                return _GenericDipatchMethod
-                    .MakeGenericMethod(tuple.queryType, tuple.resultType)
-                    .Map(InstanceInvoker.InvokerFor);
-            });
-
-            return invoker.Func
-                .Invoke(this, new object[] { query })
-                .As<IOperation<Command.ICommandStatusResult>>();
+            return _manifest
+                .HandlerFor<TQuery, TResult>()
+                ?.ExecuteQuery(command)
+                ?? throw new InvalidOperationException($"could not find a handler for the command of type: {typeof(TQuery)}");
         }
-
-        private IQueryHandler<TQuery, TQueryResult> HandlerFor<TQuery, TQueryResult>()
-        where TQuery : IQuery
-        where TQueryResult : IQueryResult
-        => _serviceResolver.Resolve<IQueryHandler<TQuery, TQueryResult>>();
     }
 }

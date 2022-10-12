@@ -7,8 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Axis.Luna.FInvoke" Version="6.0.0" />
-    <PackageReference Include="Axis.Luna.Operation" Version="6.0.1" />
+    <PackageReference Include="Axis.Luna.Extensions" Version="6.0.2" />
+    <PackageReference Include="Axis.Luna.FInvoke" Version="6.0.2" />
+    <PackageReference Include="Axis.Luna.Operation" Version="6.0.2" />
     <PackageReference Include="Axis.Proteus" Version="7.1.0" />
     <PackageReference Include="Axis.Proteus.SimpleInjector" Version="7.1.0" />
     <PackageReference Include="HashDepot" Version="2.0.3" />
@@ -30,7 +31,6 @@
   <ItemGroup>
     <Folder Include="Functional\Request\" />
     <Folder Include="Functional\Utils\" />
-    <Folder Include="Unit\Request\" />
   </ItemGroup>
 
 </Project>

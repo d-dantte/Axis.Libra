@@ -1,39 +1,39 @@
 ﻿using Axis.Libra.Exceptions;
-using Axis.Luna.Operation;
-using Axis.Proteus.IoC;
+using Axis.Luna.Common;
 using System;
+using System.Threading.Tasks;
 
 namespace Axis.Libra.Request
 {
-    internal class RequestDispatcher
+    /// <summary>
+    /// 
+    /// </summary>
+    public class RequestDispatcher
     {
-        private readonly IResolverContract _serviceResolver;
+        private readonly RequestManifest _manifest;
 
-        public RequestDispatcher(IResolverContract serviceResolver)
+        public RequestDispatcher(RequestManifest manifest)
         {
-            _serviceResolver = serviceResolver ?? throw new ArgumentNullException(nameof(serviceResolver));
+            _manifest = manifest ?? throw new ArgumentNullException(nameof(manifest));
         }
 
         /// <summary>
         /// Dispatches the command to be handled immediately by the registered handler
         /// </summary>
-        /// <typeparam name="TQuery"></typeparam>
+        /// <typeparam name="TRequest"></typeparam>
         /// <typeparam name="TResult"></typeparam>
-        /// <param name="request"></param>
+        /// <param name="command"></param>
         /// <returns>An <see cref="Operation{TResult}"/> encapsulating the command signature used to query for it's results</returns>
-        public IOperation<IResult> Dispatch<TRequest>(TRequest request)
-        where TRequest : IRequest => Operation.Try(() =>
+        public Task<IResult<TResult>> Dispatch<TRequest, TResult>(TRequest command)
+        where TRequest : IRequest<TResult>
         {
-            if (request == null)
-                throw new ArgumentNullException(nameof(request));
+            if (command == null)
+                throw new ArgumentNullException(nameof(command));
 
-            return this
-                .HandlerFor<TRequest>()
-                ?.ExecuteRequest(request)
-                ?? throw new UnknownResolverException(typeof(IRequestHandler<TRequest>));
-        });
-
-        private IRequestHandler<TRequest> HandlerFor<TRequest>()
-        where TRequest : IRequest => _serviceResolver.Resolve<IRequestHandler<TRequest>>();
+            return _manifest
+                .HandlerFor<TRequest, TResult>()
+                ?.ExecuteRequest(command)
+                ?? throw new UnknownResolverException(typeof(IRequestHandler<TRequest, TResult>));
+        }
     }
 }

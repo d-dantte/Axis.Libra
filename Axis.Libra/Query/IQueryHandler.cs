@@ -1,4 +1,5 @@
-﻿using Axis.Luna.Operation;
+﻿using Axis.Luna.Common;
+using System.Threading.Tasks;
 
 namespace Axis.Libra.Query
 {
@@ -12,10 +13,14 @@ namespace Axis.Libra.Query
     /// </summary>
     /// <typeparam name="TQuery">The Query type</typeparam>
     /// <typeparam name="TQueryResult">The Query Result type</typeparam>
-    public interface IQueryHandler<in TQuery, TQueryResult>
-    where TQuery: IQuery
-    where TQueryResult: IQueryResult
+    public interface IQueryHandler<in TQuery, TResult>
+    where TQuery: IQuery<TResult>
     {
-        IOperation<TQueryResult> ExecuteQuery(TQuery query);
+        /// <summary>
+        /// Asynchroniously execute the query
+        /// </summary>
+        /// <param name="query">The query to be executed</param>
+        /// <returns>The query result</returns>
+        Task<IResult<TResult>> ExecuteQuery(TQuery query);
     }
 }

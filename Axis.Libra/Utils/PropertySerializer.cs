@@ -12,7 +12,8 @@ namespace Axis.Libra.Utils
 {
     public static class PropertySerializer
     {
-        private static readonly ConcurrentDictionary<Type, List<(string, InstanceInvoker)>> CachedPropertyAccessors = new ConcurrentDictionary<Type, List<(string name, InstanceInvoker invoker)>>();
+        private static readonly ConcurrentDictionary<Type, List<(string name, InstanceInvoker invoker)>> CachedPropertyAccessors = 
+            new ConcurrentDictionary<Type, List<(string name, InstanceInvoker invoker)>>();
 
         /// <summary>
         /// Returns a byte array, typically a concatenation of all the public properties and the class name of the current instance of the query.
@@ -54,11 +55,10 @@ namespace Axis.Libra.Utils
                         .Where(prop => prop.CanRead)
                         .Select(prop => (name: prop.Name, invoker: InstanceInvoker.InvokerFor(prop.GetGetMethod())))
                         .ToList())
-                .Where(prop => !excludedNames.Contains(prop.Item1))
-                .Select(prop => (name: prop.Item1, value: prop.Item2.Func.Invoke(obj, Array.Empty<object>())))
+                .Where(prop => !excludedNames.Contains(prop.name))
+                .Select(prop => (prop.name, value: prop.invoker.Func.Invoke(obj, Array.Empty<object>())))
                 .OrderBy(prop => prop.name)
                 .SelectMany(prop => Convert(prop.name).Concat(Convert(prop.value)))
-                .SelectMany()
                 .ToArray();
         }
 
@@ -68,28 +68,31 @@ namespace Axis.Libra.Utils
             {
                 null => Array.Empty<byte>(),
 
-                #region Can be moved to the '_' case.
-                byte b => Encoding.Unicode.GetBytes(b.ToString()),
-                sbyte sb => Encoding.Unicode.GetBytes(sb.ToString()),
+                #region All values here not fall back to the '_' case.
+                // note that unicode bytes are prefered to obviate the issue of little/big endian architecture machines
+                // producing different values when converting to bytes
 
-                char c => Encoding.Unicode.GetBytes(c.ToString()),
-                bool b => Encoding.Unicode.GetBytes(b.ToString()),
+                //byte b => Encoding.Unicode.GetBytes(b.ToString()),
+                //sbyte sb => Encoding.Unicode.GetBytes(sb.ToString()),
 
-                short s => Encoding.Unicode.GetBytes(s.ToString()),
-                ushort us => Encoding.Unicode.GetBytes(us.ToString()),
+                //char c => Encoding.Unicode.GetBytes(c.ToString()),
+                //bool b => Encoding.Unicode.GetBytes(b.ToString()),
 
-                int i => Encoding.Unicode.GetBytes(i.ToString()),
-                uint ui => Encoding.Unicode.GetBytes(ui.ToString()),
+                //short s => Encoding.Unicode.GetBytes(s.ToString()),
+                //ushort us => Encoding.Unicode.GetBytes(us.ToString()),
 
-                long l => Encoding.Unicode.GetBytes(l.ToString()),
-                ulong ul => Encoding.Unicode.GetBytes(ul.ToString()),
+                //int i => Encoding.Unicode.GetBytes(i.ToString()),
+                //uint ui => Encoding.Unicode.GetBytes(ui.ToString()),
 
-                float f => Encoding.Unicode.GetBytes(f.ToString()),
-                double d => Encoding.Unicode.GetBytes(d.ToString()),
+                //long l => Encoding.Unicode.GetBytes(l.ToString()),
+                //ulong ul => Encoding.Unicode.GetBytes(ul.ToString()),
 
-                decimal d => Encoding.Unicode.GetBytes(d.ToString()),
+                //float f => Encoding.Unicode.GetBytes(f.ToString()),
+                //double d => Encoding.Unicode.GetBytes(d.ToString()),
 
-                string s => Encoding.Unicode.GetBytes(s),
+                //decimal d => Encoding.Unicode.GetBytes(d.ToString()),
+
+                //string s => Encoding.Unicode.GetBytes(s),
                 #endregion
 
                 Type t => Encoding.Unicode.GetBytes(t.FullName),

@@ -5,7 +5,7 @@ using System;
 
 namespace Axis.Libra.Query
 {
-    public abstract class AbstractQuery : IQuery, IBinarySerializable
+    public abstract class AbstractQuery<TResult> : IQuery<TResult>, IBinarySerializable
     {
         /// <summary>
         /// Appends the serialized class name to the bytes representing the serialized public property values.
@@ -21,7 +21,7 @@ namespace Axis.Libra.Query
         /// <returns>byte array representing the class name and property values serialized</returns>
         protected virtual byte[] Serialize() => PropertySerializer.Serialize(
             this,
-            nameof(IQuery.QueryURI));
+            nameof(IQuery<TResult>.InstructionURI));
 
         // <inheritdoc/>
         byte[] IBinarySerializable.Serialize() => Serialize();
@@ -29,8 +29,8 @@ namespace Axis.Libra.Query
         /// <summary>
         /// The query hash is made from concatenating the hash of the command type's full-name, with the result of hashing the outcome of serializing the instance.
         /// </summary>
-        public InstructionURI QueryURI => new InstructionURI(Scheme.Query, this.InstructionNamespace(), Serialize());
+        public InstructionURI InstructionURI => new InstructionURI(Scheme.Query, this.InstructionNamespace(), Serialize());
 
-        public override int GetHashCode() => HashCode.Combine(QueryURI);
+        public override int GetHashCode() => HashCode.Combine(InstructionURI);
     }
 }

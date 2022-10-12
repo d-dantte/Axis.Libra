@@ -1,9 +1,7 @@
 ﻿using Axis.Libra.Command;
-using Axis.Libra.Exceptions;
 using Axis.Libra.Tests.TestCQRs.Commands;
-using Axis.Luna.Operation;
+using Axis.Libra.URI;
 using Axis.Proteus.IoC;
-using Castle.DynamicProxy;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -11,114 +9,101 @@ using System.Threading.Tasks;
 
 namespace Axis.Libra.Tests.Unit.Command
 {
-    using Registration = ServiceRegistrar.RegistrationMap;
-
     [TestClass]
     public class CommandDispatcherTests
     {
+        private Mock<IResolverContract> mockResolver = new Mock<IResolverContract>();
+
         [TestMethod]
-        public async Task Dispatch_WithRegisteredCommand_ShouldCallHandler()
+        public async Task DispatchCommand_WithValidArgs_ShouldExecuteCommandHandler()
         {
-            // setup
-            var _mockHandler = new Mock<ICommandHandler<Command1>>();
-            _mockHandler
-                .Setup(h => h.ExecuteCommand(It.IsAny<Command1>()))
-                .Returns((Command1 arg1) => Operation.FromResult(arg1.CommandURI))
-                .Verifiable();
-
-            var _mockResolver = new Mock<ServiceResolver>(
-                new Mock<IResolverContract>().Object,
-                new Mock<IProxyGenerator>().Object,
-                Array.Empty<Registration>());
-            _mockResolver
-                .Setup(r => r.Resolve<ICommandHandler<Command1>>())
-                .Returns(_mockHandler.Object)
-                .Verifiable();
-
-            var dispatcher = new CommandDispatcher(_mockResolver.Object);
-
-            // test
-            var command = new Command1 { Name = "Adolf", Description = "Baddest ever" };
-            await dispatcher
-                .Dispatch(command)
-                .Then(signature =>
+            mockResolver
+                .Setup(r => r.Resolve(It.IsAny<Type>(), It.IsAny<ResolutionContextName>()))
+                .Returns(new Command1Handler());
+            var manifest = new CommandManifest(
+                mockResolver.Object,
+                new System.Collections.Generic.Dictionary<Type, Type>
                 {
-                    // assert
-                    _mockResolver.Verify();
-                    _mockHandler.Verify();
-                    Assert.AreEqual(command.CommandURI, signature);
+                    [typeof(Command1)] = typeof(Command1Handler)
                 });
+            var dispatcher = new CommandDispatcher(manifest);
+
+            var result = await dispatcher.Dispatch(new Command1());
+            Assert.IsNotNull(result);
+            Console.WriteLine(result);
         }
 
         [TestMethod]
-        public async Task Dispatch_WithNullCommand_ShouldThrowException()
+        public async Task DispatchCommand_WithInvalidArgs_ShouldThrowException()
         {
-            // setup
-            var _mockResolver = new Mock<ServiceResolver>(
-                new Mock<IResolverContract>().Object,
-                new Mock<IProxyGenerator>().Object,
-                Array.Empty<Registration>());
-            var dispatcher = new CommandDispatcher(_mockResolver.Object);
+            mockResolver
+                .Setup(r => r.Resolve(It.IsAny<Type>(), It.IsAny<ResolutionContextName>()))
+                .Returns(null);
+            var manifest = new CommandManifest(
+                mockResolver.Object,
+                new System.Collections.Generic.Dictionary<Type, Type>
+                {
+                    [typeof(Command1)] = typeof(Command1Handler)
+                });
+            var dispatcher = new CommandDispatcher(manifest);
 
-            // test
-            var op = dispatcher.Dispatch<Command1>(null);
-
-            // assert
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await op);
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => dispatcher.Dispatch<Command1>(null));
+            await Assert.ThrowsExceptionAsync<InvalidOperationException>(() => dispatcher.Dispatch(new Command1()));
         }
 
         [TestMethod]
-        public async Task Dispatch_WithUnregisteredCommand_ShouldThrowException()
+        public async Task DispatchStatusRequest_WithValidArgs_ShouldExecuteCommandHandler()
         {
-            // setup
-            var _mockHandler = new Mock<ICommandHandler<Command1>>();
-            var _mockResolver = new Mock<ServiceResolver>(
-                new Mock<IResolverContract>().Object,
-                new Mock<IProxyGenerator>().Object,
-                Array.Empty<Registration>());
+            mockResolver
+                .Setup(r => r.Resolve(It.IsAny<Type>(), It.IsAny<ResolutionContextName>()))
+                .Returns(new Command1Handler());
+            var manifest = new CommandManifest(
+                mockResolver.Object,
+                new System.Collections.Generic.Dictionary<Type, Type>
+                {
+                    [typeof(Command1)] = typeof(Command1Handler)
+                });
+            var dispatcher = new CommandDispatcher(manifest);
 
-            _mockResolver
-                .Setup(r => r.Resolve<ICommandHandler<Command1>>())
-                .Throws(new SimpleInjector.ActivationException())
-                .Verifiable();
-
-            var dispatcher = new CommandDispatcher(_mockResolver.Object);
-
-            // test
-            var command = new Command1 { Name = "Adolf", Description = "Baddest ever" };
-            var op = dispatcher.Dispatch(command);
-
-            // assert
-            await Assert.ThrowsExceptionAsync<SimpleInjector.ActivationException>(async () => await op);
-            _mockResolver.Verify();
-            _mockHandler.Verify();
+            var result = await dispatcher.DispatchStatusRequest(
+                new InstructionURI(
+                    Scheme.Command,
+                    typeof(Command1).InstructionNamespace(),
+                    1ul));
+            Assert.IsNotNull(result);
+            Console.WriteLine(result);
         }
 
         [TestMethod]
-        public async Task Dispatch_WhenResolverYieldsNull_ShouldThrowException()
+        public async Task DispatchStatusRequest_WithinvalidArgs_ShouldThrowException()
         {
-            // setup
-            var _mockHandler = new Mock<ICommandHandler<Command1>>();
-            var _mockResolver = new Mock<ServiceResolver>(
-                new Mock<IResolverContract>().Object,
-                new Mock<IProxyGenerator>().Object,
-                Array.Empty<Registration>());
+            mockResolver
+                .Setup(r => r.Resolve(It.IsAny<Type>(), It.IsAny<ResolutionContextName>()))
+                .Returns(null);
+            var manifest = new CommandManifest(
+                mockResolver.Object,
+                new System.Collections.Generic.Dictionary<Type, Type>
+                {
+                    [typeof(Command1)] = typeof(Command1Handler)
+                });
+            var dispatcher = new CommandDispatcher(manifest);
 
-            _mockResolver
-                .Setup(r => r.Resolve<ICommandHandler<Command1>>())
-                .Returns<Command1>(null)
-                .Verifiable();
-
-            var dispatcher = new CommandDispatcher(_mockResolver.Object);
-
-            // test
-            var command = new Command1 { Name = "Adolf", Description = "Baddest ever" };
-            var op = dispatcher.Dispatch(command);
-
-            // assert
-            await Assert.ThrowsExceptionAsync<UnknownResolverException>(async () => await op);
-            _mockResolver.Verify();
-            _mockHandler.Verify();
+            await Assert.ThrowsExceptionAsync<ArgumentException>(() => dispatcher.DispatchStatusRequest(default));
+            await Assert.ThrowsExceptionAsync<ArgumentException>(() => dispatcher.DispatchStatusRequest(
+                new InstructionURI(
+                    Scheme.Request,
+                    typeof(Command1).InstructionNamespace(),
+                    1ul)));
+            await Assert.ThrowsExceptionAsync<ArgumentException>(() => dispatcher.DispatchStatusRequest(
+                new InstructionURI(
+                    Scheme.Query,
+                    typeof(Command1).InstructionNamespace(),
+                    1ul)));
+            await Assert.ThrowsExceptionAsync<InvalidOperationException>(() => dispatcher.DispatchStatusRequest(
+                new InstructionURI(
+                    Scheme.Command,
+                    typeof(Command1).InstructionNamespace(),
+                    1ul)));
         }
     }
 }

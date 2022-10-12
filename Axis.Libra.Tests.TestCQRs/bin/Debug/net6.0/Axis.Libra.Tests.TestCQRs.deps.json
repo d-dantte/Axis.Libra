@@ -9,15 +9,15 @@
       "Axis.Libra.Tests.TestCQRs/1.0.0": {
         "dependencies": {
           "Axis.Libra": "1.0.0",
-          "Axis.Luna.Operation": "6.0.1"
+          "Axis.Luna.Operation": "6.0.2"
         },
         "runtime": {
           "Axis.Libra.Tests.TestCQRs.dll": {}
         }
       },
-      "Axis.Luna.Common/6.0.0": {
+      "Axis.Luna.Common/6.0.2": {
         "dependencies": {
-          "Axis.Luna.Extensions": "6.0.1"
+          "Axis.Luna.Extensions": "6.0.2"
         },
         "runtime": {
           "lib/net6.0/Axis.Luna.Common.dll": {
@@ -26,7 +26,7 @@
           }
         }
       },
-      "Axis.Luna.Extensions/6.0.1": {
+      "Axis.Luna.Extensions/6.0.2": {
         "runtime": {
           "lib/net6.0/Axis.Luna.Extensions.dll": {
             "assemblyVersion": "6.0.0.0",
@@ -34,7 +34,7 @@
           }
         }
       },
-      "Axis.Luna.FInvoke/6.0.0": {
+      "Axis.Luna.FInvoke/6.0.2": {
         "dependencies": {
           "Sigil": "5.0.0"
         },
@@ -45,10 +45,10 @@
           }
         }
       },
-      "Axis.Luna.Operation/6.0.1": {
+      "Axis.Luna.Operation/6.0.2": {
         "dependencies": {
-          "Axis.Luna.Common": "6.0.0",
-          "Axis.Luna.Extensions": "6.0.1"
+          "Axis.Luna.Common": "6.0.2",
+          "Axis.Luna.Extensions": "6.0.2"
         },
         "runtime": {
           "lib/net6.0/Axis.Luna.Operation.dll": {
@@ -57,15 +57,16 @@
           }
         }
       },
-      "Axis.Proteus/6.2.1": {
+      "Axis.Proteus/7.1.0": {
         "dependencies": {
-          "Axis.Luna.Extensions": "6.0.1",
+          "Axis.Luna.Extensions": "6.0.2",
+          "Axis.Luna.FInvoke": "6.0.2",
           "Castle.Core": "5.1.0"
         },
         "runtime": {
           "lib/net6.0/Axis.Proteus.dll": {
-            "assemblyVersion": "6.1.1.0",
-            "fileVersion": "6.0.0.0"
+            "assemblyVersion": "7.1.0.0",
+            "fileVersion": "7.0.0.0"
           }
         }
       },
@@ -133,9 +134,9 @@
       },
       "Axis.Libra/1.0.0": {
         "dependencies": {
-          "Axis.Luna.FInvoke": "6.0.0",
-          "Axis.Luna.Operation": "6.0.1",
-          "Axis.Proteus": "6.2.1",
+          "Axis.Luna.FInvoke": "6.0.2",
+          "Axis.Luna.Operation": "6.0.2",
+          "Axis.Proteus": "7.1.0",
           "HashDepot": "2.0.3"
         },
         "runtime": {
@@ -150,40 +151,40 @@
       "serviceable": false,
       "sha512": ""
     },
-    "Axis.Luna.Common/6.0.0": {
+    "Axis.Luna.Common/6.0.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-/nneffT/Rg/OgTvhN2Ne6xFiYE6JXO9bsvBzrfrbiXDbJqAE0bo4n/bVDkMuvddsB4AGc5QkbJqdDAISfywjnQ==",
-      "path": "axis.luna.common/6.0.0",
-      "hashPath": "axis.luna.common.6.0.0.nupkg.sha512"
+      "sha512": "sha512-uBGPCtfVgoXybXZopUNaK1+ls5jdv3Lou8iKX2GgIabnncz15Zses0/XuPhfu3ZJI5o3+sBE1l8pBUJNMgs7hA==",
+      "path": "axis.luna.common/6.0.2",
+      "hashPath": "axis.luna.common.6.0.2.nupkg.sha512"
     },
-    "Axis.Luna.Extensions/6.0.1": {
+    "Axis.Luna.Extensions/6.0.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-u5DWGvLdsSvNF2iBhpWCx2GXZMf2kiWCM6bcmqJaCXuOT8u/hKxtWG6UwvgyADj65BGkJ3X4QiJK11s+1sUHlQ==",
-      "path": "axis.luna.extensions/6.0.1",
-      "hashPath": "axis.luna.extensions.6.0.1.nupkg.sha512"
+      "sha512": "sha512-vknTSaG9/C77/jo6P9y7VnR8VTRR5EjXKoMw3fsHh4eYQrFhTRT3p2LsjiVlcK4u88+XsixwYe/uklzfCnRUnA==",
+      "path": "axis.luna.extensions/6.0.2",
+      "hashPath": "axis.luna.extensions.6.0.2.nupkg.sha512"
     },
-    "Axis.Luna.FInvoke/6.0.0": {
+    "Axis.Luna.FInvoke/6.0.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-g9LioahjKo4hUjIbGMC5C7iuqBxRkdR/Hp20PjRLKeIjQMVvQM6mJeEXs+RSpfiHwhW+W24HCqewHWYKwjONeA==",
-      "path": "axis.luna.finvoke/6.0.0",
-      "hashPath": "axis.luna.finvoke.6.0.0.nupkg.sha512"
+      "sha512": "sha512-EL2QboPtGBm18VVzLdn6dBnd/zkDgAtKPYtiKu15xHtIs+aul8lHhtcq9xr3rgUIMvKXIwpfBsD40Txjl1EH0A==",
+      "path": "axis.luna.finvoke/6.0.2",
+      "hashPath": "axis.luna.finvoke.6.0.2.nupkg.sha512"
     },
-    "Axis.Luna.Operation/6.0.1": {
+    "Axis.Luna.Operation/6.0.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-3G0zg+lx/mwRhY1hsndPcRnyDGggmVGrWbMJSX+qNlEIrp+hc76p13CeRCv/zQa6YPrAmVWh1ca+j44NTGrLyw==",
-      "path": "axis.luna.operation/6.0.1",
-      "hashPath": "axis.luna.operation.6.0.1.nupkg.sha512"
+      "sha512": "sha512-cVToYM6dEABSBuBk74+q/ODNvHBB95zACgg2ZE1KaHbbfXV3BlAQmoR+mx6m7F1d0KIDmJNjtt5Z6CNHIIQFEQ==",
+      "path": "axis.luna.operation/6.0.2",
+      "hashPath": "axis.luna.operation.6.0.2.nupkg.sha512"
     },
-    "Axis.Proteus/6.2.1": {
+    "Axis.Proteus/7.1.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-o8q0x6drTQfajEqIKvlSdjmJhgp2fKx7zB6SaPmtEkic6ZuiCuP7p1UIOF4ks9e2j1uc4XVJ0Yb6YwYmRTTDDg==",
-      "path": "axis.proteus/6.2.1",
-      "hashPath": "axis.proteus.6.2.1.nupkg.sha512"
+      "sha512": "sha512-rnpKGoN3hmPRJqTI0X+x3RYzwl7l/ADYLjsWf6QN9nB8M2TBzym56PpewPn/IBvQiuIpqRIC948SFFmC0WG4mw==",
+      "path": "axis.proteus/7.1.0",
+      "hashPath": "axis.proteus.7.1.0.nupkg.sha512"
     },
     "Castle.Core/5.1.0": {
       "type": "package",

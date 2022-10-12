@@ -1,13 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "kLDRotlLkhzUbAhP/PLF7c2bM1oqp3Nsu99faZUNR4yrhWE3OLTHhRIudcUvoxzKDIABhVoC3MpHTzCu1zucbQ==",
+  "dgSpecHash": "iRSyo+y0iKyVI+N4lF2ODMWtDcc0ZwFVvDhELkx+pQnPVl4OZdBCgxxnAA/lP8dsNrlIQvs0YoExE6GSix4zQQ==",
   "success": true,
   "projectFilePath": "C:\\Dantte\\Dev\\Repos\\Axis.Libra\\Axis.Libra\\Axis.Libra.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\stanl\\.nuget\\packages\\axis.luna.common\\6.0.0\\axis.luna.common.6.0.0.nupkg.sha512",
-    "C:\\Users\\stanl\\.nuget\\packages\\axis.luna.extensions\\6.0.1\\axis.luna.extensions.6.0.1.nupkg.sha512",
-    "C:\\Users\\stanl\\.nuget\\packages\\axis.luna.finvoke\\6.0.0\\axis.luna.finvoke.6.0.0.nupkg.sha512",
-    "C:\\Users\\stanl\\.nuget\\packages\\axis.luna.operation\\6.0.1\\axis.luna.operation.6.0.1.nupkg.sha512",
+    "C:\\Users\\stanl\\.nuget\\packages\\axis.luna.common\\6.0.2\\axis.luna.common.6.0.2.nupkg.sha512",
+    "C:\\Users\\stanl\\.nuget\\packages\\axis.luna.extensions\\6.0.2\\axis.luna.extensions.6.0.2.nupkg.sha512",
+    "C:\\Users\\stanl\\.nuget\\packages\\axis.luna.finvoke\\6.0.2\\axis.luna.finvoke.6.0.2.nupkg.sha512",
+    "C:\\Users\\stanl\\.nuget\\packages\\axis.luna.operation\\6.0.2\\axis.luna.operation.6.0.2.nupkg.sha512",
     "C:\\Users\\stanl\\.nuget\\packages\\axis.proteus\\7.1.0\\axis.proteus.7.1.0.nupkg.sha512",
     "C:\\Users\\stanl\\.nuget\\packages\\castle.core\\5.1.0\\castle.core.5.1.0.nupkg.sha512",
     "C:\\Users\\stanl\\.nuget\\packages\\hashdepot\\2.0.3\\hashdepot.2.0.3.nupkg.sha512",

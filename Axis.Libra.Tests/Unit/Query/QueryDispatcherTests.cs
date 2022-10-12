@@ -1,8 +1,6 @@
-﻿using Axis.Libra.Exceptions;
-using Axis.Libra.Query;
-using Axis.Luna.Operation;
+﻿using Axis.Libra.Query;
+using Axis.Libra.Tests.TestCQRs.Queries;
 using Axis.Proteus.IoC;
-using Castle.DynamicProxy;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -10,113 +8,47 @@ using System.Threading.Tasks;
 
 namespace Axis.Libra.Tests.Unit.Query
 {
-    using Registration = ServiceRegistrar.RegistrationMap;
 
     [TestClass]
     public class QueryDispatcherTests
     {
+        private Mock<IResolverContract> mockResolver = new Mock<IResolverContract>();
+
         [TestMethod]
-        public async Task Dispatch_WithRegisteredQuery_ShouldCallHandler()
+        public async Task DispatchQuery_WithValidArgs_ShouldExecuteQueryHandler()
         {
-            //// setup
-            //var _mockHandler = new Mock<IQueryHandler<SomeQuery, SomeQueryResult>>();
-            //_mockHandler
-            //    .Setup(h => h.ExecuteQuery(It.IsAny<SomeQuery>()))
-            //    .Returns((SomeQuery arg1) => Operation.FromResult(new SomeQueryResult { QueryURI = arg1.QueryURI }))
-            //    .Verifiable();
+            mockResolver
+                .Setup(r => r.Resolve(It.IsAny<Type>(), It.IsAny<ResolutionContextName>()))
+                .Returns(new Query1Handler());
+            var manifest = new QueryManifest(
+                mockResolver.Object,
+                new System.Collections.Generic.Dictionary<Type, Type>
+                {
+                    [typeof(Query1)] = typeof(Query1Handler)
+                });
+            var dispatcher = new QueryDispatcher(manifest);
 
-            //var _mockResolver = new Mock<ServiceResolver>(
-            //    new Mock<IResolverContract>().Object,
-            //    new Mock<IProxyGenerator>().Object,
-            //    Array.Empty<Registration>());
-
-            //_mockResolver
-            //    .Setup(r => r.Resolve<IQueryHandler<SomeQuery, SomeQueryResult>>())
-            //    .Returns(_mockHandler.Object)
-            //    .Verifiable();
-
-            //var dispatcher = new QueryDispatcher(_mockResolver.Object);
-
-            //// test
-            //var query = new SomeQuery { Arg1 = "1", Arg2 = "2" };
-            //var op = dispatcher.Dispatch<SomeQuery, SomeQueryResult>(query);
-            //var queryResult = await op;
-
-            //// assert
-            //_mockResolver.Verify();
-            //_mockHandler.Verify();
-            //Assert.AreEqual(query.QueryURI, queryResult.QueryURI);
+            var result = await dispatcher.Dispatch<Query1, Query1Result>(new Query1());
+            Assert.IsNotNull(result);
+            Console.WriteLine(result);
         }
 
         [TestMethod]
-        public async Task Dispatch_WithNullQuery_ShouldThrowException()
+        public async Task DispatchQuery_WithInvalidArgs_ShouldThrowException()
         {
-            //// setup
-            //var _mockResolver = new Mock<ServiceResolver>(
-            //    new Mock<IResolverContract>().Object,
-            //    new Mock<IProxyGenerator>().Object,
-            //    Array.Empty<Registration>());
-            //var dispatcher = new QueryDispatcher(_mockResolver.Object);
+            mockResolver
+                .Setup(r => r.Resolve(It.IsAny<Type>(), It.IsAny<ResolutionContextName>()))
+                .Returns(null);
+            var manifest = new QueryManifest(
+                mockResolver.Object,
+                new System.Collections.Generic.Dictionary<Type, Type>
+                {
+                    [typeof(Query1)] = typeof(Query1Handler)
+                });
+            var dispatcher = new QueryDispatcher(manifest);
 
-            //// test
-            //var op = dispatcher.Dispatch<SomeQuery, SomeQueryResult>(null);
-
-            //// assert
-            //await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await op);
-        }
-
-        [TestMethod]
-        public async Task Dispatch_WithUnregisteredQuery_ShouldThrowException()
-        {
-            //// setup
-            //var _mockHandler = new Mock<IQueryHandler<SomeQuery, SomeQueryResult>>();
-            //var _mockResolver = new Mock<ServiceResolver>(
-            //    new Mock<IResolverContract>().Object,
-            //    new Mock<IProxyGenerator>().Object,
-            //    Array.Empty<Registration>());
-
-            //_mockResolver
-            //    .Setup(r => r.Resolve<IQueryHandler<SomeQuery, SomeQueryResult>>())
-            //    .Throws(new SimpleInjector.ActivationException())
-            //    .Verifiable();
-
-            //var dispatcher = new QueryDispatcher(_mockResolver.Object);
-
-            //// test
-            //var query = new SomeQuery { Arg1 = "1", Arg2 = "2" };
-            //var op = dispatcher.Dispatch<SomeQuery, SomeQueryResult>(query);
-
-            //// assert
-            //await Assert.ThrowsExceptionAsync<SimpleInjector.ActivationException>(async () => await op);
-            //_mockResolver.Verify();
-            //_mockHandler.Verify();
-        }
-
-        [TestMethod]
-        public async Task Dispatch_WhenResolverYieldsNull_ShouldThrowException()
-        {
-            //// setup
-            //var _mockHandler = new Mock<IQueryHandler<SomeQuery, SomeQueryResult>>();
-            //var _mockResolver = new Mock<ServiceResolver>(
-            //    new Mock<IResolverContract>().Object,
-            //    new Mock<IProxyGenerator>().Object,
-            //    Array.Empty<Registration>());
-
-            //_mockResolver
-            //    .Setup(r => r.Resolve<IQueryHandler<SomeQuery, SomeQueryResult>>())
-            //    .Returns<SomeQuery>(null)
-            //    .Verifiable();
-
-            //var dispatcher = new QueryDispatcher(_mockResolver.Object);
-
-            //// test
-            //var query = new SomeQuery { Arg1 = "1", Arg2 = "2" };
-            //var op = dispatcher.Dispatch<SomeQuery, SomeQueryResult>(query);
-
-            //// assert
-            //await Assert.ThrowsExceptionAsync<UnknownResolverException>(async () => await op);
-            //_mockResolver.Verify();
-            //_mockHandler.Verify();
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => dispatcher.Dispatch<Query1, Query1Result>(null));
+            await Assert.ThrowsExceptionAsync<InvalidOperationException>(() => dispatcher.Dispatch<Query1, Query1Result>(new Query1()));
         }
     }
 }

@@ -50,7 +50,7 @@
           "dependencies": {
             "Axis.Luna.Operation": {
               "target": "Package",
-              "version": "[6.0.1, )"
+              "version": "[6.0.2, )"
             }
           },
           "imports": [
@@ -68,7 +68,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.304\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.305\\RuntimeIdentifierGraph.json"
         }
       }
     },
@@ -119,13 +119,17 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "Axis.Luna.Extensions": {
+              "target": "Package",
+              "version": "[6.0.2, )"
+            },
             "Axis.Luna.FInvoke": {
               "target": "Package",
-              "version": "[6.0.0, )"
+              "version": "[6.0.2, )"
             },
             "Axis.Luna.Operation": {
               "target": "Package",
-              "version": "[6.0.1, )"
+              "version": "[6.0.2, )"
             },
             "Axis.Proteus": {
               "target": "Package",
@@ -177,12 +181,12 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.304\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.305\\RuntimeIdentifierGraph.json"
         }
       }
     },
     "C:\\Dantte\\Dev\\Repos\\Axis.Libra\\Axis.Libra\\Axis.Libra.csproj": {
-      "version": "1.0.0",
+      "version": "0.2.0",
       "restore": {
         "projectUniqueName": "C:\\Dantte\\Dev\\Repos\\Axis.Libra\\Axis.Libra\\Axis.Libra.csproj",
         "projectName": "Axis.Libra",
@@ -234,11 +238,11 @@
           "dependencies": {
             "Axis.Luna.FInvoke": {
               "target": "Package",
-              "version": "[6.0.0, )"
+              "version": "[6.0.2, )"
             },
             "Axis.Luna.Operation": {
               "target": "Package",
-              "version": "[6.0.1, )"
+              "version": "[6.0.2, )"
             },
             "Axis.Proteus": {
               "target": "Package",
@@ -264,18 +268,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.304\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.305\\RuntimeIdentifierGraph.json"
         },
         "net5.0": {
           "targetAlias": "net5.0",
           "dependencies": {
             "Axis.Luna.FInvoke": {
               "target": "Package",
-              "version": "[6.0.0, )"
+              "version": "[6.0.2, )"
             },
             "Axis.Luna.Operation": {
               "target": "Package",
-              "version": "[6.0.1, )"
+              "version": "[6.0.2, )"
             },
             "Axis.Proteus": {
               "target": "Package",
@@ -301,18 +305,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.304\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.305\\RuntimeIdentifierGraph.json"
         },
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
             "Axis.Luna.FInvoke": {
               "target": "Package",
-              "version": "[6.0.0, )"
+              "version": "[6.0.2, )"
             },
             "Axis.Luna.Operation": {
               "target": "Package",
-              "version": "[6.0.1, )"
+              "version": "[6.0.2, )"
             },
             "Axis.Proteus": {
               "target": "Package",
@@ -338,7 +342,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.304\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.305\\RuntimeIdentifierGraph.json"
         }
       }
     }

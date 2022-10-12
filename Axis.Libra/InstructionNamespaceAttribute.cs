@@ -13,13 +13,11 @@ namespace Axis.Libra
         /// <summary>
         /// The instruction namespace
         /// </summary>
-        public string Namespace { get; }
+        public InstructionNamespace Namespace { get; }
 
         public InstructionNamespaceAttribute(string @namespace)
         {
-            Namespace = @namespace.ThrowIf(
-                InstructionURI.InstructionNamespacePattern.IsNotMatch,
-                new ArgumentException($"Invalid namespace format: {@namespace}"));
+            Namespace = @namespace;
         }
     }
 }

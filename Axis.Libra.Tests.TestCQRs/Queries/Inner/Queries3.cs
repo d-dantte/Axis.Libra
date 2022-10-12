@@ -1,11 +1,11 @@
 ﻿using Axis.Libra.Query;
 using Axis.Libra.URI;
-using Axis.Luna.Operation;
+using Axis.Luna.Common;
 
 namespace Axis.Libra.Tests.TestCQRs.Queries.Inner
 {
     [InstructionNamespace("axis:libra:test-crs:query3")]
-    public class Query3 : AbstractQuery
+    public class Query3 : AbstractQuery<Query3Result>
     {
         public Guid Id { get; set; }
     }
@@ -14,23 +14,27 @@ namespace Axis.Libra.Tests.TestCQRs.Queries.Inner
         IQueryHandler<Query3, Query3Result>,
         IQueryHandler<Query2, Query2Result>
     {
-        public IOperation<Query3Result> ExecuteQuery(Query3 query)
-            => Operation.Try(() =>
+        public async Task<IResult<Query3Result>> ExecuteQuery(Query3 query)
+        {
+            Console.WriteLine($"{typeof(Query1)} handler executed.");
+            return IResult<Query3Result>.Of(new Query3Result
             {
-                Console.WriteLine($"{typeof(Query3)} handler executed.");
-                return new Query3Result { QueryURI = query.QueryURI };
+                Meh = "bleh"
             });
+        }
 
-        public IOperation<Query2Result> ExecuteQuery(Query2 query)
-            => Operation.Try(() =>
+        public async Task<IResult<Query2Result>> ExecuteQuery(Query2 query)
+        {
+            Console.WriteLine($"{typeof(Query1)} handler executed.");
+            return IResult<Query2Result>.Of(new Query2Result
             {
-                Console.WriteLine($"{typeof(Query2)} handler executed.");
-                return new Query2Result { QueryURI = query.QueryURI };
+                TimeStamp = DateTimeOffset.Now
             });
+        }
     }
 
-    public class Query3Result : IQueryResult
+    public class Query3Result
     {
-        public InstructionURI QueryURI { get; set; }
+        public string? Meh { get; set; }
     }
 }

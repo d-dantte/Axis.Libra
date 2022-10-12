@@ -1,29 +1,31 @@
 ﻿using Axis.Libra.Query;
 using Axis.Libra.URI;
-using Axis.Luna.Operation;
+using Axis.Luna.Common;
 
 namespace Axis.Libra.Tests.TestCQRs.Queries
 {
     [InstructionNamespace("axis:libra:test-crs:query1")]
-    public class Query1: AbstractQuery
+    public class Query1: AbstractQuery<Query1Result>
     {
         public int Age { get; set; }
 
         public DateTimeOffset ExpiryDate { get; set; }
     }
 
-    public class Query1Result : IQueryResult
+    public class Query1Result
     {
-        public InstructionURI QueryURI { get; set; }
+        public int Stuff { get; set; }
     }
 
     public class Query1Handler : IQueryHandler<Query1, Query1Result>
     {
-        public IOperation<Query1Result> ExecuteQuery(Query1 query)
-            => Operation.Try(() =>
+        public async Task<IResult<Query1Result>> ExecuteQuery(Query1 query)
+        {
+            Console.WriteLine($"{typeof(Query1)} handler executed.");
+            return IResult<Query1Result>.Of(new Query1Result
             {
-                Console.WriteLine($"{typeof(Query1)} handler executed.");
-                return new Query1Result { QueryURI = query.QueryURI };
+                Stuff = 34
             });
+        }
     }
 }

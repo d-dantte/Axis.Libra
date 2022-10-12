@@ -1,30 +1,40 @@
 ﻿using Axis.Libra.Request;
-using Axis.Luna.Operation;
+using Axis.Libra.URI;
+using Axis.Luna.Common;
 
 namespace Axis.Libra.Tests.TestCQRs.Requests.Inner
 {
-    [InstructionNamespace("axis:libra:test-crs:query3")]
-    public class Request3 : AbstractRequest
+    [InstructionNamespace("axis:libra:test-crs:request3")]
+    public class Request3 : AbstractRequest<Request3Result>
     {
         public Guid Id { get; set; }
     }
 
     public class Request3Handler :
-        IRequestHandler<Request3>,
-        IRequestHandler<Request2>
+        IRequestHandler<Request3, Request3Result>,
+        IRequestHandler<Request2, Request2Result>
     {
-        public IOperation<IResult> ExecuteRequest(Request3 query)
-            => Operation.Try(() =>
+        public async Task<IResult<Request3Result>> ExecuteRequest(Request3 request)
+        {
+            Console.WriteLine($"{typeof(Request1)} handler executed.");
+            return IResult<Request3Result>.Of(new Request3Result
             {
-                Console.WriteLine($"{typeof(Request3)} handler executed.");
-                return IResult.OfSuccess();
+                Meh = "bleh"
             });
+        }
 
-        public IOperation<IResult> ExecuteRequest(Request2 query)
-            => Operation.Try(() =>
+        public async Task<IResult<Request2Result>> ExecuteRequest(Request2 request)
+        {
+            Console.WriteLine($"{typeof(Request1)} handler executed.");
+            return IResult<Request2Result>.Of(new Request2Result
             {
-                Console.WriteLine($"{typeof(Request2)} handler executed.");
-                return IResult.Of(Guid.NewGuid());
+                TimeStamp = DateTimeOffset.Now
             });
+        }
+    }
+
+    public class Request3Result
+    {
+        public string? Meh { get; set; }
     }
 }

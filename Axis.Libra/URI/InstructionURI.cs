@@ -1,4 +1,5 @@
-﻿using HashDepot;
+﻿using Axis.Luna.Extensions;
+using HashDepot;
 using System;
 using System.Text.RegularExpressions;
 
@@ -10,24 +11,19 @@ namespace Axis.Libra.URI
     public struct InstructionURI
     {
         /// <summary>
-        /// <see cref="Regex"/> that describes the pattern for instruction namespaces
-        /// </summary>
-        public static readonly Regex InstructionNamespacePattern = new Regex("^[a-zA-Z_\\-][\\w-]*(:[a-zA-Z_\\-][\\w-]*)*$");
-
-        /// <summary>
         /// <see cref="Regex"/> that describes the pattern for instruction ids
         /// </summary>
         public static readonly Regex InstructionIdPattern = new Regex("^[a-fA-F0-9]{2,4}\\-[a-fA-F0-9]{2,4}\\-[a-fA-F0-9]{4,8}$");
 
         /// <summary>
-        /// The scheme for the uri
+        /// The scheme for the uri. This value is <c>null</c> for the default <see cref="InstructionURI"/>
         /// </summary>
-        public string Scheme { get; }
+        public Scheme? Scheme { get; }
 
         /// <summary>
         /// The namespace for the uri
         /// </summary>
-        public string Namespace { get; }
+        public InstructionNamespace Namespace { get; }
 
         /// <summary>
         /// The instruction ID for the uri
@@ -37,41 +33,39 @@ namespace Axis.Libra.URI
 
         public InstructionURI(
             Scheme scheme,
-            string @namespace,
+            InstructionNamespace @namespace,
             byte[] instructionData)
-            :this(scheme, @namespace, XXHash.Hash64(instructionData))
+            :this(
+                 scheme,
+                 @namespace,
+                 XXHash.Hash64(instructionData ?? throw new ArgumentNullException(nameof(instructionData))))
         {
         }
 
         public InstructionURI(
             Scheme scheme,
-            string @namespace,
+            InstructionNamespace @namespace,
             ulong instructionHash)
             :this(scheme, @namespace, instructionHash.ToSignatureHashString())
         {
         }
 
-        public InstructionURI(Scheme scheme, string @namespace, string instructionId)
+        public InstructionURI(
+            Scheme scheme,
+            InstructionNamespace @namespace,
+            string instructionId)
         {
-            Scheme = scheme switch
-            {
-                URI.Scheme.Command => "cmd",
-                URI.Scheme.Request => "req",
-                URI.Scheme.Query => "qry",
-                _ => throw new ArgumentException($"Invalid scheme: {scheme}")
-            };
+            Scheme = scheme;
 
             Id = instructionId.VerifySignatureHashString();
 
-            Namespace = InstructionNamespacePattern.IsMatch(@namespace)
-                ? @namespace
-                : throw new ArgumentException($"Invalid namespace: {@namespace}. Namespace must match the pattern: /{InstructionNamespacePattern}/");
+            Namespace = @namespace.ThrowIfDefault(new ArgumentException($"Invalid {nameof(@namespace)} supplied"));
         }
 
         public override string ToString()
         {
-            return Scheme != null
-                ? $"{Scheme}:{Namespace}/{Id}"
+            return Scheme != null // default(InstructionURI).Scheme is null
+                ? $"{Scheme.Value.ToSchemeCode()}:{Namespace}/{Id}"
                 : "*";
         }
 
@@ -80,8 +74,8 @@ namespace Axis.Libra.URI
         public override bool Equals(object obj)
         {
             return obj is InstructionURI other
-                && other.Scheme.IsNullOrEqual(Scheme)
-                && other.Namespace.IsNullOrEqual(Namespace)
+                && other.Scheme == Scheme
+                && other.Namespace.Equals(Namespace)
                 && other.Id.IsNullOrEqual(Id);
         }
 
