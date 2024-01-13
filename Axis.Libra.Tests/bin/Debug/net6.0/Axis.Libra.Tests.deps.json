@@ -8,7 +8,7 @@
     ".NETCoreApp,Version=v6.0": {
       "Axis.Libra.Tests/1.0.0": {
         "dependencies": {
-          "Axis.Libra": "1.0.0",
+          "Axis.Libra": "0.2.0",
           "Axis.Libra.Tests.TestCQRs": "1.0.0",
           "Axis.Luna.Extensions": "6.0.2",
           "Axis.Luna.FInvoke": "6.0.2",
@@ -1281,7 +1281,7 @@
           "System.Xml.ReaderWriter": "4.3.0"
         }
       },
-      "Axis.Libra/1.0.0": {
+      "Axis.Libra/0.2.0": {
         "dependencies": {
           "Axis.Luna.FInvoke": "6.0.2",
           "Axis.Luna.Operation": "6.0.2",
@@ -1294,7 +1294,7 @@
       },
       "Axis.Libra.Tests.TestCQRs/1.0.0": {
         "dependencies": {
-          "Axis.Libra": "1.0.0",
+          "Axis.Libra": "0.2.0",
           "Axis.Luna.Operation": "6.0.2"
         },
         "runtime": {
@@ -2073,7 +2073,7 @@
       "path": "system.xml.xmldocument/4.3.0",
       "hashPath": "system.xml.xmldocument.4.3.0.nupkg.sha512"
     },
-    "Axis.Libra/1.0.0": {
+    "Axis.Libra/0.2.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
