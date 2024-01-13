@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "sXWV47gXC9kbyz5rSwv3TTwM6T1zLMNzLItm/UAkyF120yEEP7HHEAv1yuZ3bej+zdbFnSgFMnrNAoXc+wcDhA==",
+  "dgSpecHash": "xNs7DK3XkYvZlnGC8soGMcoeDnIvD35ytzOSAVb0x5+SO4JpkyscliO3lKHcng9kubAlBOySINFT+vqYaqrJ1Q==",
   "success": true,
   "projectFilePath": "C:\\Dantte\\Dev\\Repos\\Axis.Libra\\Axis.Libra\\Axis.Libra.csproj",
   "expectedPackageFiles": [
@@ -21,7 +21,10 @@
     "C:\\Users\\stanl\\.nuget\\packages\\system.memory\\4.5.3\\system.memory.4.5.3.nupkg.sha512",
     "C:\\Users\\stanl\\.nuget\\packages\\system.runtime\\4.3.1\\system.runtime.4.3.1.nupkg.sha512",
     "C:\\Users\\stanl\\.nuget\\packages\\system.security.accesscontrol\\4.7.0\\system.security.accesscontrol.4.7.0.nupkg.sha512",
-    "C:\\Users\\stanl\\.nuget\\packages\\system.security.principal.windows\\4.7.0\\system.security.principal.windows.4.7.0.nupkg.sha512"
+    "C:\\Users\\stanl\\.nuget\\packages\\system.security.principal.windows\\4.7.0\\system.security.principal.windows.4.7.0.nupkg.sha512",
+    "C:\\Users\\stanl\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.16\\microsoft.windowsdesktop.app.ref.6.0.16.nupkg.sha512",
+    "C:\\Users\\stanl\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.16\\microsoft.netcore.app.ref.6.0.16.nupkg.sha512",
+    "C:\\Users\\stanl\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.16\\microsoft.aspnetcore.app.ref.6.0.16.nupkg.sha512"
   ],
   "logs": []
 }

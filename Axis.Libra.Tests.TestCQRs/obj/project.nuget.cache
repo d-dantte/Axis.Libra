@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "kv1O9c+s8xSJCqPtl+OA+zfxdGy/WZ1iXB2TlDndC5gi/MAV9jHaY+UQ1HBPGhnqzJT/P9ZMN43jwbEUm9viow==",
+  "dgSpecHash": "FA1VNKVmSKepkg3zKdM+0l4HH2cjCwyjKJ1k8KaQ1b8sSatWmo7p95jFpVB9uEB2VAOtXbZhCn2Gm+X+0uo+vg==",
   "success": true,
   "projectFilePath": "C:\\Dantte\\Dev\\Repos\\Axis.Libra\\Axis.Libra.Tests.TestCQRs\\Axis.Libra.Tests.TestCQRs.csproj",
   "expectedPackageFiles": [
@@ -16,7 +16,10 @@
     "C:\\Users\\stanl\\.nuget\\packages\\sigil\\5.0.0\\sigil.5.0.0.nupkg.sha512",
     "C:\\Users\\stanl\\.nuget\\packages\\system.diagnostics.eventlog\\6.0.0\\system.diagnostics.eventlog.6.0.0.nupkg.sha512",
     "C:\\Users\\stanl\\.nuget\\packages\\system.memory\\4.5.3\\system.memory.4.5.3.nupkg.sha512",
-    "C:\\Users\\stanl\\.nuget\\packages\\system.runtime\\4.3.1\\system.runtime.4.3.1.nupkg.sha512"
+    "C:\\Users\\stanl\\.nuget\\packages\\system.runtime\\4.3.1\\system.runtime.4.3.1.nupkg.sha512",
+    "C:\\Users\\stanl\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.16\\microsoft.windowsdesktop.app.ref.6.0.16.nupkg.sha512",
+    "C:\\Users\\stanl\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.16\\microsoft.netcore.app.ref.6.0.16.nupkg.sha512",
+    "C:\\Users\\stanl\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.16\\microsoft.aspnetcore.app.ref.6.0.16.nupkg.sha512"
   ],
   "logs": []
 }

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "4g750/swAd8lBI1pC2WRGreRwNVO25f9nJpoVidqHCM0fwgYQCOUdRCe4Kl2hrGCacVEOA+JTK8IoIn2gMEmaA==",
+  "dgSpecHash": "RczxYIJGCG7AoUe8YSi6W7ahvFHPYHybz//sfdMRtGI96qLR7QpphAvzl4NK0WI9jh6GPqVIYdpDVjxO2sXOxQ==",
   "success": true,
   "projectFilePath": "C:\\Dantte\\Dev\\Repos\\Axis.Libra\\Axis.Libra.Tests\\Axis.Libra.Tests.csproj",
   "expectedPackageFiles": [
@@ -111,7 +111,10 @@
     "C:\\Users\\stanl\\.nuget\\packages\\system.threading.timer\\4.3.0\\system.threading.timer.4.3.0.nupkg.sha512",
     "C:\\Users\\stanl\\.nuget\\packages\\system.xml.readerwriter\\4.3.0\\system.xml.readerwriter.4.3.0.nupkg.sha512",
     "C:\\Users\\stanl\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512",
-    "C:\\Users\\stanl\\.nuget\\packages\\system.xml.xmldocument\\4.3.0\\system.xml.xmldocument.4.3.0.nupkg.sha512"
+    "C:\\Users\\stanl\\.nuget\\packages\\system.xml.xmldocument\\4.3.0\\system.xml.xmldocument.4.3.0.nupkg.sha512",
+    "C:\\Users\\stanl\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.16\\microsoft.windowsdesktop.app.ref.6.0.16.nupkg.sha512",
+    "C:\\Users\\stanl\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.16\\microsoft.netcore.app.ref.6.0.16.nupkg.sha512",
+    "C:\\Users\\stanl\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.16\\microsoft.aspnetcore.app.ref.6.0.16.nupkg.sha512"
   ],
   "logs": []
 }
