@@ -1,0 +1,235 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v7.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v7.0": {
+      "Axis.Libra/1.0.0": {
+        "dependencies": {
+          "Axis.Luna.Extensions": "6.0.28",
+          "Axis.Luna.FInvoke": "6.0.28",
+          "Axis.Proteus": "8.0.1",
+          "HashDepot": "3.1.0",
+          "System.Collections.Immutable": "8.0.0"
+        },
+        "runtime": {
+          "Axis.Libra.dll": {}
+        }
+      },
+      "Axis.Luna.Common/6.0.30": {
+        "dependencies": {
+          "Axis.Luna.Extensions": "6.0.28"
+        },
+        "runtime": {
+          "lib/net7.0/Axis.Luna.Common.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.0.0"
+          }
+        }
+      },
+      "Axis.Luna.Extensions/6.0.28": {
+        "runtime": {
+          "lib/net7.0/Axis.Luna.Extensions.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.0.0"
+          }
+        }
+      },
+      "Axis.Luna.FInvoke/6.0.28": {
+        "dependencies": {
+          "Sigil": "5.0.0"
+        },
+        "runtime": {
+          "lib/net7.0/Axis.Luna.FInvoke.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.0.0"
+          }
+        }
+      },
+      "Axis.Proteus/8.0.1": {
+        "dependencies": {
+          "Axis.Luna.Common": "6.0.30",
+          "Axis.Luna.Extensions": "6.0.28",
+          "Axis.Luna.FInvoke": "6.0.28",
+          "Castle.Core": "5.1.1"
+        },
+        "runtime": {
+          "lib/net7.0/Axis.Proteus.dll": {
+            "assemblyVersion": "7.2.0.0",
+            "fileVersion": "7.2.0.0"
+          }
+        }
+      },
+      "Castle.Core/5.1.1": {
+        "dependencies": {
+          "System.Diagnostics.EventLog": "6.0.0"
+        },
+        "runtime": {
+          "lib/net6.0/Castle.Core.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.1.1.0"
+          }
+        }
+      },
+      "HashDepot/3.1.0": {
+        "dependencies": {
+          "System.Memory": "4.5.5",
+          "System.Runtime": "4.3.1"
+        },
+        "runtime": {
+          "lib/net6.0/HashDepot.dll": {
+            "assemblyVersion": "3.1.0.0",
+            "fileVersion": "3.1.0.0"
+          }
+        }
+      },
+      "Microsoft.NETCore.Platforms/1.1.1": {},
+      "Microsoft.NETCore.Targets/1.1.3": {},
+      "Sigil/5.0.0": {
+        "runtime": {
+          "lib/netstandard2.1/Sigil.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.0.0"
+          }
+        }
+      },
+      "System.Collections.Immutable/8.0.0": {
+        "runtime": {
+          "lib/net7.0/System.Collections.Immutable.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.23.53103"
+          }
+        }
+      },
+      "System.Diagnostics.EventLog/6.0.0": {
+        "runtime": {
+          "lib/net6.0/System.Diagnostics.EventLog.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.21.52210"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/net6.0/System.Diagnostics.EventLog.Messages.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win/lib/net6.0/System.Diagnostics.EventLog.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.21.52210"
+          }
+        }
+      },
+      "System.Memory/4.5.5": {},
+      "System.Runtime/4.3.1": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.1.1",
+          "Microsoft.NETCore.Targets": "1.1.3"
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Axis.Libra/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Axis.Luna.Common/6.0.30": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-HAVpnj+RcdIjQmNKihvdmVnnTvuR7latE0KVWzcjGUK1GTTaBXfr1IUK1fzA1cBX2kOzG7soWTyi1hGt69bcIg==",
+      "path": "axis.luna.common/6.0.30",
+      "hashPath": "axis.luna.common.6.0.30.nupkg.sha512"
+    },
+    "Axis.Luna.Extensions/6.0.28": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Ua/S3eI7HCS18UP+bZ6A9F/xwfzDyz13wz9i9GEog14ZzSShxwl0eJBlEUtQg249stTFtV7fMzpj2jS8E/2TlA==",
+      "path": "axis.luna.extensions/6.0.28",
+      "hashPath": "axis.luna.extensions.6.0.28.nupkg.sha512"
+    },
+    "Axis.Luna.FInvoke/6.0.28": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-DIBV8L0ZMZ+fmswTknbmdOO611IFhHVVWwWwOiyEi39MT9Qj3wF4gH4dPFBFKldnjRjmVU53lWs9xDedL30Rpg==",
+      "path": "axis.luna.finvoke/6.0.28",
+      "hashPath": "axis.luna.finvoke.6.0.28.nupkg.sha512"
+    },
+    "Axis.Proteus/8.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-uxbuicWblxOcrVnvfYWirsalYCD+wW2lgeGVYQPQEfTUvO0FLPNK6tPFKvhJmH4eO9LPb83HcN3ozirszBQ3rA==",
+      "path": "axis.proteus/8.0.1",
+      "hashPath": "axis.proteus.8.0.1.nupkg.sha512"
+    },
+    "Castle.Core/5.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rpYtIczkzGpf+EkZgDr9CClTdemhsrwA/W5hMoPjLkRFnXzH44zDLoovXeKtmxb1ykXK9aJVODSpiJml8CTw2g==",
+      "path": "castle.core/5.1.1",
+      "hashPath": "castle.core.5.1.1.nupkg.sha512"
+    },
+    "HashDepot/3.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-F8LFywrmvtct3TB8JXNQ4Uhzx0m3me5yAievRwBIiO09SwL7qiV2A+mOxMB21QAAP7lwsW/V2xkBStzEnMGtJw==",
+      "path": "hashdepot/3.1.0",
+      "hashPath": "hashdepot.3.1.0.nupkg.sha512"
+    },
+    "Microsoft.NETCore.Platforms/1.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-TMBuzAHpTenGbGgk0SMTwyEkyijY/Eae4ZGsFNYJvAr/LDn1ku3Etp3FPxChmDp5HHF3kzJuoaa08N0xjqAJfQ==",
+      "path": "microsoft.netcore.platforms/1.1.1",
+      "hashPath": "microsoft.netcore.platforms.1.1.1.nupkg.sha512"
+    },
+    "Microsoft.NETCore.Targets/1.1.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3Wrmi0kJDzClwAC+iBdUBpEKmEle8FQNsCs77fkiOIw/9oYA07bL1EZNX0kQ2OMN3xpwvl0vAtOCYY3ndDNlhQ==",
+      "path": "microsoft.netcore.targets/1.1.3",
+      "hashPath": "microsoft.netcore.targets.1.1.3.nupkg.sha512"
+    },
+    "Sigil/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-9376TkXVKwEJNDOpnAunqjqlto9v0RZX/YNBGfWUVl9eyBNS1rmP49HgjPH5xr4rdVI+qT0p/+ngCNc/sM3PPA==",
+      "path": "sigil/5.0.0",
+      "hashPath": "sigil.5.0.0.nupkg.sha512"
+    },
+    "System.Collections.Immutable/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-AurL6Y5BA1WotzlEvVaIDpqzpIPvYnnldxru8oXJU2yFxFUy3+pNXjXd1ymO+RA0rq0+590Q8gaz2l3Sr7fmqg==",
+      "path": "system.collections.immutable/8.0.0",
+      "hashPath": "system.collections.immutable.8.0.0.nupkg.sha512"
+    },
+    "System.Diagnostics.EventLog/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-lcyUiXTsETK2ALsZrX+nWuHSIQeazhqPphLfaRxzdGaG93+0kELqpgEHtwWOlQe7+jSFnKwaCAgL4kjeZCQJnw==",
+      "path": "system.diagnostics.eventlog/6.0.0",
+      "hashPath": "system.diagnostics.eventlog.6.0.0.nupkg.sha512"
+    },
+    "System.Memory/4.5.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-XIWiDvKPXaTveaB7HVganDlOCRoj03l+jrwNvcge/t8vhGYKvqV+dMv6G4SAX2NoNmN0wZfVPTAlFwZcZvVOUw==",
+      "path": "system.memory/4.5.5",
+      "hashPath": "system.memory.4.5.5.nupkg.sha512"
+    },
+    "System.Runtime/4.3.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-abhfv1dTK6NXOmu4bgHIONxHyEqFjW8HwXPmpY9gmll+ix9UNo4XDcmzJn6oLooftxNssVHdJC1pGT9jkSynQg==",
+      "path": "system.runtime/4.3.1",
+      "hashPath": "system.runtime.4.3.1.nupkg.sha512"
+    }
+  }
+}

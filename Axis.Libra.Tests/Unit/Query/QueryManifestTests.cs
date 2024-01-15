@@ -1,6 +1,6 @@
 ﻿using Axis.Libra.Query;
 using Axis.Libra.Tests.TestCQRs.Queries;
-using Axis.Libra.URI;
+using Axis.Libra.Instruction;
 using Axis.Luna.Extensions;
 using Axis.Proteus.Interception;
 using Axis.Proteus.IoC;

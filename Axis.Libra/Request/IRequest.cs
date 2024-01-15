@@ -1,4 +1,4 @@
-﻿using Axis.Libra.URI;
+﻿using Axis.Libra.Instruction;
 
 namespace Axis.Libra.Request
 {

@@ -1,5 +1,4 @@
-﻿using Axis.Libra.Exceptions;
-using Axis.Luna.Common;
+﻿using Axis.Luna.Common.Results;
 using System;
 using System.Threading.Tasks;
 
@@ -22,18 +21,18 @@ namespace Axis.Libra.Request
         /// </summary>
         /// <typeparam name="TRequest"></typeparam>
         /// <typeparam name="TResult"></typeparam>
-        /// <param name="command"></param>
-        /// <returns>An <see cref="Operation{TResult}"/> encapsulating the command signature used to query for it's results</returns>
-        public Task<IResult<TResult>> Dispatch<TRequest, TResult>(TRequest command)
+        /// <param name="request"></param>
+        public Task<IResult<TResult>> Dispatch<TRequest, TResult>(TRequest request)
         where TRequest : IRequest<TResult>
         {
-            if (command == null)
-                throw new ArgumentNullException(nameof(command));
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
 
             return _manifest
                 .HandlerFor<TRequest, TResult>()
-                ?.ExecuteRequest(command)
-                ?? throw new UnknownResolverException(typeof(IRequestHandler<TRequest, TResult>));
+                ?.ExecuteRequest(request)
+                ?? throw new InvalidOperationException(
+                    $"Invalid {nameof(request)}: No handler found for '{typeof(TRequest)}'");
         }
     }
 }

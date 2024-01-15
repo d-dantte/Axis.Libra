@@ -1,0 +1,5 @@
+C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra.Tests.TestCQRs\obj\Debug\net7.0\Axis.Libra.Tests.TestCQRs.csproj.AssemblyReference.cache
+C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra.Tests.TestCQRs\obj\Debug\net7.0\Axis.Libra.Tests.TestCQRs.GeneratedMSBuildEditorConfig.editorconfig
+C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra.Tests.TestCQRs\obj\Debug\net7.0\Axis.Libra.Tests.TestCQRs.AssemblyInfoInputs.cache
+C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra.Tests.TestCQRs\obj\Debug\net7.0\Axis.Libra.Tests.TestCQRs.AssemblyInfo.cs
+C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra.Tests.TestCQRs\obj\Debug\net7.0\Axis.Libra.Tests.TestCQRs.csproj.CoreCompileInputs.cache

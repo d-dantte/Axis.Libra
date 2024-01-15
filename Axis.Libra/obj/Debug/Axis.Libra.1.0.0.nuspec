@@ -11,29 +11,16 @@
     <tags>CQS Command Query Segregation Domain Services Framework</tags>
     <repository url="https://github.com/d-dantte/Axis.Libra" />
     <dependencies>
-      <group targetFramework=".NETCoreApp3.1">
-        <dependency id="Axis.Luna.FInvoke" version="6.0.2" exclude="Build,Analyzers" />
-        <dependency id="Axis.Luna.Operation" version="6.0.2" exclude="Build,Analyzers" />
-        <dependency id="Axis.Proteus" version="7.1.0" exclude="Build,Analyzers" />
-        <dependency id="HashDepot" version="2.0.3" exclude="Build,Analyzers" />
-      </group>
-      <group targetFramework="net5.0">
-        <dependency id="Axis.Luna.FInvoke" version="6.0.2" exclude="Build,Analyzers" />
-        <dependency id="Axis.Luna.Operation" version="6.0.2" exclude="Build,Analyzers" />
-        <dependency id="Axis.Proteus" version="7.1.0" exclude="Build,Analyzers" />
-        <dependency id="HashDepot" version="2.0.3" exclude="Build,Analyzers" />
-      </group>
-      <group targetFramework="net6.0">
-        <dependency id="Axis.Luna.FInvoke" version="6.0.2" exclude="Build,Analyzers" />
-        <dependency id="Axis.Luna.Operation" version="6.0.2" exclude="Build,Analyzers" />
-        <dependency id="Axis.Proteus" version="7.1.0" exclude="Build,Analyzers" />
-        <dependency id="HashDepot" version="2.0.3" exclude="Build,Analyzers" />
+      <group targetFramework="net7.0">
+        <dependency id="Axis.Luna.Extensions" version="6.0.28" exclude="Build,Analyzers" />
+        <dependency id="Axis.Luna.FInvoke" version="6.0.28" exclude="Build,Analyzers" />
+        <dependency id="Axis.Proteus" version="8.0.1" exclude="Build,Analyzers" />
+        <dependency id="HashDepot" version="3.1.0" exclude="Build,Analyzers" />
+        <dependency id="System.Collections.Immutable" version="8.0.0" exclude="Build,Analyzers" />
       </group>
     </dependencies>
   </metadata>
   <files>
-    <file src="C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\bin\Debug\net5.0\Axis.Libra.dll" target="lib\net5.0\Axis.Libra.dll" />
-    <file src="C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\bin\Debug\net6.0\Axis.Libra.dll" target="lib\net6.0\Axis.Libra.dll" />
-    <file src="C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\bin\Debug\netcoreapp3.1\Axis.Libra.dll" target="lib\netcoreapp3.1\Axis.Libra.dll" />
+    <file src="C:\Dantte\Dev\Repos\Axis.Libra\Axis.Libra\bin\Debug\net7.0\Axis.Libra.dll" target="lib\net7.0\Axis.Libra.dll" />
   </files>
 </package>

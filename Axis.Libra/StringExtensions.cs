@@ -12,21 +12,21 @@ namespace Axis.Libra
         public static bool IsChildNamespaceOf(this string child, string parent)
         {
             if (string.IsNullOrWhiteSpace(child))
-                throw new ArgumentException(nameof(child));
+                throw new ArgumentException($"Invalid {nameof(child)}: null/whitespace");
 
             if (string.IsNullOrWhiteSpace(parent))
-                throw new ArgumentException(nameof(parent));
+                throw new ArgumentException($"Invalid {nameof(parent)}: null/whitespace");
 
             return parent.Equals(child, StringComparison.InvariantCulture)
                 || child.StartsWith($"{parent}.");
         }
 
         public static bool IsNullOrEqual(this
-            string first,
-            string second,
+            string? first,
+            string? second,
             StringComparison stringComparison = StringComparison.InvariantCulture)
         {
-            if (first == null && second == null)
+            if (first is null && second is null)
                 return true;
 
             else return first?.Equals(second, stringComparison) ?? false;

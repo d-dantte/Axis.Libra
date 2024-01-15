@@ -1,5 +1,4 @@
-﻿using Axis.Libra.URI;
-using Axis.Luna.Common;
+﻿using Axis.Libra.Instruction;
 using Axis.Luna.Extensions;
 using Axis.Proteus.Interception;
 using Axis.Proteus.IoC;
@@ -12,8 +11,10 @@ namespace Axis.Libra.Query
     /// <summary>
     /// Builder for the <see cref="QueryManifest"/>
     /// <para>
-    /// NOTE: experiment with passing the <see cref="IRegistrarContract"/> as an argument into the <see cref="QueryManifestBuilder.AddQueryHandler{TQuery, TResult, TQueryHandler}(RegistryScope, InterceptorProfile)"/> method,
-    /// rather than having it as a member field/property. This way, passing in the <see cref="IResolverContract"/> to the <see cref="QueryManifestBuilder.BuildManifest(IResolverContract)"/>
+    /// NOTE: experiment with passing the <see cref="IRegistrarContract"/> as an argument into the
+    /// <see cref="QueryManifestBuilder.AddQueryHandler{TQuery, TResult, TQueryHandler}(RegistryScope, InterceptorProfile)"/> method,
+    /// rather than having it as a member field/property. This way, passing in the <see cref="IResolverContract"/> to the
+    /// <see cref="QueryManifestBuilder.BuildManifest(IResolverContract)"/>
     /// method seems natural.
     /// </para>
     /// </summary>
@@ -26,7 +27,9 @@ namespace Axis.Libra.Query
         public QueryManifestBuilder(IRegistrarContract contract)
         {
             _contract = contract
-                ?.ThrowIf(c => c.IsRegistrationClosed(), new ArgumentException($"{nameof(contract)} is locked"))
+                ?.ThrowIf(
+                    c => c.IsRegistrationClosed(),
+                    _ => new ArgumentException($"{nameof(contract)} is locked"))
                 ?? throw new ArgumentNullException(nameof(contract));
             _queryHandlerMap = new Dictionary<Type, Type>();
             _instructionNamespaces = new HashSet<InstructionNamespace>();
@@ -41,7 +44,7 @@ namespace Axis.Libra.Query
         /// <param name="interceptorProfile">The optional interceptors for the query handler</param>
         /// <returns></returns>
         public QueryManifestBuilder AddQueryHandler<TQuery, TResult, TQueryHandler>(
-            RegistryScope scope = default,
+            ResolutionScope scope = default,
             InterceptorProfile interceptorProfile = default)
             where TQuery : IQuery<TResult>
             where TQueryHandler : class, IQueryHandler<TQuery, TResult>
@@ -99,10 +102,6 @@ namespace Axis.Libra.Query
             // query-type implements IQuery
             if (!queryMap.Key.ImplementsGenericInterface(typeof(IQuery<>)))
                 throw new InvalidOperationException($"{messagePrefix} query type does not implement {typeof(IQuery<>)}");
-
-            // query-type is decorated with InstructionNamespaceAttribute
-            if (!queryMap.Key.HasInstructionNamespace())
-                throw new InvalidOperationException($"{messagePrefix} query type is not decorated with {nameof(InstructionNamespaceAttribute)}");
 
             // InstructionNamespaceAttribute must be unique for each query
             if (containsNamespace(queryMap.Key.InstructionNamespace()))
@@ -164,7 +163,7 @@ namespace Axis.Libra.Query
         {
             _resolver = resolverContract ?? throw new ArgumentNullException(nameof(resolverContract));
             _queryHandlerMap = queryHandlerMap
-                .ThrowIfNull(new ArgumentNullException(nameof(queryHandlerMap)))
+                .ThrowIfNull(() => new ArgumentNullException(nameof(queryHandlerMap)))
                 .WithEach(kvp => QueryManifestBuilder.ValidateHandlerMap(kvp, _queryNamespaceMap.ContainsKey))
                 .WithEach(kvp => _queryNamespaceMap.Add(kvp.Key.InstructionNamespace(), kvp.Key))
                 .ToDictionary();
@@ -184,7 +183,7 @@ namespace Axis.Libra.Query
         /// Gets the query type mapped to the given namespace, or null if no mapping exists.
         /// </summary>
         /// <param name="namespace">The namespace</param>
-        public Type QueryTypeFor(InstructionNamespace @namespace)
+        public Type? QueryTypeFor(InstructionNamespace @namespace)
             => _queryNamespaceMap.TryGetValue(@namespace, out var queryType)
                 ? queryType
                 : null;
@@ -193,20 +192,21 @@ namespace Axis.Libra.Query
         /// Gets the query handler mapped to the given <typeparamref name="TQuery"/>, or null if no mapping exists.
         /// </summary>
         /// <typeparam name="TQuery">The query type</typeparam>
-        public IQueryHandler<TQuery, TResult> HandlerFor<TQuery, TResult>()
+        public IQueryHandler<TQuery, TResult>? HandlerFor<TQuery, TResult>()
         where TQuery : IQuery<TResult>
         {
-            return this
-                .GetQueryHandlerTypeOrNull(typeof(TQuery))
-                .AsOptional()
-                .Map(type => _resolver.Resolve(type))
-                .Map(Common.As<IQueryHandler<TQuery, TResult>>)
-                .ValueOrDefault();
+            return GetQueryHandlerTypeOrNull(typeof(TQuery)) switch
+            {
+                Type htype => _resolver
+                    .Resolve(htype)
+                    .As<IQueryHandler<TQuery, TResult>>(),
+                _ => null
+            };
         }
 
-        private Type GetQueryHandlerTypeOrNull(Type queryType)
+        private Type? GetQueryHandlerTypeOrNull(Type queryType)
             => _queryHandlerMap.TryGetValue(queryType, out var handlerType)
-                    ? handlerType
-                    : null;
+                ? handlerType
+                : null;
     }
 }

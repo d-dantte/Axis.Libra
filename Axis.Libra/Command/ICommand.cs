@@ -1,4 +1,6 @@
-﻿namespace Axis.Libra.Command
+﻿using Axis.Libra.Instruction;
+
+namespace Axis.Libra.Command
 {
     /// <summary>
     /// A command. Represents instructions (parameters) that cause a system to act, and ultimately modify it's internal state ASYNCHRONIOUSLY.

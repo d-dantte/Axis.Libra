@@ -1,68 +1,56 @@
 {
   "version": 3,
   "targets": {
-    "net6.0": {
-      "Axis.Luna.Common/6.0.2": {
+    "net7.0": {
+      "Axis.Luna.Common/6.0.30": {
         "type": "package",
         "dependencies": {
-          "Axis.Luna.Extensions": "6.0.2"
+          "Axis.Luna.Extensions": "6.0.28"
         },
         "compile": {
-          "lib/net6.0/Axis.Luna.Common.dll": {}
+          "lib/net7.0/Axis.Luna.Common.dll": {}
         },
         "runtime": {
-          "lib/net6.0/Axis.Luna.Common.dll": {}
+          "lib/net7.0/Axis.Luna.Common.dll": {}
         }
       },
-      "Axis.Luna.Extensions/6.0.2": {
+      "Axis.Luna.Extensions/6.0.28": {
         "type": "package",
         "compile": {
-          "lib/net6.0/Axis.Luna.Extensions.dll": {}
+          "lib/net7.0/Axis.Luna.Extensions.dll": {}
         },
         "runtime": {
-          "lib/net6.0/Axis.Luna.Extensions.dll": {}
+          "lib/net7.0/Axis.Luna.Extensions.dll": {}
         }
       },
-      "Axis.Luna.FInvoke/6.0.2": {
+      "Axis.Luna.FInvoke/6.0.28": {
         "type": "package",
         "dependencies": {
           "Sigil": "5.0.0"
         },
         "compile": {
-          "lib/net6.0/Axis.Luna.FInvoke.dll": {}
+          "lib/net7.0/Axis.Luna.FInvoke.dll": {}
         },
         "runtime": {
-          "lib/net6.0/Axis.Luna.FInvoke.dll": {}
+          "lib/net7.0/Axis.Luna.FInvoke.dll": {}
         }
       },
-      "Axis.Luna.Operation/6.0.2": {
+      "Axis.Proteus/8.0.1": {
         "type": "package",
         "dependencies": {
-          "Axis.Luna.Common": "6.0.2",
-          "Axis.Luna.Extensions": "6.0.2"
+          "Axis.Luna.Common": "6.0.30",
+          "Axis.Luna.Extensions": "6.0.28",
+          "Axis.Luna.FInvoke": "6.0.28",
+          "Castle.Core": "5.1.1"
         },
         "compile": {
-          "lib/net6.0/Axis.Luna.Operation.dll": {}
+          "lib/net7.0/Axis.Proteus.dll": {}
         },
         "runtime": {
-          "lib/net6.0/Axis.Luna.Operation.dll": {}
+          "lib/net7.0/Axis.Proteus.dll": {}
         }
       },
-      "Axis.Proteus/7.1.0": {
-        "type": "package",
-        "dependencies": {
-          "Axis.Luna.Extensions": "6.0.1",
-          "Axis.Luna.FInvoke": "6.0.0",
-          "Castle.Core": "5.1.0"
-        },
-        "compile": {
-          "lib/net6.0/Axis.Proteus.dll": {}
-        },
-        "runtime": {
-          "lib/net6.0/Axis.Proteus.dll": {}
-        }
-      },
-      "Castle.Core/5.1.0": {
+      "Castle.Core/5.1.1": {
         "type": "package",
         "dependencies": {
           "System.Diagnostics.EventLog": "6.0.0"
@@ -78,19 +66,19 @@
           }
         }
       },
-      "HashDepot/2.0.3": {
+      "HashDepot/3.1.0": {
         "type": "package",
         "dependencies": {
-          "System.Memory": "4.5.3",
+          "System.Memory": "4.5.5",
           "System.Runtime": "4.3.1"
         },
         "compile": {
-          "lib/netstandard2.0/HashDepot.dll": {
+          "lib/net6.0/HashDepot.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netstandard2.0/HashDepot.dll": {
+          "lib/net6.0/HashDepot.dll": {
             "related": ".xml"
           }
         }
@@ -126,6 +114,22 @@
           }
         }
       },
+      "System.Collections.Immutable/8.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net7.0/System.Collections.Immutable.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net7.0/System.Collections.Immutable.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net6.0/_._": {}
+        }
+      },
       "System.Diagnostics.EventLog/6.0.0": {
         "type": "package",
         "compile": {
@@ -152,7 +156,7 @@
           }
         }
       },
-      "System.Memory/4.5.3": {
+      "System.Memory/4.5.5": {
         "type": "package",
         "compile": {
           "ref/netcoreapp2.1/_._": {}
@@ -173,14 +177,15 @@
           }
         }
       },
-      "Axis.Libra/0.2.0": {
+      "Axis.Libra/1.0.0": {
         "type": "project",
-        "framework": ".NETCoreApp,Version=v6.0",
+        "framework": ".NETCoreApp,Version=v7.0",
         "dependencies": {
-          "Axis.Luna.FInvoke": "6.0.2",
-          "Axis.Luna.Operation": "6.0.2",
-          "Axis.Proteus": "7.1.0",
-          "HashDepot": "2.0.3"
+          "Axis.Luna.Extensions": "6.0.28",
+          "Axis.Luna.FInvoke": "6.0.28",
+          "Axis.Proteus": "8.0.1",
+          "HashDepot": "3.1.0",
+          "System.Collections.Immutable": "8.0.0"
         },
         "compile": {
           "bin/placeholder/Axis.Libra.dll": {}
@@ -192,80 +197,59 @@
     }
   },
   "libraries": {
-    "Axis.Luna.Common/6.0.2": {
-      "sha512": "uBGPCtfVgoXybXZopUNaK1+ls5jdv3Lou8iKX2GgIabnncz15Zses0/XuPhfu3ZJI5o3+sBE1l8pBUJNMgs7hA==",
+    "Axis.Luna.Common/6.0.30": {
+      "sha512": "HAVpnj+RcdIjQmNKihvdmVnnTvuR7latE0KVWzcjGUK1GTTaBXfr1IUK1fzA1cBX2kOzG7soWTyi1hGt69bcIg==",
       "type": "package",
-      "path": "axis.luna.common/6.0.2",
+      "path": "axis.luna.common/6.0.30",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "axis.luna.common.6.0.2.nupkg.sha512",
+        "axis.luna.common.6.0.30.nupkg.sha512",
         "axis.luna.common.nuspec",
-        "lib/net5.0/Axis.Luna.Common.dll",
-        "lib/net6.0/Axis.Luna.Common.dll",
-        "lib/netcoreapp3.1/Axis.Luna.Common.dll"
+        "axis.luna.common.readme.md",
+        "lib/net7.0/Axis.Luna.Common.dll"
       ]
     },
-    "Axis.Luna.Extensions/6.0.2": {
-      "sha512": "vknTSaG9/C77/jo6P9y7VnR8VTRR5EjXKoMw3fsHh4eYQrFhTRT3p2LsjiVlcK4u88+XsixwYe/uklzfCnRUnA==",
+    "Axis.Luna.Extensions/6.0.28": {
+      "sha512": "Ua/S3eI7HCS18UP+bZ6A9F/xwfzDyz13wz9i9GEog14ZzSShxwl0eJBlEUtQg249stTFtV7fMzpj2jS8E/2TlA==",
       "type": "package",
-      "path": "axis.luna.extensions/6.0.2",
+      "path": "axis.luna.extensions/6.0.28",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "axis.luna.extensions.6.0.2.nupkg.sha512",
+        "axis.luna.extensions.6.0.28.nupkg.sha512",
         "axis.luna.extensions.nuspec",
-        "lib/net5.0/Axis.Luna.Extensions.dll",
-        "lib/net6.0/Axis.Luna.Extensions.dll",
-        "lib/netcoreapp3.1/Axis.Luna.Extensions.dll"
+        "lib/net7.0/Axis.Luna.Extensions.dll"
       ]
     },
-    "Axis.Luna.FInvoke/6.0.2": {
-      "sha512": "EL2QboPtGBm18VVzLdn6dBnd/zkDgAtKPYtiKu15xHtIs+aul8lHhtcq9xr3rgUIMvKXIwpfBsD40Txjl1EH0A==",
+    "Axis.Luna.FInvoke/6.0.28": {
+      "sha512": "DIBV8L0ZMZ+fmswTknbmdOO611IFhHVVWwWwOiyEi39MT9Qj3wF4gH4dPFBFKldnjRjmVU53lWs9xDedL30Rpg==",
       "type": "package",
-      "path": "axis.luna.finvoke/6.0.2",
+      "path": "axis.luna.finvoke/6.0.28",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "axis.luna.finvoke.6.0.2.nupkg.sha512",
+        "axis.luna.finvoke.6.0.28.nupkg.sha512",
         "axis.luna.finvoke.nuspec",
-        "lib/net5.0/Axis.Luna.FInvoke.dll",
-        "lib/net6.0/Axis.Luna.FInvoke.dll",
-        "lib/netcoreapp3.1/Axis.Luna.FInvoke.dll"
+        "lib/net7.0/Axis.Luna.FInvoke.dll"
       ]
     },
-    "Axis.Luna.Operation/6.0.2": {
-      "sha512": "cVToYM6dEABSBuBk74+q/ODNvHBB95zACgg2ZE1KaHbbfXV3BlAQmoR+mx6m7F1d0KIDmJNjtt5Z6CNHIIQFEQ==",
+    "Axis.Proteus/8.0.1": {
+      "sha512": "uxbuicWblxOcrVnvfYWirsalYCD+wW2lgeGVYQPQEfTUvO0FLPNK6tPFKvhJmH4eO9LPb83HcN3ozirszBQ3rA==",
       "type": "package",
-      "path": "axis.luna.operation/6.0.2",
+      "path": "axis.proteus/8.0.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "axis.luna.operation.6.0.2.nupkg.sha512",
-        "axis.luna.operation.nuspec",
-        "lib/net5.0/Axis.Luna.Operation.dll",
-        "lib/net6.0/Axis.Luna.Operation.dll",
-        "lib/netcoreapp3.1/Axis.Luna.Operation.dll"
-      ]
-    },
-    "Axis.Proteus/7.1.0": {
-      "sha512": "rnpKGoN3hmPRJqTI0X+x3RYzwl7l/ADYLjsWf6QN9nB8M2TBzym56PpewPn/IBvQiuIpqRIC948SFFmC0WG4mw==",
-      "type": "package",
-      "path": "axis.proteus/7.1.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "axis.proteus.7.1.0.nupkg.sha512",
+        "axis.proteus.8.0.1.nupkg.sha512",
         "axis.proteus.nuspec",
-        "lib/net5.0/Axis.Proteus.dll",
-        "lib/net6.0/Axis.Proteus.dll",
-        "lib/netcoreapp3.1/Axis.Proteus.dll"
+        "lib/net7.0/Axis.Proteus.dll"
       ]
     },
-    "Castle.Core/5.1.0": {
-      "sha512": "31UJpTHOiWq95CDOHazE3Ub/hE/PydNWsJMwnEVTqFFP4WhAugwpaVGxzOxKgNeSUUeqS2W6lxV+q7u1pAOfXg==",
+    "Castle.Core/5.1.1": {
+      "sha512": "rpYtIczkzGpf+EkZgDr9CClTdemhsrwA/W5hMoPjLkRFnXzH44zDLoovXeKtmxb1ykXK9aJVODSpiJml8CTw2g==",
       "type": "package",
-      "path": "castle.core/5.1.0",
+      "path": "castle.core/5.1.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -273,7 +257,7 @@
         "CHANGELOG.md",
         "LICENSE",
         "castle-logo.png",
-        "castle.core.5.1.0.nupkg.sha512",
+        "castle.core.5.1.1.nupkg.sha512",
         "castle.core.nuspec",
         "lib/net462/Castle.Core.dll",
         "lib/net462/Castle.Core.xml",
@@ -286,18 +270,18 @@
         "readme.txt"
       ]
     },
-    "HashDepot/2.0.3": {
-      "sha512": "K033sUok3i8MhGM/10tX6Bq/7MTWZJxS3eAU1z+zFv6k2+1FV9+gEAuvZYHYYJeB4v8rbkaL9fHzLoHBZOTXDA==",
+    "HashDepot/3.1.0": {
+      "sha512": "F8LFywrmvtct3TB8JXNQ4Uhzx0m3me5yAievRwBIiO09SwL7qiV2A+mOxMB21QAAP7lwsW/V2xkBStzEnMGtJw==",
       "type": "package",
-      "path": "hashdepot/2.0.3",
+      "path": "hashdepot/3.1.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "LICENSE/LICENSE",
-        "hashdepot.2.0.3.nupkg.sha512",
+        "hashdepot.3.1.0.nupkg.sha512",
         "hashdepot.nuspec",
-        "lib/netstandard2.0/HashDepot.dll",
-        "lib/netstandard2.0/HashDepot.xml"
+        "lib/net6.0/HashDepot.dll",
+        "lib/net6.0/HashDepot.xml"
       ]
     },
     "Microsoft.NETCore.Platforms/1.1.1": {
@@ -350,6 +334,36 @@
         "sigil.nuspec"
       ]
     },
+    "System.Collections.Immutable/8.0.0": {
+      "sha512": "AurL6Y5BA1WotzlEvVaIDpqzpIPvYnnldxru8oXJU2yFxFUy3+pNXjXd1ymO+RA0rq0+590Q8gaz2l3Sr7fmqg==",
+      "type": "package",
+      "path": "system.collections.immutable/8.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/System.Collections.Immutable.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net6.0/_._",
+        "buildTransitive/netcoreapp2.0/System.Collections.Immutable.targets",
+        "lib/net462/System.Collections.Immutable.dll",
+        "lib/net462/System.Collections.Immutable.xml",
+        "lib/net6.0/System.Collections.Immutable.dll",
+        "lib/net6.0/System.Collections.Immutable.xml",
+        "lib/net7.0/System.Collections.Immutable.dll",
+        "lib/net7.0/System.Collections.Immutable.xml",
+        "lib/net8.0/System.Collections.Immutable.dll",
+        "lib/net8.0/System.Collections.Immutable.xml",
+        "lib/netstandard2.0/System.Collections.Immutable.dll",
+        "lib/netstandard2.0/System.Collections.Immutable.xml",
+        "system.collections.immutable.8.0.0.nupkg.sha512",
+        "system.collections.immutable.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
     "System.Diagnostics.EventLog/6.0.0": {
       "sha512": "lcyUiXTsETK2ALsZrX+nWuHSIQeazhqPphLfaRxzdGaG93+0kELqpgEHtwWOlQe7+jSFnKwaCAgL4kjeZCQJnw==",
       "type": "package",
@@ -382,22 +396,24 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "System.Memory/4.5.3": {
-      "sha512": "3oDzvc/zzetpTKWMShs1AADwZjQ/36HnsufHRPcOjyRAAMLDlu2iD33MBI2opxnezcVUtXyqDXXjoFMOU9c7SA==",
+    "System.Memory/4.5.5": {
+      "sha512": "XIWiDvKPXaTveaB7HVganDlOCRoj03l+jrwNvcge/t8vhGYKvqV+dMv6G4SAX2NoNmN0wZfVPTAlFwZcZvVOUw==",
       "type": "package",
-      "path": "system.memory/4.5.3",
+      "path": "system.memory/4.5.5",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "LICENSE.TXT",
         "THIRD-PARTY-NOTICES.TXT",
+        "lib/net461/System.Memory.dll",
+        "lib/net461/System.Memory.xml",
         "lib/netcoreapp2.1/_._",
         "lib/netstandard1.1/System.Memory.dll",
         "lib/netstandard1.1/System.Memory.xml",
         "lib/netstandard2.0/System.Memory.dll",
         "lib/netstandard2.0/System.Memory.xml",
         "ref/netcoreapp2.1/_._",
-        "system.memory.4.5.3.nupkg.sha512",
+        "system.memory.4.5.5.nupkg.sha512",
         "system.memory.nuspec",
         "useSharedDesignerContext.txt",
         "version.txt"
@@ -496,16 +512,15 @@
         "system.runtime.nuspec"
       ]
     },
-    "Axis.Libra/0.2.0": {
+    "Axis.Libra/1.0.0": {
       "type": "project",
       "path": "../Axis.Libra/Axis.Libra.csproj",
       "msbuildProject": "../Axis.Libra/Axis.Libra.csproj"
     }
   },
   "projectFileDependencyGroups": {
-    "net6.0": [
-      "Axis.Libra >= 0.2.0",
-      "Axis.Luna.Operation >= 6.0.2"
+    "net7.0": [
+      "Axis.Libra >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -530,7 +545,7 @@
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
-        "net6.0"
+        "net7.0"
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -538,8 +553,8 @@
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "net6.0": {
-          "targetAlias": "net6.0",
+        "net7.0": {
+          "targetAlias": "net7.0",
           "projectReferences": {
             "C:\\Dantte\\Dev\\Repos\\Axis.Libra\\Axis.Libra\\Axis.Libra.csproj": {
               "projectPath": "C:\\Dantte\\Dev\\Repos\\Axis.Libra\\Axis.Libra\\Axis.Libra.csproj"
@@ -554,14 +569,8 @@
       }
     },
     "frameworks": {
-      "net6.0": {
-        "targetAlias": "net6.0",
-        "dependencies": {
-          "Axis.Luna.Operation": {
-            "target": "Package",
-            "version": "[6.0.2, )"
-          }
-        },
+      "net7.0": {
+        "targetAlias": "net7.0",
         "imports": [
           "net461",
           "net462",
@@ -573,20 +582,6 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[6.0.16, 6.0.16]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Ref",
-            "version": "[6.0.16, 6.0.16]"
-          },
-          {
-            "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[6.0.16, 6.0.16]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"

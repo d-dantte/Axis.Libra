@@ -1,4 +1,4 @@
-﻿using Axis.Libra.URI;
+﻿using Axis.Libra.Instruction;
 using Axis.Luna.Extensions;
 using System;
 
@@ -13,7 +13,7 @@ namespace Axis.Libra.Command
 
         public static ICommandStatus OfBusy(InstructionURI commandURI) => new Busy(commandURI);
 
-        public static ICommandStatus OfError(InstructionURI commandURI, string message = null) => new Error(commandURI, message);
+        public static ICommandStatus OfError(InstructionURI commandURI, string? message = null) => new Error(commandURI, message);
 
         public static ICommandStatus OfUnknown(InstructionURI commandURI) => new Unknown(commandURI);
 
@@ -31,12 +31,12 @@ namespace Axis.Libra.Command
 
                 "error" => OfError(commandURI),
 
-                null => throw new ArgumentNullException("Invalid command status: null"),
+                null => throw new ArgumentNullException(nameof(value)),
 
                 _ =>
                     value.StartsWith("Error:") ? OfError(commandURI, value[6..]) :
                     value.EndsWith('%') ? OfProgress(commandURI, decimal.Parse(value[..^1])) :
-                    throw new ArgumentException($"invalid command status: {value}")
+                    throw new ArgumentException($"Invalid command status: {value}")
             };
         }
 
@@ -53,17 +53,18 @@ namespace Axis.Libra.Command
         /// Note that a <c>record struct</c> would have been ideal to implement this.
         /// </para>
         /// </summary>
-        public struct Succeeded: ICommandStatus
+        public readonly struct Succeeded: ICommandStatus
         {
             public InstructionURI CommandURI { get; }
 
             internal Succeeded(InstructionURI commandUri)
             {
                 CommandURI = commandUri
-                    .ThrowIfDefault(new ArgumentException($"Invalid uri: {commandUri}"))
+                    .ThrowIfDefault(
+                        _ => new ArgumentException($"Invalid uri: {commandUri}"))
                     .ThrowIf(
                         uri => uri.Scheme != Scheme.Command,
-                        new ArgumentException($"uri scheme must be {Scheme.Command}"));
+                        _ => new ArgumentException($"uri scheme must be {Scheme.Command}"));
             }
 
             public override string ToString() => $"{nameof(Succeeded)}[{CommandURI}]";
@@ -71,8 +72,9 @@ namespace Axis.Libra.Command
             #region record struct
             public override int GetHashCode() => HashCode.Combine(CommandURI);
 
-            public override bool Equals(object obj) => 
-                obj is Succeeded other
+            public override bool Equals(
+                object? obj)
+                => obj is Succeeded other
                 && other.CommandURI.Equals(CommandURI);
 
             public static bool operator ==(Succeeded a, Succeeded b) => a.Equals(b);
@@ -89,17 +91,17 @@ namespace Axis.Libra.Command
         /// Note that a <c>record struct</c> would have been ideal to implement this.
         /// </para>
         /// </summary>
-        public struct Busy : ICommandStatus
+        public readonly struct Busy : ICommandStatus
         {
             public InstructionURI CommandURI { get; }
 
             internal Busy(InstructionURI commandUri)
             {
                 CommandURI = commandUri
-                    .ThrowIfDefault(new ArgumentException($"Invalid uri: {commandUri}"))
+                    .ThrowIfDefault(_ => new ArgumentException($"Invalid uri: {commandUri}"))
                     .ThrowIf(
                         uri => uri.Scheme != Scheme.Command,
-                        new ArgumentException($"uri scheme must be {Scheme.Command}"));
+                        _ => new ArgumentException($"uri scheme must be {Scheme.Command}"));
             }
 
             public override string ToString() => $"{nameof(Busy)}[{CommandURI}]";
@@ -107,8 +109,9 @@ namespace Axis.Libra.Command
             #region record struct
             public override int GetHashCode() => HashCode.Combine(CommandURI);
 
-            public override bool Equals(object obj) =>
-                obj is Busy other
+            public override bool Equals(
+                object? obj)
+                => obj is Busy other
                 && other.CommandURI.Equals(CommandURI);
 
             public static bool operator ==(Busy a, Busy b) => a.Equals(b);
@@ -125,17 +128,17 @@ namespace Axis.Libra.Command
         /// Note that a <c>record struct</c> would have been ideal to implement this.
         /// </para>
         /// </summary>
-        public struct Unknown : ICommandStatus
+        public readonly struct Unknown : ICommandStatus
         {
             public InstructionURI CommandURI { get; }
 
             internal Unknown(InstructionURI commandUri)
             {
                 CommandURI = commandUri
-                    .ThrowIfDefault(new ArgumentException($"Invalid uri: {commandUri}"))
+                    .ThrowIfDefault(_ => new ArgumentException($"Invalid uri: {commandUri}"))
                     .ThrowIf(
                         uri => uri.Scheme != Scheme.Command,
-                        new ArgumentException($"uri scheme must be {Scheme.Command}"));
+                        _ => new ArgumentException($"uri scheme must be {Scheme.Command}"));
             }
 
             public override string ToString() => $"{nameof(Unknown)}[{CommandURI}]";
@@ -143,8 +146,9 @@ namespace Axis.Libra.Command
             #region record struct
             public override int GetHashCode() => HashCode.Combine(CommandURI);
 
-            public override bool Equals(object obj) =>
-                obj is Unknown other
+            public override bool Equals(
+                object? obj)
+                => obj is Unknown other
                 && other.CommandURI.Equals(CommandURI);
 
             public static bool operator ==(Unknown a, Unknown b) => a.Equals(b);
@@ -161,7 +165,7 @@ namespace Axis.Libra.Command
         /// Note that a <c>record struct</c> would have been ideal to implement this.
         /// </para>
         /// </summary>
-        public struct Progress : ICommandStatus
+        public readonly struct Progress : ICommandStatus
         {
             /// <summary>
             /// A positive value, between 0 and 100 (inclusive), indicating the percentage progress of the command.
@@ -174,13 +178,14 @@ namespace Axis.Libra.Command
             {
                 Percentage = percentage.ThrowIf(
                     v => v < 0m || v > 100m,
-                    new ArgumentException($"{nameof(percentage)} value must be between 0 and 100, inclusive. Value supplied: {percentage}"));
+                    _ => new ArgumentException(
+                        $"Invalid {nameof(percentage)}: value '{percentage}' must be between 0 and 100, inclusive."));
 
                 CommandURI = commandUri
-                    .ThrowIfDefault(new ArgumentException($"Invalid uri: {commandUri}"))
+                    .ThrowIfDefault(_ => new ArgumentException($"Invalid uri: {commandUri}"))
                     .ThrowIf(
                         uri => uri.Scheme != Scheme.Command,
-                        new ArgumentException($"uri scheme must be {Scheme.Command}"));
+                        _ => new ArgumentException($"uri scheme must be {Scheme.Command}"));
             }
 
             public override string ToString() => $"{Percentage}% [{CommandURI}]";
@@ -188,7 +193,7 @@ namespace Axis.Libra.Command
             #region record struct
             public override int GetHashCode() => HashCode.Combine(CommandURI, Percentage);
 
-            public override bool Equals(object obj)
+            public override bool Equals(object? obj)
             {
                 return obj is Progress progress
                     && progress.Percentage.Equals(Percentage)
@@ -209,31 +214,33 @@ namespace Axis.Libra.Command
         /// Note that a <c>record struct</c> would have been ideal to implement this.
         /// </para>
         /// </summary>
-        public struct Error : ICommandStatus
+        public readonly struct Error : ICommandStatus
         {
             /// <summary>
             /// A message associated with this error, retrieved from the source.
             /// </summary>
-            public string Message { get; }
+            public string? Message { get; }
 
             public InstructionURI CommandURI { get; }
 
-            internal Error(InstructionURI commandUri, string message)
+            internal Error(InstructionURI commandUri, string? message)
             {
                 Message = message;
                 CommandURI = commandUri
-                    .ThrowIfDefault(new ArgumentException($"Invalid uri: {commandUri}"))
+                    .ThrowIfDefault(_ => new ArgumentException($"Invalid uri: {commandUri}"))
                     .ThrowIf(
                         uri => uri.Scheme != Scheme.Command,
-                        new ArgumentException($"uri scheme must be {Scheme.Command}"));
+                        _ => new ArgumentException($"uri scheme must be {Scheme.Command}"));
             }
 
-            public override string ToString() => $"{nameof(Error)}[{CommandURI}]" + (string.IsNullOrEmpty(Message) ? "" : $": {Message}");
+            public override string ToString()
+                => $"{nameof(Error)}[{CommandURI}]"
+                + (string.IsNullOrEmpty(Message) ? "" : $": {Message}");
 
             #region record struct
             public override int GetHashCode() => HashCode.Combine(CommandURI, Message);
 
-            public override bool Equals(object obj)
+            public override bool Equals(object? obj)
             {
                 return obj is Error err
                     && err.Message.IsNullOrEqual(Message, StringComparison.InvariantCulture)

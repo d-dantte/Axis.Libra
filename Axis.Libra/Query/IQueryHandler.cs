@@ -1,4 +1,4 @@
-﻿using Axis.Luna.Common;
+﻿using Axis.Luna.Common.Results;
 using System.Threading.Tasks;
 
 namespace Axis.Libra.Query

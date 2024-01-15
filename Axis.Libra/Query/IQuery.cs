@@ -1,7 +1,8 @@
-﻿using Axis.Libra.URI;
+﻿using Axis.Libra.Instruction;
 
 namespace Axis.Libra.Query
 {
+
     /// <summary>
     /// A query. Represents instructions (parameters) that causes a system to retrieve data/information SYNCHRONIOUSLY. 
     /// </summary>

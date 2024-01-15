@@ -1,22 +1,32 @@
 ﻿using Axis.Libra.Command;
-using Axis.Libra.Query;
-using Axis.Libra.URI;
-using Axis.Luna.Common;
-using Axis.Luna.Operation;
+using Axis.Libra.Instruction;
+using Axis.Luna.Common.Results;
+using Axis.Luna.Extensions;
+using HashDepot;
 
 namespace Axis.Libra.Tests.TestCQRs.Commands.Inner
 {
-    [InstructionNamespace("axis:libra:test-cqrs:command3")]
-    public class Command3 : AbstractCommand
+    public class Command3 : ICommand
     {
         public Guid Id { get; set; }
+
+        public static InstructionNamespace InstructionNamespace() => "axis.libra.test-cqrs.command3";
+
+        public InstructionHash InstructionHash()
+        {
+            return Id
+                .ToByteArray()
+                .ApplyTo(bytes => XXHash.Hash64(bytes));
+        }
     }
 
     public class Command3Handler :
         ICommandHandler<Command3>,
         ICommandHandler<Command2>
     {
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task<IResult<ICommandStatus>> ExecuteSatusRequest(InstructionURI commandURI)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             var status = new Random(Guid.NewGuid().GetHashCode()).Next(5) switch
             {
@@ -29,19 +39,23 @@ namespace Axis.Libra.Tests.TestCQRs.Commands.Inner
             };
 
             Console.WriteLine($"status request for: {commandURI}");
-            return IResult<ICommandStatus>.Of(status);
+            return Result.Of(status);
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task<IResult<InstructionURI>> ExecuteCommand(Command2 command)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             Console.WriteLine($"{typeof(Command1)} handler executed.");
-            return IResult<InstructionURI>.Of(command.InstructionURI);
+            return Result.Of(command.InstructionURI);
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task<IResult<InstructionURI>> ExecuteCommand(Command3 command)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             Console.WriteLine($"{typeof(Command1)} handler executed.");
-            return IResult<InstructionURI>.Of(command.InstructionURI);
+            return Result.Of(command.InstructionURI);
         }
     }
 }

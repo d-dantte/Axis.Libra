@@ -1,5 +1,5 @@
 ﻿using Axis.Libra.Query;
-using Axis.Libra.URI;
+using Axis.Libra.Instruction;
 using Axis.Luna.Common;
 
 namespace Axis.Libra.Tests.TestCQRs.Queries.Inner

@@ -1,25 +1,22 @@
 {
   "version": 2,
-  "dgSpecHash": "FA1VNKVmSKepkg3zKdM+0l4HH2cjCwyjKJ1k8KaQ1b8sSatWmo7p95jFpVB9uEB2VAOtXbZhCn2Gm+X+0uo+vg==",
+  "dgSpecHash": "ixcpDZnB8Ay4YTCCmj1BXxQKlZ5IVNSP0Sp66wf431/mTbn6eCeCKvBqiB+wLAQu/hm9TQndvnf4GbKb/0xhbQ==",
   "success": true,
   "projectFilePath": "C:\\Dantte\\Dev\\Repos\\Axis.Libra\\Axis.Libra.Tests.TestCQRs\\Axis.Libra.Tests.TestCQRs.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\stanl\\.nuget\\packages\\axis.luna.common\\6.0.2\\axis.luna.common.6.0.2.nupkg.sha512",
-    "C:\\Users\\stanl\\.nuget\\packages\\axis.luna.extensions\\6.0.2\\axis.luna.extensions.6.0.2.nupkg.sha512",
-    "C:\\Users\\stanl\\.nuget\\packages\\axis.luna.finvoke\\6.0.2\\axis.luna.finvoke.6.0.2.nupkg.sha512",
-    "C:\\Users\\stanl\\.nuget\\packages\\axis.luna.operation\\6.0.2\\axis.luna.operation.6.0.2.nupkg.sha512",
-    "C:\\Users\\stanl\\.nuget\\packages\\axis.proteus\\7.1.0\\axis.proteus.7.1.0.nupkg.sha512",
-    "C:\\Users\\stanl\\.nuget\\packages\\castle.core\\5.1.0\\castle.core.5.1.0.nupkg.sha512",
-    "C:\\Users\\stanl\\.nuget\\packages\\hashdepot\\2.0.3\\hashdepot.2.0.3.nupkg.sha512",
+    "C:\\Users\\stanl\\.nuget\\packages\\axis.luna.common\\6.0.30\\axis.luna.common.6.0.30.nupkg.sha512",
+    "C:\\Users\\stanl\\.nuget\\packages\\axis.luna.extensions\\6.0.28\\axis.luna.extensions.6.0.28.nupkg.sha512",
+    "C:\\Users\\stanl\\.nuget\\packages\\axis.luna.finvoke\\6.0.28\\axis.luna.finvoke.6.0.28.nupkg.sha512",
+    "C:\\Users\\stanl\\.nuget\\packages\\axis.proteus\\8.0.1\\axis.proteus.8.0.1.nupkg.sha512",
+    "C:\\Users\\stanl\\.nuget\\packages\\castle.core\\5.1.1\\castle.core.5.1.1.nupkg.sha512",
+    "C:\\Users\\stanl\\.nuget\\packages\\hashdepot\\3.1.0\\hashdepot.3.1.0.nupkg.sha512",
     "C:\\Users\\stanl\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.1\\microsoft.netcore.platforms.1.1.1.nupkg.sha512",
     "C:\\Users\\stanl\\.nuget\\packages\\microsoft.netcore.targets\\1.1.3\\microsoft.netcore.targets.1.1.3.nupkg.sha512",
     "C:\\Users\\stanl\\.nuget\\packages\\sigil\\5.0.0\\sigil.5.0.0.nupkg.sha512",
+    "C:\\Users\\stanl\\.nuget\\packages\\system.collections.immutable\\8.0.0\\system.collections.immutable.8.0.0.nupkg.sha512",
     "C:\\Users\\stanl\\.nuget\\packages\\system.diagnostics.eventlog\\6.0.0\\system.diagnostics.eventlog.6.0.0.nupkg.sha512",
-    "C:\\Users\\stanl\\.nuget\\packages\\system.memory\\4.5.3\\system.memory.4.5.3.nupkg.sha512",
-    "C:\\Users\\stanl\\.nuget\\packages\\system.runtime\\4.3.1\\system.runtime.4.3.1.nupkg.sha512",
-    "C:\\Users\\stanl\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.16\\microsoft.windowsdesktop.app.ref.6.0.16.nupkg.sha512",
-    "C:\\Users\\stanl\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.16\\microsoft.netcore.app.ref.6.0.16.nupkg.sha512",
-    "C:\\Users\\stanl\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.16\\microsoft.aspnetcore.app.ref.6.0.16.nupkg.sha512"
+    "C:\\Users\\stanl\\.nuget\\packages\\system.memory\\4.5.5\\system.memory.4.5.5.nupkg.sha512",
+    "C:\\Users\\stanl\\.nuget\\packages\\system.runtime\\4.3.1\\system.runtime.4.3.1.nupkg.sha512"
   ],
   "logs": []
 }

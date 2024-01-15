@@ -1,6 +1,5 @@
-﻿using Axis.Libra.Exceptions;
-using Axis.Libra.URI;
-using Axis.Luna.Common;
+﻿using Axis.Libra.Instruction;
+using Axis.Luna.Common.Results;
 using System;
 using System.Threading.Tasks;
 
@@ -21,17 +20,16 @@ namespace Axis.Libra.Command
         /// <typeparam name="TQuery"></typeparam>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="command"></param>
-        /// <returns>An <see cref="Operation{TResult}"/> encapsulating the command signature used to query for it's results</returns>
         public Task<IResult<InstructionURI>> Dispatch<TCommand>(TCommand command)
         where TCommand : ICommand
         {
-            if (command == null)
-                throw new ArgumentNullException(nameof(command));
+            ArgumentNullException.ThrowIfNull(nameof(command));
 
             return _manifest
                 .HandlerFor<TCommand>()
                 ?.ExecuteCommand(command)
-                ?? throw new InvalidOperationException($"could not find a handler for the command of type: {typeof(TCommand)}");
+                ?? throw new InvalidOperationException(
+                    $"Invalid {nameof(command)}: No handler found for '{typeof(TCommand)}'");
         }
 
         /// <summary>
@@ -44,15 +42,16 @@ namespace Axis.Libra.Command
         public Task<IResult<ICommandStatus>> DispatchStatusRequest(InstructionURI commandUri)
         {
             if (commandUri == default)
-                throw new ArgumentException($"Invalid {nameof(commandUri)}: {commandUri}");
+                throw new ArgumentException($"Invalid {nameof(commandUri)}: default");
 
             if (commandUri.Scheme != Scheme.Command)
-                throw new ArgumentException($"Command URI must have {Scheme.Command} scheme");
+                throw new ArgumentException($"Invalid command uri scheme: {commandUri.Scheme}");
 
             return _manifest
                 .StatusHandlerFor(commandUri.Namespace)
                 ?.ExecuteSatusRequest(commandUri)
-                ?? throw new InvalidOperationException($"Could not find a status handler for the namespace: {commandUri.Namespace}");
+                ?? throw new InvalidOperationException(
+                    $"Invalid Could not find a status handler for the namespace: {commandUri.Namespace}");
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Axis.Libra.Command;
 using Axis.Libra.Tests.TestCQRs.Commands;
-using Axis.Libra.URI;
+using Axis.Libra.Instruction;
 using Axis.Proteus.IoC;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;

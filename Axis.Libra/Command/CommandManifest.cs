@@ -1,21 +1,17 @@
-﻿using Axis.Libra.URI;
+﻿using Axis.Libra.Instruction;
 using Axis.Luna.Common;
 using Axis.Luna.Extensions;
 using Axis.Proteus.Interception;
 using Axis.Proteus.IoC;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 
 namespace Axis.Libra.Command
 {
     /// <summary>
     /// Builder for the <see cref="CommandManifest"/>
-    /// <para>
-    /// NOTE: experiment with passing the <see cref="IRegistrarContract"/> as an argument into the <see cref="CommandManifestBuilder.AddCommandHandler{TCommand, TCommandHandler}(RegistryScope, InterceptorProfile)"/> method,
-    /// rather than having it as a member field/property. This way, passing in the <see cref="IResolverContract"/> to the <see cref="CommandManifestBuilder.BuildManifest(IResolverContract)"/>
-    /// method seems natural.
-    /// </para>
     /// </summary>
     public class CommandManifestBuilder
     {
@@ -26,7 +22,7 @@ namespace Axis.Libra.Command
         public CommandManifestBuilder(IRegistrarContract contract)
         {
             _contract = contract
-                ?.ThrowIf(c => c.IsRegistrationClosed(), new ArgumentException($"{nameof(contract)} is locked"))
+                ?.ThrowIf(c => c.IsRegistrationClosed(), _ => new ArgumentException($"Invalid {nameof(contract)}: locked"))
                 ?? throw new ArgumentNullException(nameof(contract));
             _commandHandlerMap = new Dictionary<Type, Type>();
             _instructionNamespaces = new HashSet<InstructionNamespace>();
@@ -41,7 +37,7 @@ namespace Axis.Libra.Command
         /// <param name="interceptorProfile">The optional interceptors for the command handler</param>
         /// <returns></returns>
         public CommandManifestBuilder AddCommandHandler<TCommand, TCommandHandler>(
-            RegistryScope scope = default,
+            ResolutionScope scope = default,
             InterceptorProfile interceptorProfile = default)
             where TCommand : ICommand
             where TCommandHandler: class, ICommandHandler<TCommand>
@@ -103,11 +99,7 @@ namespace Axis.Libra.Command
             if (!commandMap.Key.Implements(typeof(ICommand)))
                 throw new InvalidOperationException($"{messagePrefix} command type does not implement {nameof(ICommand)}");
 
-            // command-type is decorated with InstructionNamespaceAttribute
-            if (!commandMap.Key.HasInstructionNamespace())
-                throw new InvalidOperationException($"{messagePrefix} command type is not decorated with {nameof(InstructionNamespaceAttribute)}");
-
-            // InstructionNamespaceAttribute must be unique for each command
+            // InstructionNamespaceAttribute must be unique for each query
             if (containsNamespace(commandMap.Key.InstructionNamespace()))
                 throw new InvalidOperationException($"{messagePrefix} command type namespace '{commandMap.Key.InstructionNamespace()}' is not unique");
             #endregion
@@ -145,7 +137,7 @@ namespace Axis.Libra.Command
         /// <summary>
         /// The namespace - command-type map
         /// </summary>
-        private readonly Dictionary<InstructionNamespace, Type> _commandNamespaceMap = new Dictionary<InstructionNamespace, Type>();
+        private readonly Dictionary<InstructionNamespace, Type> _commandNamespaceMap = new();
 
         /// <summary>
         /// The command-type - command-handler-type map
@@ -159,7 +151,7 @@ namespace Axis.Libra.Command
         {
             _resolver = resolverContract ?? throw new ArgumentNullException(nameof(resolverContract));
             _commandHandlerMap = commandHandlerMap
-                .ThrowIfNull(new ArgumentNullException(nameof(commandHandlerMap)))
+                .ThrowIfNull(() => new ArgumentNullException(nameof(commandHandlerMap)))
                 .WithEach(kvp => CommandManifestBuilder.ValidateHandlerMap(kvp, _commandNamespaceMap.ContainsKey))
                 .WithEach(kvp => _commandNamespaceMap.Add(kvp.Key.InstructionNamespace(), kvp.Key))
                 .ToDictionary(ignoreDuplicates: false);
@@ -168,18 +160,19 @@ namespace Axis.Libra.Command
         /// <summary>
         /// Gets all the command namespaces.
         /// </summary>
-        public InstructionNamespace[] Namespaces() => _commandNamespaceMap.Keys.ToArray();
+        public ImmutableArray<InstructionNamespace> Namespaces() => _commandNamespaceMap.Keys.ToImmutableArray();
 
         /// <summary>
         /// Gets all the command types
         /// </summary>
-        public Type[] CommandTypes() => _commandHandlerMap.Keys.ToArray();
+        public ImmutableArray<Type> CommandTypes() => _commandHandlerMap.Keys.ToImmutableArray();
 
         /// <summary>
         /// Gets the command type mapped to the given namespace, or null if no mapping exists.
         /// </summary>
         /// <param name="namespace">The namespace</param>
-        public Type CommandTypeFor(InstructionNamespace @namespace)
+        public Type? CommandTypeFor(
+            InstructionNamespace @namespace)
             => _commandNamespaceMap.TryGetValue(@namespace, out var commandType)
                 ? commandType
                 : null;
@@ -188,38 +181,42 @@ namespace Axis.Libra.Command
         /// Gets the command handler mapped to the given <typeparamref name="TCommand"/>, or null if no mapping exists.
         /// </summary>
         /// <typeparam name="TCommand">The command type</typeparam>
-        public ICommandHandler<TCommand> HandlerFor<TCommand>()
+        public ICommandHandler<TCommand>? HandlerFor<TCommand>()
         where TCommand : ICommand
         {
-            return this
-                .GetCommandHandlerTypeOrNull(typeof(TCommand))
-                .AsOptional()
-                .Map(type => _resolver.Resolve(type))
-                .Map(Common.As<ICommandHandler<TCommand>>)
-                .ValueOrDefault();
+            return GetCommandHandlerTypeOrNull(typeof(TCommand)) switch
+            {
+                Type htype => _resolver
+                    .Resolve(htype)
+                    .As<ICommandHandler<TCommand>>(),
+                _ => null
+            };
         }
 
         /// <summary>
         /// Gets the status handler mapped to the given <paramref name="namespace"/>, or null if no mapping exists.
         /// </summary>
         /// <param name="namespace">the command namespace</param>
-        public ICommandStatusHandler StatusHandlerFor(InstructionNamespace @namespace)
+        public ICommandStatusHandler? StatusHandlerFor(InstructionNamespace @namespace)
         {
-            return this
-                .GetCommandTypOrNull(@namespace)
-                .AsOptional()
-                .Map(type => _resolver.Resolve(type))
-                .Map(Common.As<ICommandStatusHandler>)
-                .ValueOrDefault();
+            return GetCommandTypeOrNull(@namespace) switch
+            {
+                Type htype => _resolver
+                    .Resolve(htype)
+                    .As<ICommandStatusHandler>(),
+                _ => null
+            };
         }
 
 
-        private Type GetCommandHandlerTypeOrNull(Type commandType)
+        private Type? GetCommandHandlerTypeOrNull(
+            Type commandType)
             => _commandHandlerMap.TryGetValue(commandType, out var handlerType)
                     ? handlerType
                     : null;
 
-        private Type GetCommandTypOrNull(InstructionNamespace @namespace)
+        private Type? GetCommandTypeOrNull(
+            InstructionNamespace @namespace)
             => _commandNamespaceMap.TryGetValue(@namespace, out var commandType)
                 ? commandType
                 : null;

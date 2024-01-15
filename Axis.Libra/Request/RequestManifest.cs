@@ -1,4 +1,5 @@
-﻿using Axis.Libra.URI;
+﻿using Axis.Libra.Command;
+using Axis.Libra.Instruction;
 using Axis.Luna.Common;
 using Axis.Luna.Extensions;
 using Axis.Proteus.Interception;
@@ -26,7 +27,9 @@ namespace Axis.Libra.Request
         public RequestManifestBuilder(IRegistrarContract contract)
         {
             _contract = contract
-                ?.ThrowIf(c => c.IsRegistrationClosed(), new ArgumentException($"{nameof(contract)} is locked"))
+                ?.ThrowIf(
+                    c => c.IsRegistrationClosed(),
+                    _ => new ArgumentException($"{nameof(contract)} is locked"))
                 ?? throw new ArgumentNullException(nameof(contract));
             _requestHandlerMap = new Dictionary<Type, Type>();
             _instructionNamespaces = new HashSet<InstructionNamespace>();
@@ -41,7 +44,7 @@ namespace Axis.Libra.Request
         /// <param name="interceptorProfile">The optional interceptors for the request handler</param>
         /// <returns></returns>
         public RequestManifestBuilder AddRequestHandler<TRequest, TResult, TRequestHandler>(
-            RegistryScope scope = default,
+            ResolutionScope scope = default,
             InterceptorProfile interceptorProfile = default)
             where TRequest : IRequest<TResult>
             where TRequestHandler : class, IRequestHandler<TRequest, TResult>
@@ -98,10 +101,6 @@ namespace Axis.Libra.Request
             // request-type implements IRequest
             if (!requestMap.Key.ImplementsGenericInterface(typeof(IRequest<>)))
                 throw new InvalidOperationException($"{messagePrefix} request type does not implement {typeof(IRequest<>)}");
-
-            // request-type is decorated with InstructionNamespaceAttribute
-            if (!requestMap.Key.HasInstructionNamespace())
-                throw new InvalidOperationException($"{messagePrefix} request type is not decorated with {nameof(InstructionNamespaceAttribute)}");
 
             // InstructionNamespaceAttribute must be unique for each request
             if (containsNamespace(requestMap.Key.InstructionNamespace()))
@@ -162,7 +161,7 @@ namespace Axis.Libra.Request
         {
             _resolver = resolverContract ?? throw new ArgumentNullException(nameof(resolverContract));
             _requestHandlerMap = requestHandlerMap
-                .ThrowIfNull(new ArgumentNullException(nameof(requestHandlerMap)))
+                .ThrowIfNull(() => new ArgumentNullException(nameof(requestHandlerMap)))
                 .WithEach(kvp => RequestManifestBuilder.ValidateHandlerMap(kvp, _requestNamespaceMap.ContainsKey))
                 .WithEach(kvp => _requestNamespaceMap.Add(kvp.Key.InstructionNamespace(), kvp.Key))
                 .ToDictionary();
@@ -182,7 +181,7 @@ namespace Axis.Libra.Request
         /// Gets the request type mapped to the given namespace, or null if no mapping exists.
         /// </summary>
         /// <param name="namespace">The namespace</param>
-        public Type RequestTypeFor(InstructionNamespace @namespace)
+        public Type? RequestTypeFor(InstructionNamespace @namespace)
             => _requestNamespaceMap.TryGetValue(@namespace, out var requestType)
                 ? requestType
                 : null;
@@ -191,20 +190,21 @@ namespace Axis.Libra.Request
         /// Gets the request handler mapped to the given <typeparamref name="TRequest"/>, or null if no mapping exists.
         /// </summary>
         /// <typeparam name="TRequest">The request type</typeparam>
-        public IRequestHandler<TRequest, TResult> HandlerFor<TRequest, TResult>()
+        public IRequestHandler<TRequest, TResult>? HandlerFor<TRequest, TResult>()
         where TRequest : IRequest<TResult>
         {
-            return this
-                .GetRequestHandlerTypeOrNull(typeof(TRequest))
-                .AsOptional()
-                .Map(type => _resolver.Resolve(type))
-                .Map(Common.As<IRequestHandler<TRequest, TResult>>)
-                .ValueOrDefault();
+            return GetRequestHandlerTypeOrNull(typeof(TRequest)) switch
+            {
+                Type htype => _resolver
+                    .Resolve(htype)
+                    .As<IRequestHandler<TRequest, TResult>>(),
+                _ => null
+            };
         }
 
-        private Type GetRequestHandlerTypeOrNull(Type requestType)
+        private Type? GetRequestHandlerTypeOrNull(Type requestType)
             => _requestHandlerMap.TryGetValue(requestType, out var handlerType)
-                    ? handlerType
-                    : null;
+                ? handlerType
+                : null;
     }
 }

@@ -22,7 +22,7 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net6.0"
+          "net7.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -30,8 +30,8 @@
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net6.0": {
-            "targetAlias": "net6.0",
+          "net7.0": {
+            "targetAlias": "net7.0",
             "projectReferences": {
               "C:\\Dantte\\Dev\\Repos\\Axis.Libra\\Axis.Libra\\Axis.Libra.csproj": {
                 "projectPath": "C:\\Dantte\\Dev\\Repos\\Axis.Libra\\Axis.Libra\\Axis.Libra.csproj"
@@ -46,14 +46,8 @@
         }
       },
       "frameworks": {
-        "net6.0": {
-          "targetAlias": "net6.0",
-          "dependencies": {
-            "Axis.Luna.Operation": {
-              "target": "Package",
-              "version": "[6.0.2, )"
-            }
-          },
+        "net7.0": {
+          "targetAlias": "net7.0",
           "imports": [
             "net461",
             "net462",
@@ -65,20 +59,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[6.0.16, 6.0.16]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[6.0.16, 6.0.16]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[6.0.16, 6.0.16]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
@@ -89,7 +69,7 @@
       }
     },
     "C:\\Dantte\\Dev\\Repos\\Axis.Libra\\Axis.Libra\\Axis.Libra.csproj": {
-      "version": "0.2.0",
+      "version": "1.0.0",
       "restore": {
         "projectUniqueName": "C:\\Dantte\\Dev\\Repos\\Axis.Libra\\Axis.Libra\\Axis.Libra.csproj",
         "projectName": "Axis.Libra",
@@ -107,9 +87,7 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net5.0",
-          "net6.0",
-          "netcoreapp3.1"
+          "net7.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -117,16 +95,8 @@
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "netcoreapp3.1": {
-            "targetAlias": "netcoreapp3.1",
-            "projectReferences": {}
-          },
-          "net5.0": {
-            "targetAlias": "net5.0",
-            "projectReferences": {}
-          },
-          "net6.0": {
-            "targetAlias": "net6.0",
+          "net7.0": {
+            "targetAlias": "net7.0",
             "projectReferences": {}
           }
         },
@@ -137,24 +107,28 @@
         }
       },
       "frameworks": {
-        "netcoreapp3.1": {
-          "targetAlias": "netcoreapp3.1",
+        "net7.0": {
+          "targetAlias": "net7.0",
           "dependencies": {
+            "Axis.Luna.Extensions": {
+              "target": "Package",
+              "version": "[6.0.28, )"
+            },
             "Axis.Luna.FInvoke": {
               "target": "Package",
-              "version": "[6.0.2, )"
-            },
-            "Axis.Luna.Operation": {
-              "target": "Package",
-              "version": "[6.0.2, )"
+              "version": "[6.0.28, )"
             },
             "Axis.Proteus": {
               "target": "Package",
-              "version": "[7.1.0, )"
+              "version": "[8.0.1, )"
             },
             "HashDepot": {
               "target": "Package",
-              "version": "[2.0.3, )"
+              "version": "[3.1.0, )"
+            },
+            "System.Collections.Immutable": {
+              "target": "Package",
+              "version": "[8.0.0, )"
             }
           },
           "imports": [
@@ -168,96 +142,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "frameworkReferences": {
-            "Microsoft.NETCore.App": {
-              "privateAssets": "all"
-            }
-          },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
-        },
-        "net5.0": {
-          "targetAlias": "net5.0",
-          "dependencies": {
-            "Axis.Luna.FInvoke": {
-              "target": "Package",
-              "version": "[6.0.2, )"
-            },
-            "Axis.Luna.Operation": {
-              "target": "Package",
-              "version": "[6.0.2, )"
-            },
-            "Axis.Proteus": {
-              "target": "Package",
-              "version": "[7.1.0, )"
-            },
-            "HashDepot": {
-              "target": "Package",
-              "version": "[2.0.3, )"
-            }
-          },
-          "imports": [
-            "net461",
-            "net462",
-            "net47",
-            "net471",
-            "net472",
-            "net48",
-            "net481"
-          ],
-          "assetTargetFallback": true,
-          "warn": true,
-          "frameworkReferences": {
-            "Microsoft.NETCore.App": {
-              "privateAssets": "all"
-            }
-          },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
-        },
-        "net6.0": {
-          "targetAlias": "net6.0",
-          "dependencies": {
-            "Axis.Luna.FInvoke": {
-              "target": "Package",
-              "version": "[6.0.2, )"
-            },
-            "Axis.Luna.Operation": {
-              "target": "Package",
-              "version": "[6.0.2, )"
-            },
-            "Axis.Proteus": {
-              "target": "Package",
-              "version": "[7.1.0, )"
-            },
-            "HashDepot": {
-              "target": "Package",
-              "version": "[2.0.3, )"
-            }
-          },
-          "imports": [
-            "net461",
-            "net462",
-            "net47",
-            "net471",
-            "net472",
-            "net48",
-            "net481"
-          ],
-          "assetTargetFallback": true,
-          "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[6.0.16, 6.0.16]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[6.0.16, 6.0.16]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[6.0.16, 6.0.16]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
