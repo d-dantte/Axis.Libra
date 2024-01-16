@@ -28,8 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Functional\Request\" />
-    <Folder Include="Functional\Utils\" />
+    <Folder Include="Functional\" />
   </ItemGroup>
 
 </Project>

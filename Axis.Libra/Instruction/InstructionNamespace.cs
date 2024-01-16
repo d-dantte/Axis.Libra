@@ -1,4 +1,5 @@
-﻿using Axis.Luna.Extensions;
+﻿using Axis.Luna.Common;
+using Axis.Luna.Extensions;
 using System;
 using System.Text.RegularExpressions;
 
@@ -7,17 +8,22 @@ namespace Axis.Libra.Instruction
     /// <summary>
     /// 
     /// </summary>
-    public readonly struct InstructionNamespace
+    public readonly struct InstructionNamespace:
+        IDefaultValueProvider<InstructionNamespace>
     {
         /// <summary>
         /// <see cref="Regex"/> that describes the pattern for instruction namespaces
         /// </summary>
-        public static readonly Regex NamespacePattern = new("^[a-zA-Z_][\\w-]*(\\.[\\w-]+)*$");
+        public static readonly Regex NamespacePattern = new("^[a-zA-Z_][\\w-]*(\\.[\\w-]+)*(@[a-fA-F0-9]+)?$");
 
         /// <summary>
         /// The 'unique' name for this namespace
         /// </summary>
         public string Name { get; }
+
+        public bool IsDefault => Name is null;
+
+        public static InstructionNamespace Default => default;
 
         public InstructionNamespace(string @namespace)
         {

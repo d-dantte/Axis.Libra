@@ -1,14 +1,14 @@
-﻿using Axis.Luna.Extensions;
-using HashDepot;
+﻿using Axis.Luna.Common;
+using Axis.Luna.Extensions;
 using System;
-using System.Text.RegularExpressions;
 
 namespace Axis.Libra.Instruction
 {
     /// <summary>
     /// Represents the uri of an instruction. It takes the general form <c>qry:some.name.space/f0fa102ffce5</c>
     /// </summary>
-    public readonly struct InstructionURI
+    public readonly struct InstructionURI:
+        IDefaultValueProvider<InstructionURI>
     {
 
         /// <summary>
@@ -26,6 +26,13 @@ namespace Axis.Libra.Instruction
         /// </summary>
         public InstructionHash Hash { get; }
 
+        public bool IsDefault =>
+            Scheme is null
+            && Namespace.IsDefault
+            && Hash.IsDefault;
+
+        public static InstructionURI Default => default;
+
         public InstructionURI(
             Scheme scheme,
             InstructionNamespace @namespace,
@@ -41,8 +48,8 @@ namespace Axis.Libra.Instruction
 
         public override string ToString()
         {
-            return Scheme != null // default(InstructionURI).Scheme is null
-                ? $"{Scheme.Value.ToSchemeCode()}:{Namespace}/{Hash}"
+            return Scheme is not null
+                ? $"{Scheme.Value.ToSchemeCode()}::{Namespace}#{Hash}"
                 : "*";
         }
 
@@ -67,8 +74,8 @@ namespace Axis.Libra.Instruction
             else
             {
                 var scheme = uriValue[..3].ToScheme();
-                (var @namespace, var idhex) = uriValue[4..]
-                    .Split('/')
+                (var @namespace, var idhex) = uriValue[5..]
+                    .Split('#')
                     .ApplyTo(parts => (parts[0], parts[1]));
 
                 return new InstructionURI(scheme, @namespace, idhex);

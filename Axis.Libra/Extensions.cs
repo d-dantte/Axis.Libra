@@ -1,37 +1,14 @@
 ﻿using Axis.Libra.Instruction;
 using Axis.Luna.Extensions;
+using HashDepot;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Reflection;
+using System.Text;
 
 namespace Axis.Libra
 {
     internal static class Extensions
     {
-        private static readonly ConcurrentDictionary<Type, InstructionNamespace> NamespaceCache = new();
-
-        public static InstructionNamespace InstructionNamespace(this IInstruction instruction) => instruction.GetType().InstructionNamespace();
-
-        public static InstructionNamespace InstructionNamespace(this Type instructionType)
-        {
-            ArgumentNullException.ThrowIfNull(instructionType);
-
-            return NamespaceCache.GetOrAdd(instructionType, type =>
-            {
-                // search for the static "InstructionNamespace" method on the type, then call it.
-                var methodInfo = instructionType
-                    .GetStaticInstructionNamespaceMethod()
-                    .ThrowIfNull(() => new InvalidOperationException(
-                        $"Invalid {nameof(instructionType)}: no static {nameof(IInstruction.InstructionNamespace)} method."));
-
-                // using regular reflection call because this is only ever done once, and then cached. The overhead of creating
-                // a delegate, using it once, and then discarding it, doesn't seem like a worthwhile endeavor.
-                return methodInfo!
-                    .Invoke(null, Array.Empty<object>())
-                    .As<InstructionNamespace>();
-            });
-        }
 
         public static string ToSchemeCode(this Scheme scheme)
         {
@@ -55,7 +32,7 @@ namespace Axis.Libra
             };
         }
 
-        public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this
+        internal static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this
             IEnumerable<KeyValuePair<TKey, TValue>> keyValuePairs,
             bool ignoreDuplicates)
             where TKey: notnull
@@ -74,20 +51,24 @@ namespace Axis.Libra
             return result;
         }
 
-        private static MethodInfo? GetStaticInstructionNamespaceMethod(this Type type)
+
+
+        /// <summary>
+        /// Creates a namespace out of the fully qualified name of the instruction type.
+        /// </summary>
+        internal static InstructionNamespace DefaultInstructionNamespace(this
+            Type instructionType,
+            string instructionKind)
         {
-            if (type is null || typeof(object).Equals(type))
-                return null;
+            var typeNamespace = instructionType.Namespace ?? $"User.{instructionKind}";
+            var assemblyQualifiedNameHash = instructionType
+                .AssemblyQualifiedName!
+                .ThrowIfNull(() => new InvalidOperationException($"Invalid {instructionKind} type {instructionType}"))
+                .ApplyTo(Encoding.Unicode.GetBytes)
+                .ApplyTo(bytes => XXHash.Hash64(bytes));
 
-            var method = type.GetMethod(
-                nameof(IInstruction.InstructionNamespace),
-                BindingFlags.Public | BindingFlags.Static);
-
-            return method switch
-            {
-                MethodInfo => method,
-                _ => type.BaseType!.GetStaticInstructionNamespaceMethod()
-            };
+            return $"{typeNamespace}@{assemblyQualifiedNameHash:x}";
         }
+
     }
 }

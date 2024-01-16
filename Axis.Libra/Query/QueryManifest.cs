@@ -1,39 +1,28 @@
 ﻿using Axis.Libra.Instruction;
+using Axis.Libra.Utils;
 using Axis.Luna.Extensions;
-using Axis.Proteus.Interception;
 using Axis.Proteus.IoC;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Axis.Libra.Query
 {
     /// <summary>
     /// Builder for the <see cref="QueryManifest"/>
-    /// <para>
-    /// NOTE: experiment with passing the <see cref="IRegistrarContract"/> as an argument into the
-    /// <see cref="QueryManifestBuilder.AddQueryHandler{TQuery, TResult, TQueryHandler}(RegistryScope, InterceptorProfile)"/> method,
-    /// rather than having it as a member field/property. This way, passing in the <see cref="IResolverContract"/> to the
-    /// <see cref="QueryManifestBuilder.BuildManifest(IResolverContract)"/>
-    /// method seems natural.
-    /// </para>
     /// </summary>
     public class QueryManifestBuilder
     {
-        private readonly IRegistrarContract _contract;
-        private readonly Dictionary<Type, Type> _queryHandlerMap;
-        private readonly HashSet<InstructionNamespace> _instructionNamespaces;
+        private readonly List<QueryInfo> _queryInfoList = new();
+        private readonly HashSet<InstructionNamespace> _namespaces = new();
+        private readonly HashSet<Type> _queryTypes = new();
 
-        public QueryManifestBuilder(IRegistrarContract contract)
-        {
-            _contract = contract
-                ?.ThrowIf(
-                    c => c.IsRegistrationClosed(),
-                    _ => new ArgumentException($"{nameof(contract)} is locked"))
-                ?? throw new ArgumentNullException(nameof(contract));
-            _queryHandlerMap = new Dictionary<Type, Type>();
-            _instructionNamespaces = new HashSet<InstructionNamespace>();
-        }
+        internal ImmutableArray<QueryInfo> QueryInfoList => _queryInfoList.ToImmutableArray();
+
+        public QueryManifestBuilder()
+        { }
 
         /// <summary>
         /// Adds a query handler to the manifest, and also registers it with the underlying <see cref="IRegistrarContract"/>
@@ -43,20 +32,36 @@ namespace Axis.Libra.Query
         /// <param name="scope">The optional IoC registration scope</param>
         /// <param name="interceptorProfile">The optional interceptors for the query handler</param>
         /// <returns></returns>
-        public QueryManifestBuilder AddQueryHandler<TQuery, TResult, TQueryHandler>(
-            ResolutionScope scope = default,
-            InterceptorProfile interceptorProfile = default)
-            where TQuery : IQuery<TResult>
-            where TQueryHandler : class, IQueryHandler<TQuery, TResult>
+        public QueryManifestBuilder AddQueryHandler<TQuery, TQueryHandler, TResult>(
+            Func<TQuery, InstructionURI, TQueryHandler, Task<TResult>> queryHandler,
+            Func<TQuery, ulong>? queryHasher = null,
+            InstructionNamespace @namespace = default)
         {
-            ValidateHandlerMap(
-                typeof(TQuery).ValuePair(typeof(TQueryHandler)),
-                @namespace => _instructionNamespaces.Contains(@namespace));
+            ArgumentNullException.ThrowIfNull(queryHandler);
 
-            // placing this here so failed registrations will throw exceptions and subsequent statements wont execute
-            _ = _contract.Register<TQueryHandler>(scope, interceptorProfile);
-            _queryHandlerMap.Add(typeof(TQuery), typeof(TQueryHandler));
-            _instructionNamespaces.Add(typeof(TQuery).InstructionNamespace());
+            var _namespace = @namespace.IsDefault
+                ? typeof(TQuery).DefaultInstructionNamespace("Query")
+                : @namespace;
+
+            Func<object, ulong> _hasher = queryHasher is not null
+                ? qryObj => queryHasher.Invoke((TQuery)qryObj)
+                : PropertySerializer.HashProperties;
+
+            if (!_namespaces.Add(_namespace))
+                throw new InvalidOperationException(
+                    $"Invalid {nameof(@namespace)}: duplicate value '{@namespace}'");
+
+            if (!_queryTypes.Add(typeof(TQuery)))
+                throw new InvalidOperationException(
+                    $"Invalid query type: duplicate value '{typeof(TQuery)}'");
+
+            var info = new QueryInfo(
+                _namespace,
+                typeof(TQuery),
+                typeof(TQueryHandler),
+                (qryObj, uri, hnldObj) => queryHandler.Invoke((TQuery)qryObj, uri, (TQueryHandler)hnldObj),
+                _hasher);
+            _queryInfoList.Add(info);
 
             return this;
         }
@@ -65,148 +70,64 @@ namespace Axis.Libra.Query
         /// Creates a <see cref="QueryManifest"/> instance using the given resolver
         /// </summary>
         /// <param name="resolver">The service resolver</param>
-        public QueryManifest BuildManifest(IResolverContract resolver)
-        {
-            return new QueryManifest(resolver, _queryHandlerMap);
-        }
-
-
-        /// <summary>
-        /// check that the query map is valid:
-        /// <list type="number">
-        /// <item><see cref="IQuery{TResult}"/> is non-null</item>
-        /// <item>query-type implements <see cref="IQuery{TResult}"/></item>
-        /// <item>query-type is decorated with <see cref="InstructionNamespaceAttribute"/></item>
-        /// <item><see cref="InstructionNamespaceAttribute"/> must be unique for each query</item>
-        /// <item>handler-type implements <see cref="IQueryHandler{TQuery, TResult}"/>, where <c>TQuery</c> is query-type (key) in the <paramref name="queryMap"/>.</item>
-        /// <item>handler type is non-null</item>
-        /// <item>handler type implements <see cref="IQueryHandler{TQuery, TResult}"/></item>
-        /// <item>handler must be a concrete class/struct</item>
-        /// </list>
-        /// </summary>
-        /// <param name="commndMap">The map from query-type to query-handler-type</param>
-        internal static void ValidateHandlerMap(
-            KeyValuePair<Type, Type> queryMap,
-            Func<InstructionNamespace, bool> containsNamespace)
-        {
-            var messagePrefix = "Invalid query-map:";
-
-            if (containsNamespace == null)
-                throw new ArgumentNullException(nameof(containsNamespace));
-
-            #region query validation
-            // query is non-null
-            if (queryMap.Key is null)
-                throw new InvalidOperationException($"{messagePrefix} query type cannot be null");
-
-            // query-type implements IQuery
-            if (!queryMap.Key.ImplementsGenericInterface(typeof(IQuery<>)))
-                throw new InvalidOperationException($"{messagePrefix} query type does not implement {typeof(IQuery<>)}");
-
-            // InstructionNamespaceAttribute must be unique for each query
-            if (containsNamespace(queryMap.Key.InstructionNamespace()))
-                throw new InvalidOperationException($"{messagePrefix} query type namespace '{queryMap.Key.InstructionNamespace()}' is not unique");
-            #endregion
-
-            #region query handler validation
-            // handler-type is non-null
-            if (queryMap.Value is null)
-                throw new InvalidOperationException($"{messagePrefix} handler type cannot be null");
-
-            // handler-type implements IQueryHandler<TQuery, TResult>
-            var resultType = queryMap.Key.TryGetGenericInterface(typeof(IQuery<>), out var type)
-                ? type.GetGenericArguments()[0]
-                : throw new InvalidOperationException($"{messagePrefix} query type does not have a result type");
-            var expectedInterface = typeof(IQueryHandler<,>).MakeGenericType(queryMap.Key, resultType);
-            if (!queryMap.Value.Implements(expectedInterface))
-                throw new InvalidOperationException($"{messagePrefix} handler type does not implement {expectedInterface}");
-
-            // handler must be a concrete class/struct. No need to check for delegates or enums, as those types cannot implement interfaces
-            if (!(!queryMap.Value.IsAbstract
-                && !queryMap.Value.IsGenericTypeDefinition
-                && !queryMap.Value.IsGenericParameter))
-                throw new InvalidOperationException($"{messagePrefix} handler type must be a concrete type");
-            #endregion
-        }
-
-
-        internal (Type queryType, Type queryHandlerType)[] QueryMaps() => _queryHandlerMap
-            .Select(kvp => (kvp.Key, kvp.Value))
-            .ToArray();
+        public QueryManifest BuildManifest() => new(_queryInfoList);
     }
 
     /// <summary>
-    /// A manifest is built out of the complete discovery and registration of querys.
-    /// It encapsulates a list of all <see cref="IQueryHandler{TQuery, TResult}"/> types, and corresponding <see cref="IQuery{TResult}"/> types in the system.
+    /// A manifest is built out of the complete registration of querys.
     /// </summary>
     public class QueryManifest
     {
         /// <summary>
-        /// The service resolver
-        /// </summary>
-        private readonly IResolverContract _resolver;
-
-        /// <summary>
         /// The namespace - query-type map
         /// </summary>
-        private readonly Dictionary<InstructionNamespace, Type> _queryNamespaceMap = new Dictionary<InstructionNamespace, Type>();
+        private readonly Dictionary<InstructionNamespace, QueryInfo> _queryNamespaceMap = new();
 
         /// <summary>
         /// The query-type - query-handler-type map
         /// </summary>
-        private readonly Dictionary<Type, Type> _queryHandlerMap;
+        private readonly Dictionary<Type, QueryInfo> _queryTypeMap = new();
 
-
-        public QueryManifest(
-            IResolverContract resolverContract,
-            Dictionary<Type, Type> queryHandlerMap)
+        public QueryManifest(IEnumerable<QueryInfo> infoList)
         {
-            _resolver = resolverContract ?? throw new ArgumentNullException(nameof(resolverContract));
-            _queryHandlerMap = queryHandlerMap
-                .ThrowIfNull(() => new ArgumentNullException(nameof(queryHandlerMap)))
-                .WithEach(kvp => QueryManifestBuilder.ValidateHandlerMap(kvp, _queryNamespaceMap.ContainsKey))
-                .WithEach(kvp => _queryNamespaceMap.Add(kvp.Key.InstructionNamespace(), kvp.Key))
-                .ToDictionary();
+            infoList
+                .ThrowIfNull(() => new ArgumentNullException(nameof(infoList)))
+                .ThrowIfAny(
+                    info => info.IsDefault,
+                    _ => new ArgumentException($"Invalid {nameof(infoList)}: contains default"))
+                .ForAll(info =>
+                {
+                    _queryNamespaceMap.Add(info.Namespace, info);
+                    _queryTypeMap.Add(info.QueryType, info);
+                });
         }
 
         /// <summary>
         /// Gets all the query namespaces.
         /// </summary>
-        public InstructionNamespace[] Namespaces() => _queryNamespaceMap.Keys.ToArray();
+        public ImmutableArray<InstructionNamespace> Namespaces() => _queryNamespaceMap.Keys.ToImmutableArray();
 
         /// <summary>
         /// Gets all the query types
         /// </summary>
-        public Type[] QueryTypes() => _queryHandlerMap.Keys.ToArray();
+        public ImmutableArray<Type> QueryTypes() => _queryTypeMap.Keys.ToImmutableArray();
+
+        /// <summary>
+        /// Gets the query type mapped to the given query type, or null if no mapping exists.
+        /// </summary>
+        /// <typeparam name="TQuery">The query type</typeparam>
+        internal QueryInfo? GetQueryInfo<TQuery>()
+            => _queryTypeMap.TryGetValue(typeof(TQuery), out var queryInfo)
+                ? queryInfo
+                : null;
 
         /// <summary>
         /// Gets the query type mapped to the given namespace, or null if no mapping exists.
         /// </summary>
         /// <param name="namespace">The namespace</param>
-        public Type? QueryTypeFor(InstructionNamespace @namespace)
-            => _queryNamespaceMap.TryGetValue(@namespace, out var queryType)
-                ? queryType
-                : null;
-
-        /// <summary>
-        /// Gets the query handler mapped to the given <typeparamref name="TQuery"/>, or null if no mapping exists.
-        /// </summary>
-        /// <typeparam name="TQuery">The query type</typeparam>
-        public IQueryHandler<TQuery, TResult>? HandlerFor<TQuery, TResult>()
-        where TQuery : IQuery<TResult>
-        {
-            return GetQueryHandlerTypeOrNull(typeof(TQuery)) switch
-            {
-                Type htype => _resolver
-                    .Resolve(htype)
-                    .As<IQueryHandler<TQuery, TResult>>(),
-                _ => null
-            };
-        }
-
-        private Type? GetQueryHandlerTypeOrNull(Type queryType)
-            => _queryHandlerMap.TryGetValue(queryType, out var handlerType)
-                ? handlerType
+        internal QueryInfo? GetQueryInfo(InstructionNamespace @namespace)
+            => _queryNamespaceMap.TryGetValue(@namespace, out var queryInfo)
+                ? queryInfo
                 : null;
     }
 }
