@@ -33,11 +33,15 @@ namespace Axis.Libra.Instruction
         {
         }
 
-        public static implicit operator InstructionHash(ulong hash) => new(hash);
-
         public static implicit operator InstructionHash(byte[] instructionData) => new(instructionData);
 
+        public static implicit operator InstructionHash(ulong hash) => new(hash);
+
         public static implicit operator InstructionHash(string hahsHex) => new(hahsHex);
+
+        public static implicit operator ulong(InstructionHash hash) => hash._hash;
+
+        public static implicit operator string(InstructionHash hash) => hash.ToString();
         #endregion
 
         public bool Equals(

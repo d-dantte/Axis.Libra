@@ -27,8 +27,4 @@
     <ProjectReference Include="..\Axis.Libra\Axis.Libra.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Functional\" />
-  </ItemGroup>
-
 </Project>

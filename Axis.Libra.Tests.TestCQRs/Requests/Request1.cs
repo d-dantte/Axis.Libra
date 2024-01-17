@@ -1,11 +1,6 @@
-﻿using Axis.Libra.Request;
-using Axis.Libra.Instruction;
-using Axis.Luna.Common;
-
-namespace Axis.Libra.Tests.TestCQRs.Requests
+﻿namespace Axis.Libra.Tests.TestCQRs.Requests
 {
-    [InstructionNamespace("axis:libra:test-crs:request1")]
-    public class Request1: AbstractRequest<Request1Result>
+    public class Request1
     {
         public int Age { get; set; }
 
@@ -17,15 +12,15 @@ namespace Axis.Libra.Tests.TestCQRs.Requests
         public int Stuff { get; set; }
     }
 
-    public class Request1Handler : IRequestHandler<Request1, Request1Result>
+    public class Request1Handler
     {
-        public async Task<IResult<Request1Result>> ExecuteRequest(Request1 request)
+        public Request1Result ExecuteRequest(Request1 request)
         {
             Console.WriteLine($"{typeof(Request1)} handler executed.");
-            return IResult<Request1Result>.Of(new Request1Result
+            return new Request1Result
             {
                 Stuff = 34
-            });
+            };
         }
     }
 }

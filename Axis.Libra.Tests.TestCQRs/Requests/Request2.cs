@@ -1,11 +1,6 @@
-﻿using Axis.Libra.Request;
-using Axis.Libra.Instruction;
-using Axis.Luna.Common;
-
-namespace Axis.Libra.Tests.TestCQRs.Requests
+﻿namespace Axis.Libra.Tests.TestCQRs.Requests
 {
-    [InstructionNamespace("axis:libra:test-crs:request2")]
-    public class Request2 : AbstractRequest<Request2Result>
+    public class Request2
     {
         public Uri? Something { get; set; }
     }
@@ -15,15 +10,15 @@ namespace Axis.Libra.Tests.TestCQRs.Requests
         public DateTimeOffset TimeStamp { get; set; }
     }
 
-    public class Request2Handler : IRequestHandler<Request2, Request2Result>
+    public class Request2Handler
     {
-        public async Task<IResult<Request2Result>> ExecuteRequest(Request2 request)
+        public Request2Result ExecuteRequest(Request2 request)
         {
             Console.WriteLine($"{typeof(Request2)} handler executed.");
-            return IResult<Request2Result>.Of(new Request2Result
+            return new Request2Result
             {
                 TimeStamp = DateTimeOffset.Now
-            });
+            };
         }
     }
 }

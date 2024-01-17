@@ -1,272 +1,125 @@
 ﻿using Axis.Libra.Command;
 using Axis.Libra.Tests.TestCQRs.Commands;
 using Axis.Libra.Instruction;
-using Axis.Luna.Common;
-using Axis.Luna.Extensions;
-using Axis.Proteus.Interception;
-using Axis.Proteus.IoC;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Immutable;
+using Axis.Libra.Tests.TestCQRs.Commands.Inner;
 
 namespace Axis.Libra.Tests.Unit.Command
 {
     [TestClass]
     public class CommandManifestBuilderTests
     {
-        private Moq.Mock<IRegistrarContract> mockRegistrar = new Moq.Mock<IRegistrarContract>();
-
-        [TestMethod]
-        public void Constructor_ShouldCreateValidInstance()
-        {
-            var instance = new CommandManifestBuilder(mockRegistrar.Object);
-            Assert.IsNotNull(instance);
-        }
-
-        [TestMethod]
-        public void Constructor_WithInvalidArgs_ShouldThrowException()
-        {
-            mockRegistrar
-                .Setup(r => r.IsRegistrationClosed())
-                .Returns(true);
-
-            Assert.ThrowsException<ArgumentNullException>(() => new CommandManifestBuilder(null));
-            Assert.ThrowsException<ArgumentException>(() => new CommandManifestBuilder(mockRegistrar.Object));
-        }
 
         [TestMethod]
         public void AddCommandHandler_ShouldRegister_AndAddMap()
         {
             // arrange
-            mockRegistrar
-                .Setup(r => r.Register<TestCQRs.Commands.Command1Handler>(
-                    It.IsAny<RegistryScope>(),
-                    It.IsAny<InterceptorProfile>(),
-                    It.IsAny<IBindContext[]>()))
-                .Returns(mockRegistrar.Object)
-                .Verifiable();
-
-            var builder = new CommandManifestBuilder(mockRegistrar.Object);
+            var builder = new CommandManifestBuilder();
 
             // act
-            var returned = builder.AddCommandHandler<TestCQRs.Commands.Command1, TestCQRs.Commands.Command1Handler>();
+            var returnedBuilder1 = builder.AddCommandHandler<Command1, Command1Handler, Command1Handler>(
+                (cmd, uri, handler) => handler.ExecuteCommand(cmd),
+                (uri, handler) => handler.ExecuteSatusRequest(uri));
 
-            // assert
-            Assert.IsTrue(builder
-                .CommandMaps()
-                .Any(m => m.commandType == typeof(TestCQRs.Commands.Command1)
-                    && m.commandHandlerType == typeof(TestCQRs.Commands.Command1Handler)));
-            Assert.AreEqual(returned, builder);
-            mockRegistrar.Verify();
-        }
+            var returnedBuilder2 = builder.AddCommandHandler<Command2, Command2Handler, Command2Handler>(
+                (cmd, uri, handler) => handler.ExecuteCommand(cmd),
+                (uri, handler) => handler.ExecuteSatusRequest(uri),
+                (cmd) => cmd.InstructionHash(),
+                Command2.InstructionNamespace());
 
-        [TestMethod]
-        public void ValidateHandlerMap_ShouldValidate()
-        {
-            // valid args
-            CommandManifestBuilder.ValidateHandlerMap(
-                typeof(TestCQRs.Commands.Command1).ValuePair(typeof(TestCQRs.Commands.Command1Handler)),
-                ns => false);
+            // test
 
-            #region command
-            // null predicate
-            Assert.ThrowsException<ArgumentNullException>(() => CommandManifestBuilder.ValidateHandlerMap(
-                typeof(TestCQRs.Commands.Command1).ValuePair(typeof(TestCQRs.Commands.Command1Handler)),
-                null));
+            // 1. reject duplicates
+            Assert.ThrowsException<InvalidOperationException>(() =>
+                builder.AddCommandHandler<Command1, Command1Handler, Command1Handler>(
+                    (cmd, uri, handler) => handler.ExecuteCommand(cmd),
+                    (uri, handler) => handler.ExecuteSatusRequest(uri)));
 
-            // null-command type
-            Assert.ThrowsException<InvalidOperationException>(() => CommandManifestBuilder.ValidateHandlerMap(
-                ((Type)null).ValuePair(typeof(TestCQRs.Commands.Command1Handler)),
-                ns => false));
+            // 2. returned builders are same as original builder
+            Assert.IsTrue(object.ReferenceEquals(builder, returnedBuilder1));
+            Assert.IsTrue(object.ReferenceEquals(builder, returnedBuilder2));
 
-            // doesn't implement the ICommand interface
-            Assert.ThrowsException<InvalidOperationException>(() => CommandManifestBuilder.ValidateHandlerMap(
-                (typeof(object)).ValuePair(typeof(TestCQRs.Commands.Command1Handler)),
-                ns => false));
-
-            // non-decorated command type
-            Assert.ThrowsException<InvalidOperationException>(() => CommandManifestBuilder.ValidateHandlerMap(
-                (typeof(NonDecoratedCommand)).ValuePair(typeof(TestCQRs.Commands.Command1Handler)),
-                ns => false));
-
-            // non-unique namespace command type
-            Assert.ThrowsException<InvalidOperationException>(() => CommandManifestBuilder.ValidateHandlerMap(
-                (typeof(TestCQRs.Commands.Command1)).ValuePair(typeof(TestCQRs.Commands.Command1Handler)),
-                ns => true));
-            #endregion
-
-            #region command handler
-            // null handler-type
-            Assert.ThrowsException<InvalidOperationException>(() => CommandManifestBuilder.ValidateHandlerMap(
-                typeof(TestCQRs.Commands.Command1).ValuePair((Type)null),
-                ns => false));
-
-            // doesn't implement the ICommandHandler<> interface
-            Assert.ThrowsException<InvalidOperationException>(() => CommandManifestBuilder.ValidateHandlerMap(
-                typeof(TestCQRs.Commands.Command1).ValuePair(typeof(object)),
-                ns => false));
-
-            // doesn't implement the ICommandHandler<> interface
-            Assert.ThrowsException<InvalidOperationException>(() => CommandManifestBuilder.ValidateHandlerMap(
-                typeof(TestCQRs.Commands.Command1).ValuePair(typeof(TestCQRs.Commands.Command2Handler)),
-                ns => false));
-
-            // is not a concrete type
-            Assert.ThrowsException<InvalidOperationException>(() => CommandManifestBuilder.ValidateHandlerMap(
-                typeof(TestCQRs.Commands.Command1).ValuePair(typeof(ICommand1Handler2)),
-                ns => false));
-
-            Assert.ThrowsException<InvalidOperationException>(() => CommandManifestBuilder.ValidateHandlerMap(
-                typeof(TestCQRs.Commands.Command1).ValuePair(typeof(Command1Handler2)),
-                ns => false));
-
-            Assert.ThrowsException<InvalidOperationException>(() => CommandManifestBuilder.ValidateHandlerMap(
-                typeof(TestCQRs.Commands.Command1).ValuePair(typeof(GenericCommand1Handler3<>)),
-                ns => false));
-            #endregion
+            // 3. builder has 2 elements
+            Assert.AreEqual(2, builder.CommandInfoList.Length);
         }
     }
 
     [TestClass]
     public class CommandManifestTest
     {
-        private Mock<IResolverContract> mockResolver = new Moq.Mock<IResolverContract>();
-
         [TestMethod]
         public void Constructor_ShouldReturnValidInstance()
         {
-            var manifest = new CommandManifest(
-                mockResolver.Object,
-                new Dictionary<Type, Type>());
-            Assert.IsNotNull(manifest);
-
-            var handlerMap = new Dictionary<Type, Type>
-            {
-                [typeof(Command1)] = typeof(Command1Handler)
-            };
-            manifest = new CommandManifest(mockResolver.Object, handlerMap);
-            Assert.IsNotNull(manifest);
-        }
-
-        [TestMethod]
-        public void Constructor_WithInvalidArgs_ShouldThrowException()
-        {
-            var handlerMap = new Dictionary<Type, Type>();
-
-            Assert.ThrowsException<ArgumentNullException>(() => new CommandManifest(null, handlerMap));
-            Assert.ThrowsException<ArgumentNullException>(() => new CommandManifest(mockResolver.Object, null));
-
-            handlerMap[typeof(Command1)] = typeof(Command1Handler);
-            handlerMap[typeof(Command1)] = typeof(Command2Handler);
-
-            Assert.ThrowsException<InvalidOperationException>(() => new CommandManifest(mockResolver.Object, handlerMap));
+            Assert.ThrowsException<ArgumentNullException>(() => new CommandManifest(null));
+            Assert.ThrowsException<ArgumentException>(() => new CommandManifest(
+                new[] { default(CommandInfo)}));
         }
 
         [TestMethod]
         public void Namespaces_ShouldReturnAllCommandNamespaces()
         {
-            var handlerMap = new Dictionary<Type, Type>
-            {
-                [typeof(Command1)] = typeof(Command1Handler),
-                [typeof(Command2)] = typeof(Command2Handler)
-            };
-            var manifest = new CommandManifest(mockResolver.Object, handlerMap);
+            var manifest = new CommandManifest(GetCommandInfoList());
+            var namespaces = manifest.Namespaces();
 
-            Assert.IsTrue(
-                manifest
-                    .Namespaces()
-                    .SequenceEqual(new[] { typeof(Command1).InstructionNamespace(), typeof(Command2).InstructionNamespace() }));
+            Assert.AreEqual(3, namespaces.Length);
         }
 
         [TestMethod]
         public void CommandTypes_ShouldReturnAllCommanTypes()
         {
-            var handlerMap = new Dictionary<Type, Type>
-            {
-                [typeof(Command1)] = typeof(Command1Handler),
-                [typeof(Command2)] = typeof(Command2Handler)
-            };
-            var manifest = new CommandManifest(mockResolver.Object, handlerMap);
+            var manifest = new CommandManifest(GetCommandInfoList());
+            var types = manifest.CommandTypes();
 
-            Assert.IsTrue(
-                manifest
-                    .CommandTypes()
-                    .SequenceEqual(new[] { typeof(Command1), typeof(Command2) }));
+            Assert.AreEqual(3, types.Length);
         }
 
         [TestMethod]
-        public void CommandTypeFor_ShouldReturnCorrectCommandType()
+        public void GetCommandInfo_ShouldReturnCorrectInfo()
         {
-            var handlerMap = new Dictionary<Type, Type>
-            {
-                [typeof(Command1)] = typeof(Command1Handler),
-                [typeof(Command2)] = typeof(Command2Handler)
-            };
-            var manifest = new CommandManifest(mockResolver.Object, handlerMap);
+            var manifest = new CommandManifest(GetCommandInfoList());
 
-            var commandType = manifest.CommandTypeFor(typeof(Command1).InstructionNamespace());
-            Assert.AreEqual(typeof(Command1), commandType);
+            var info = manifest.GetCommandInfo<Command1>();
+            Assert.IsNotNull(info);
+            Assert.AreEqual(typeof(Command1), info.Value.CommandType);
+
+            info = manifest.GetCommandInfo(Command1.InstructionNamespace());
+            Assert.IsNotNull(info);
+            Assert.AreEqual(typeof(Command1), info.Value.CommandType);
+            Assert.AreEqual(Command1.InstructionNamespace(), info.Value.Namespace);
+            Assert.AreEqual(typeof(Command1Handler), info.Value.HandlerType);
+            Assert.AreEqual(typeof(Command1Handler), info.Value.StatusRequestHandlerType);
         }
 
-        [TestMethod]
-        public void HandlerFor_ShouldReturnCorrectHandlerInstance()
+        private ImmutableArray<CommandInfo> GetCommandInfoList()
         {
-            mockResolver
-                .Setup(r => r.Resolve(It.IsAny<Type>(), It.IsAny<ResolutionContextName>()))
-                .Returns(new Command1Handler());
-            var handlerMap = new Dictionary<Type, Type>
-            {
-                [typeof(Command1)] = typeof(Command1Handler),
-                [typeof(Command2)] = typeof(Command2Handler)
-            };
-            var manifest = new CommandManifest(mockResolver.Object, handlerMap);
-
-            var handlerInstance = manifest.HandlerFor<Command1>();
-            Assert.IsNotNull(handlerInstance);
-        }
-
-        [TestMethod]
-        public void StatusHandlerFor_ShouldReturnCorrectHandlerInstance()
-        {
-            mockResolver
-                .Setup(r => r.Resolve(It.IsAny<Type>(), It.IsAny<ResolutionContextName>()))
-                .Returns(new Command1Handler());
-            var handlerMap = new Dictionary<Type, Type>
-            {
-                [typeof(Command1)] = typeof(Command1Handler),
-                [typeof(Command2)] = typeof(Command2Handler)
-            };
-            var manifest = new CommandManifest(mockResolver.Object, handlerMap);
-
-            var handlerInstance = manifest.StatusHandlerFor(typeof(Command2).InstructionNamespace());
-            Assert.IsNotNull(handlerInstance);
-        }
-    }
-
-    public class NonDecoratedCommand : ICommand
-    {
-        public InstructionURI InstructionURI => default;
-    }
-
-    public interface ICommand1Handler2: ICommandHandler<TestCQRs.Commands.Command1>
-    { }
-
-    public abstract class Command1Handler2: TestCQRs.Commands.Command1Handler
-    { }
-
-    public class GenericCommand1Handler3<T> : ICommandHandler<TestCQRs.Commands.Command1>
-    {
-        public Task<IResult<InstructionURI>> ExecuteCommand(Command1 command)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IResult<ICommandStatus>> ExecuteSatusRequest(InstructionURI commandURI)
-        {
-            throw new NotImplementedException();
+            return ImmutableArray.Create(
+                new CommandInfo(
+                    Command1.InstructionNamespace(),
+                    typeof(Command1),
+                    typeof(Command1Handler),
+                    typeof(Command1Handler),
+                    (x, y, z) => Task.CompletedTask,
+                    (x, y) => Task.FromResult(ICommandStatus.OfSuccess(x)),
+                    (x) => 0),
+                new CommandInfo(
+                    Command2.InstructionNamespace(),
+                    typeof(Command2),
+                    typeof(Command2Handler),
+                    typeof(Command2Handler),
+                    (x, y, z) => Task.CompletedTask,
+                    (x, y) => Task.FromResult(ICommandStatus.OfSuccess(x)),
+                    (x) => 0),
+                new CommandInfo(
+                    new InstructionNamespace("Command3.Namespace"),
+                    typeof(Command3),
+                    typeof(Command3Handler),
+                    typeof(Command3Handler),
+                    (x, y, z) => Task.CompletedTask,
+                    (x, y) => Task.FromResult(ICommandStatus.OfSuccess(x)),
+                    (x) => 0));
         }
     }
 }

@@ -7,12 +7,12 @@ using System.Text;
 
 namespace Axis.Libra.Tests.TestCQRs.Commands
 {
-    public class Command1: ICommand
+    public class Command1
     {
         public string? Name { get; set; }
         public string? Description { get; set; }
 
-        public static InstructionNamespace InstructionNamespace() => "axis:libra:test-crs:command1";
+        public static InstructionNamespace InstructionNamespace() => "axis.libra.test-crs.command1";
 
         public InstructionHash InstructionHash()
         {
@@ -22,12 +22,9 @@ namespace Axis.Libra.Tests.TestCQRs.Commands
         }
     }
 
-    public class Command1Handler :
-        ICommandHandler<Command1>
+    public class Command1Handler
     {
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        public async Task<IResult<ICommandStatus>> ExecuteSatusRequest(InstructionURI commandURI)
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+        public async Task<ICommandStatus> ExecuteSatusRequest(InstructionURI commandURI)
         {
             var status =  new Random(Guid.NewGuid().GetHashCode()).Next(5) switch
             {
@@ -40,15 +37,14 @@ namespace Axis.Libra.Tests.TestCQRs.Commands
             };
 
             Console.WriteLine($"status request for: {commandURI}");
-            return Result.Of(status);
+            await Task.Delay(1);
+            return status;
         }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        public async Task<IResult<InstructionURI>> ExecuteCommand(Command1 command)
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+        public async Task ExecuteCommand(Command1 command)
         {
             Console.WriteLine($"{typeof(Command1)} handler executed.");
-            return Result.Of(command.InstructionURI);
+            await Task.Delay(1);
         }
     }
 }

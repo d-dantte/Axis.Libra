@@ -1,250 +1,115 @@
 ﻿using Axis.Libra.Request;
-using Axis.Libra.Tests.TestCQRs.Requests;
 using Axis.Libra.Instruction;
-using Axis.Luna.Extensions;
-using Axis.Proteus.Interception;
-using Axis.Proteus.IoC;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Immutable;
+using Axis.Libra.Tests.TestCQRs.Requests;
+using Axis.Libra.Tests.TestCQRs.Requests.Inner;
 
 namespace Axis.Libra.Tests.Unit.Request
 {
     [TestClass]
     public class RequestManifestBuilderTests
     {
-        private Moq.Mock<IRegistrarContract> mockRegistrar = new Moq.Mock<IRegistrarContract>();
-
-        [TestMethod]
-        public void Constructor_ShouldCreateValidInstance()
-        {
-            var instance = new RequestManifestBuilder(mockRegistrar.Object);
-            Assert.IsNotNull(instance);
-        }
-
-        [TestMethod]
-        public void Constructor_WithInvalidArgs_ShouldThrowException()
-        {
-            mockRegistrar
-                .Setup(r => r.IsRegistrationClosed())
-                .Returns(true);
-
-            Assert.ThrowsException<ArgumentNullException>(() => new RequestManifestBuilder(null));
-            Assert.ThrowsException<ArgumentException>(() => new RequestManifestBuilder(mockRegistrar.Object));
-        }
 
         [TestMethod]
         public void AddRequestHandler_ShouldRegister_AndAddMap()
         {
             // arrange
-            mockRegistrar
-                .Setup(r => r.Register<Request1Handler>(
-                    It.IsAny<RegistryScope>(),
-                    It.IsAny<InterceptorProfile>(),
-                    It.IsAny<IBindContext[]>()))
-                .Returns(mockRegistrar.Object)
-                .Verifiable();
-
-            var builder = new RequestManifestBuilder(mockRegistrar.Object);
+            var builder = new RequestManifestBuilder();
 
             // act
-            var returned = builder.AddRequestHandler<Request1, Request1Result, Request1Handler>();
+            var returnedBuilder1 = builder.AddRequestHandler<Request1, Request1Handler, Request1Result>(
+                (qry, uri, handler) => handler.ExecuteRequest(qry));
 
-            // assert
-            Assert.IsTrue(builder
-                .RequestMaps()
-                .Any(m => m.queryType == typeof(Request1)
-                    && m.queryHandlerType == typeof(Request1Handler)));
-            Assert.AreEqual(returned, builder);
-            mockRegistrar.Verify();
-        }
+            var returnedBuilder2 = builder.AddRequestHandler<Request2, Request2Handler, Request2Result>(
+                (qry, uri, handler) => handler.ExecuteRequest(qry),
+                (qry) => unchecked((ulong)qry.Something.GetHashCode()),
+                new InstructionNamespace("Request2"));
 
-        [TestMethod]
-        public void ValidateHandlerMap_ShouldValidate()
-        {
-            // valid args
-            RequestManifestBuilder.ValidateHandlerMap(
-                typeof(Request1).ValuePair(typeof(Request1Handler)),
-                ns => false);
+            // test
 
-            #region query
-            // null predicate
-            Assert.ThrowsException<ArgumentNullException>(() => RequestManifestBuilder.ValidateHandlerMap(
-                typeof(Request1).ValuePair(typeof(Request1Handler)),
-                null));
+            // 1. reject duplicates
+            Assert.ThrowsException<InvalidOperationException>(() =>
+                builder.AddRequestHandler<Request1, Request1Handler, Request1Result>(
+                    (qry, uri, handler) => handler.ExecuteRequest(qry)));
 
-            // null-query type
-            Assert.ThrowsException<InvalidOperationException>(() => RequestManifestBuilder.ValidateHandlerMap(
-                ((Type)null).ValuePair(typeof(Request1Handler)),
-                ns => false));
+            // 2. returned builders are same as original builder
+            Assert.IsTrue(object.ReferenceEquals(builder, returnedBuilder1));
+            Assert.IsTrue(object.ReferenceEquals(builder, returnedBuilder2));
 
-            // non-decorated query type
-            Assert.ThrowsException<InvalidOperationException>(() => RequestManifestBuilder.ValidateHandlerMap(
-                (typeof(NonDecoratedRequest)).ValuePair(typeof(Request1Handler)),
-                ns => false));
-
-            // doesn't implement the IRequest interface
-            Assert.ThrowsException<InvalidOperationException>(() => RequestManifestBuilder.ValidateHandlerMap(
-                (typeof(object)).ValuePair(typeof(Request1Handler)),
-                ns => false));
-
-            // non-unique namespace query type
-            Assert.ThrowsException<InvalidOperationException>(() => RequestManifestBuilder.ValidateHandlerMap(
-                (typeof(Request1)).ValuePair(typeof(Request1Handler)),
-                ns => true));
-            #endregion
-
-            #region query handler
-            // null handler-type
-            Assert.ThrowsException<InvalidOperationException>(() => RequestManifestBuilder.ValidateHandlerMap(
-                typeof(Request1).ValuePair((Type)null),
-                ns => false));
-
-            // doesn't implement the IRequestHandler<> interface
-            Assert.ThrowsException<InvalidOperationException>(() => RequestManifestBuilder.ValidateHandlerMap(
-                typeof(Request1).ValuePair(typeof(object)),
-                ns => false));
-
-            // doesn't implement the IRequestHandler<> interface
-            Assert.ThrowsException<InvalidOperationException>(() => RequestManifestBuilder.ValidateHandlerMap(
-                typeof(Request1).ValuePair(typeof(Request2Handler)),
-                ns => false));
-
-            // is not a concrete type
-            Assert.ThrowsException<InvalidOperationException>(() => RequestManifestBuilder.ValidateHandlerMap(
-                typeof(Request1).ValuePair(typeof(IRequest1Handler2)),
-                ns => false));
-
-            Assert.ThrowsException<InvalidOperationException>(() => RequestManifestBuilder.ValidateHandlerMap(
-                typeof(Request1).ValuePair(typeof(Request1Handler2)),
-                ns => false));
-
-            Assert.ThrowsException<InvalidOperationException>(() => RequestManifestBuilder.ValidateHandlerMap(
-                typeof(Request1).ValuePair(typeof(GenericRequest1Handler3<>)),
-                ns => false));
-            #endregion
+            // 3. builder has 2 elements
+            Assert.AreEqual(2, builder.RequestInfoList.Length);
         }
     }
 
     [TestClass]
     public class RequestManifestTest
     {
-        private Mock<IResolverContract> mockResolver = new Moq.Mock<IResolverContract>();
-
         [TestMethod]
         public void Constructor_ShouldReturnValidInstance()
         {
-            var manifest = new RequestManifest(
-                mockResolver.Object,
-                new Dictionary<Type, Type>());
-            Assert.IsNotNull(manifest);
-
-            var handlerMap = new Dictionary<Type, Type>
-            {
-                [typeof(Request1)] = typeof(Request1Handler)
-            };
-            manifest = new RequestManifest(mockResolver.Object, handlerMap);
-            Assert.IsNotNull(manifest);
-        }
-
-        [TestMethod]
-        public void Constructor_WithInvalidArgs_ShouldThrowException()
-        {
-            var handlerMap = new Dictionary<Type, Type>();
-
-            Assert.ThrowsException<ArgumentNullException>(() => new RequestManifest(null, handlerMap));
-            Assert.ThrowsException<ArgumentNullException>(() => new RequestManifest(mockResolver.Object, null));
-
-            handlerMap[typeof(Request1)] = typeof(Request1Handler);
-            handlerMap[typeof(Request1)] = typeof(Request2Handler);
-
-            Assert.ThrowsException<InvalidOperationException>(() => new RequestManifest(mockResolver.Object, handlerMap));
+            Assert.ThrowsException<ArgumentNullException>(() => new RequestManifest(null));
+            Assert.ThrowsException<ArgumentException>(() => new RequestManifest(
+                new[] { default(RequestInfo) }));
         }
 
         [TestMethod]
         public void Namespaces_ShouldReturnAllRequestNamespaces()
         {
-            var handlerMap = new Dictionary<Type, Type>
-            {
-                [typeof(Request1)] = typeof(Request1Handler),
-                [typeof(Request2)] = typeof(Request2Handler)
-            };
-            var manifest = new RequestManifest(mockResolver.Object, handlerMap);
+            var manifest = new RequestManifest(GetRequestInfoList());
+            var namespaces = manifest.Namespaces();
 
-            Assert.IsTrue(
-                manifest
-                    .Namespaces()
-                    .SequenceEqual(new[] { typeof(Request1).InstructionNamespace(), typeof(Request2).InstructionNamespace() }));
+            Assert.AreEqual(3, namespaces.Length);
         }
 
         [TestMethod]
         public void RequestTypes_ShouldReturnAllCommanTypes()
         {
-            var handlerMap = new Dictionary<Type, Type>
-            {
-                [typeof(Request1)] = typeof(Request1Handler),
-                [typeof(Request2)] = typeof(Request2Handler)
-            };
-            var manifest = new RequestManifest(mockResolver.Object, handlerMap);
+            var manifest = new RequestManifest(GetRequestInfoList());
+            var types = manifest.RequestTypes();
 
-            Assert.IsTrue(
-                manifest
-                    .RequestTypes()
-                    .SequenceEqual(new[] { typeof(Request1), typeof(Request2) }));
+            Assert.AreEqual(3, types.Length);
         }
 
         [TestMethod]
-        public void RequestTypeFor_ShouldReturnCorrectRequestType()
+        public void GetRequestInfo_ShouldReturnCorrectInfo()
         {
-            var handlerMap = new Dictionary<Type, Type>
-            {
-                [typeof(Request1)] = typeof(Request1Handler),
-                [typeof(Request2)] = typeof(Request2Handler)
-            };
-            var manifest = new RequestManifest(mockResolver.Object, handlerMap);
+            var manifest = new RequestManifest(GetRequestInfoList());
 
-            var queryType = manifest.RequestTypeFor(typeof(Request1).InstructionNamespace());
-            Assert.AreEqual(typeof(Request1), queryType);
+            var info = manifest.GetRequestInfo<Request1>();
+            Assert.IsNotNull(info);
+            Assert.AreEqual(typeof(Request1), info.Value.RequestType);
+
+            info = manifest.GetRequestInfo("Request1.Namespace");
+            Assert.IsNotNull(info);
+            Assert.AreEqual(typeof(Request1), info.Value.RequestType);
+            Assert.AreEqual(new InstructionNamespace("Request1.Namespace"), info.Value.Namespace);
+            Assert.AreEqual(typeof(Request1Handler), info.Value.HandlerType);
         }
 
-        [TestMethod]
-        public void HandlerFor_ShouldReturnCorrectHandlerInstance()
+        private ImmutableArray<RequestInfo> GetRequestInfoList()
         {
-            mockResolver
-                .Setup(r => r.Resolve(It.IsAny<Type>(), It.IsAny<ResolutionContextName>()))
-                .Returns(new Request1Handler());
-            var handlerMap = new Dictionary<Type, Type>
-            {
-                [typeof(Request1)] = typeof(Request1Handler),
-                [typeof(Request2)] = typeof(Request2Handler)
-            };
-            var manifest = new RequestManifest(mockResolver.Object, handlerMap);
-
-            var handlerInstance = manifest.HandlerFor<Request1, Request1Result>();
-            Assert.IsNotNull(handlerInstance);
-        }
-    }
-
-    public class NonDecoratedRequest : IRequest<int>
-    {
-        public InstructionURI InstructionURI => default;
-    }
-
-    public interface IRequest1Handler2 : IRequestHandler<Request1, Request1Result>
-    { }
-
-    public abstract class Request1Handler2 : Request1Handler
-    { }
-
-    public class GenericRequest1Handler3<T> : IRequestHandler<Request1, Request1Result>
-    {
-        public Task<Luna.Common.IResult<Request1Result>> ExecuteRequest(Request1 query)
-        {
-            throw new NotImplementedException();
+            return ImmutableArray.Create(
+                new RequestInfo(
+                    new InstructionNamespace("Request1.Namespace"),
+                    typeof(Request1),
+                    typeof(Request1Handler),
+                    (x, y, z) => Task.CompletedTask,
+                    (x) => 0),
+                new RequestInfo(
+                    new InstructionNamespace("Request2.Namespace"),
+                    typeof(Request2),
+                    typeof(Request2Handler),
+                    (x, y, z) => Task.CompletedTask,
+                    (x) => 0),
+                new RequestInfo(
+                    new InstructionNamespace("Request3.Namespace"),
+                    typeof(Request3),
+                    typeof(Request3Handler),
+                    (x, y, z) => Task.CompletedTask,
+                    (x) => 0));
         }
     }
 }

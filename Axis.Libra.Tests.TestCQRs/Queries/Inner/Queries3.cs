@@ -1,35 +1,30 @@
-﻿using Axis.Libra.Query;
-using Axis.Libra.Instruction;
-using Axis.Luna.Common;
-
-namespace Axis.Libra.Tests.TestCQRs.Queries.Inner
+﻿namespace Axis.Libra.Tests.TestCQRs.Queries.Inner
 {
-    [InstructionNamespace("axis:libra:test-crs:query3")]
-    public class Query3 : AbstractQuery<Query3Result>
+    public class Query3
     {
         public Guid Id { get; set; }
     }
 
-    public class Query3Handler :
-        IQueryHandler<Query3, Query3Result>,
-        IQueryHandler<Query2, Query2Result>
+    public class Query3Handler
     {
-        public async Task<IResult<Query3Result>> ExecuteQuery(Query3 query)
+        public async Task<Query3Result> ExecuteQuery(Query3 query)
         {
             Console.WriteLine($"{typeof(Query1)} handler executed.");
-            return IResult<Query3Result>.Of(new Query3Result
+            await Task.Delay(1);
+            return new Query3Result
             {
                 Meh = "bleh"
-            });
+            };
         }
 
-        public async Task<IResult<Query2Result>> ExecuteQuery(Query2 query)
+        public async Task<Query2Result> ExecuteQuery(Query2 query)
         {
             Console.WriteLine($"{typeof(Query1)} handler executed.");
-            return IResult<Query2Result>.Of(new Query2Result
+            await Task.Delay(1);
+            return new Query2Result
             {
                 TimeStamp = DateTimeOffset.Now
-            });
+            };
         }
     }
 

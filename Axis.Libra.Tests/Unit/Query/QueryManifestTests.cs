@@ -1,249 +1,115 @@
 ﻿using Axis.Libra.Query;
 using Axis.Libra.Tests.TestCQRs.Queries;
 using Axis.Libra.Instruction;
-using Axis.Luna.Extensions;
-using Axis.Proteus.Interception;
-using Axis.Proteus.IoC;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Immutable;
+using Axis.Libra.Tests.TestCQRs.Queries.Inner;
 
 namespace Axis.Libra.Tests.Unit.Query
 {
     [TestClass]
     public class QueryManifestBuilderTests
     {
-        private Moq.Mock<IRegistrarContract> mockRegistrar = new Moq.Mock<IRegistrarContract>();
-
-        [TestMethod]
-        public void Constructor_ShouldCreateValidInstance()
-        {
-            var instance = new QueryManifestBuilder(mockRegistrar.Object);
-            Assert.IsNotNull(instance);
-        }
-
-        [TestMethod]
-        public void Constructor_WithInvalidArgs_ShouldThrowException()
-        {
-            mockRegistrar
-                .Setup(r => r.IsRegistrationClosed())
-                .Returns(true);
-
-            Assert.ThrowsException<ArgumentNullException>(() => new QueryManifestBuilder(null));
-            Assert.ThrowsException<ArgumentException>(() => new QueryManifestBuilder(mockRegistrar.Object));
-        }
 
         [TestMethod]
         public void AddQueryHandler_ShouldRegister_AndAddMap()
         {
             // arrange
-            mockRegistrar
-                .Setup(r => r.Register<Query1Handler>(
-                    It.IsAny<RegistryScope>(),
-                    It.IsAny<InterceptorProfile>(),
-                    It.IsAny<IBindContext[]>()))
-                .Returns(mockRegistrar.Object)
-                .Verifiable();
-
-            var builder = new QueryManifestBuilder(mockRegistrar.Object);
+            var builder = new QueryManifestBuilder();
 
             // act
-            var returned = builder.AddQueryHandler<Query1, Query1Result, Query1Handler>();
+            var returnedBuilder1 = builder.AddQueryHandler<Query1, Query1Handler, Query1Result>(
+                (qry, uri, handler) => handler.ExecuteQuery(qry));
 
-            // assert
-            Assert.IsTrue(builder
-                .QueryMaps()
-                .Any(m => m.queryType == typeof(Query1)
-                    && m.queryHandlerType == typeof(Query1Handler)));
-            Assert.AreEqual(returned, builder);
-            mockRegistrar.Verify();
-        }
+            var returnedBuilder2 = builder.AddQueryHandler<Query2, Query2Handler, Query2Result>(
+                (qry, uri, handler) => handler.ExecuteQuery(qry),
+                (qry) => unchecked((ulong)qry.Something.GetHashCode()),
+                new InstructionNamespace("Query2"));
 
-        [TestMethod]
-        public void ValidateHandlerMap_ShouldValidate()
-        {
-            // valid args
-            QueryManifestBuilder.ValidateHandlerMap(
-                typeof(Query1).ValuePair(typeof(Query1Handler)),
-                ns => false);
+            // test
 
-            #region query
-            // null predicate
-            Assert.ThrowsException<ArgumentNullException>(() => QueryManifestBuilder.ValidateHandlerMap(
-                typeof(Query1).ValuePair(typeof(Query1Handler)),
-                null));
+            // 1. reject duplicates
+            Assert.ThrowsException<InvalidOperationException>(() =>
+                builder.AddQueryHandler<Query1, Query1Handler, Query1Result>(
+                    (qry, uri, handler) => handler.ExecuteQuery(qry)));
 
-            // null-query type
-            Assert.ThrowsException<InvalidOperationException>(() => QueryManifestBuilder.ValidateHandlerMap(
-                ((Type)null).ValuePair(typeof(Query1Handler)),
-                ns => false));
+            // 2. returned builders are same as original builder
+            Assert.IsTrue(object.ReferenceEquals(builder, returnedBuilder1));
+            Assert.IsTrue(object.ReferenceEquals(builder, returnedBuilder2));
 
-            // non-decorated query type
-            Assert.ThrowsException<InvalidOperationException>(() => QueryManifestBuilder.ValidateHandlerMap(
-                (typeof(NonDecoratedQuery)).ValuePair(typeof(Query1Handler)),
-                ns => false));
-
-            // doesn't implement the IQuery interface
-            Assert.ThrowsException<InvalidOperationException>(() => QueryManifestBuilder.ValidateHandlerMap(
-                (typeof(object)).ValuePair(typeof(Query1Handler)),
-                ns => false));
-
-            // non-unique namespace query type
-            Assert.ThrowsException<InvalidOperationException>(() => QueryManifestBuilder.ValidateHandlerMap(
-                (typeof(Query1)).ValuePair(typeof(Query1Handler)),
-                ns => true));
-            #endregion
-
-            #region query handler
-            // null handler-type
-            Assert.ThrowsException<InvalidOperationException>(() => QueryManifestBuilder.ValidateHandlerMap(
-                typeof(Query1).ValuePair((Type)null),
-                ns => false));
-
-            // doesn't implement the IQueryHandler<> interface
-            Assert.ThrowsException<InvalidOperationException>(() => QueryManifestBuilder.ValidateHandlerMap(
-                typeof(Query1).ValuePair(typeof(object)),
-                ns => false));
-
-            // doesn't implement the IQueryHandler<> interface
-            Assert.ThrowsException<InvalidOperationException>(() => QueryManifestBuilder.ValidateHandlerMap(
-                typeof(Query1).ValuePair(typeof(Query2Handler)),
-                ns => false));
-
-            // is not a concrete type
-            Assert.ThrowsException<InvalidOperationException>(() => QueryManifestBuilder.ValidateHandlerMap(
-                typeof(Query1).ValuePair(typeof(IQuery1Handler2)),
-                ns => false));
-
-            Assert.ThrowsException<InvalidOperationException>(() => QueryManifestBuilder.ValidateHandlerMap(
-                typeof(Query1).ValuePair(typeof(Query1Handler2)),
-                ns => false));
-
-            Assert.ThrowsException<InvalidOperationException>(() => QueryManifestBuilder.ValidateHandlerMap(
-                typeof(Query1).ValuePair(typeof(GenericQuery1Handler3<>)),
-                ns => false));
-            #endregion
+            // 3. builder has 2 elements
+            Assert.AreEqual(2, builder.QueryInfoList.Length);
         }
     }
 
     [TestClass]
     public class QueryManifestTest
     {
-        private Mock<IResolverContract> mockResolver = new Moq.Mock<IResolverContract>();
-
         [TestMethod]
         public void Constructor_ShouldReturnValidInstance()
         {
-            var manifest = new QueryManifest(
-                mockResolver.Object,
-                new Dictionary<Type, Type>());
-            Assert.IsNotNull(manifest);
-
-            var handlerMap = new Dictionary<Type, Type>
-            {
-                [typeof(Query1)] = typeof(Query1Handler)
-            };
-            manifest = new QueryManifest(mockResolver.Object, handlerMap);
-            Assert.IsNotNull(manifest);
-        }
-
-        [TestMethod]
-        public void Constructor_WithInvalidArgs_ShouldThrowException()
-        {
-            var handlerMap = new Dictionary<Type, Type>();
-
-            Assert.ThrowsException<ArgumentNullException>(() => new QueryManifest(null, handlerMap));
-            Assert.ThrowsException<ArgumentNullException>(() => new QueryManifest(mockResolver.Object, null));
-
-            handlerMap[typeof(Query1)] = typeof(Query1Handler);
-            handlerMap[typeof(Query1)] = typeof(Query2Handler);
-
-            Assert.ThrowsException<InvalidOperationException>(() => new QueryManifest(mockResolver.Object, handlerMap));
+            Assert.ThrowsException<ArgumentNullException>(() => new QueryManifest(null));
+            Assert.ThrowsException<ArgumentException>(() => new QueryManifest(
+                new[] { default(QueryInfo) }));
         }
 
         [TestMethod]
         public void Namespaces_ShouldReturnAllQueryNamespaces()
         {
-            var handlerMap = new Dictionary<Type, Type>
-            {
-                [typeof(Query1)] = typeof(Query1Handler),
-                [typeof(Query2)] = typeof(Query2Handler)
-            };
-            var manifest = new QueryManifest(mockResolver.Object, handlerMap);
+            var manifest = new QueryManifest(GetQueryInfoList());
+            var namespaces = manifest.Namespaces();
 
-            Assert.IsTrue(
-                manifest
-                    .Namespaces()
-                    .SequenceEqual(new[] { typeof(Query1).InstructionNamespace(), typeof(Query2).InstructionNamespace() }));
+            Assert.AreEqual(3, namespaces.Length);
         }
 
         [TestMethod]
         public void QueryTypes_ShouldReturnAllCommanTypes()
         {
-            var handlerMap = new Dictionary<Type, Type>
-            {
-                [typeof(Query1)] = typeof(Query1Handler),
-                [typeof(Query2)] = typeof(Query2Handler)
-            };
-            var manifest = new QueryManifest(mockResolver.Object, handlerMap);
+            var manifest = new QueryManifest(GetQueryInfoList());
+            var types = manifest.QueryTypes();
 
-            Assert.IsTrue(
-                manifest
-                    .QueryTypes()
-                    .SequenceEqual(new[] { typeof(Query1), typeof(Query2) }));
+            Assert.AreEqual(3, types.Length);
         }
 
         [TestMethod]
-        public void QueryTypeFor_ShouldReturnCorrectQueryType()
+        public void GetQueryInfo_ShouldReturnCorrectInfo()
         {
-            var handlerMap = new Dictionary<Type, Type>
-            {
-                [typeof(Query1)] = typeof(Query1Handler),
-                [typeof(Query2)] = typeof(Query2Handler)
-            };
-            var manifest = new QueryManifest(mockResolver.Object, handlerMap);
+            var manifest = new QueryManifest(GetQueryInfoList());
 
-            var queryType = manifest.QueryTypeFor(typeof(Query1).InstructionNamespace());
-            Assert.AreEqual(typeof(Query1), queryType);
+            var info = manifest.GetQueryInfo<Query1>();
+            Assert.IsNotNull(info);
+            Assert.AreEqual(typeof(Query1), info.Value.QueryType);
+
+            info = manifest.GetQueryInfo(Query1.InstructionNamespace());
+            Assert.IsNotNull(info);
+            Assert.AreEqual(typeof(Query1), info.Value.QueryType);
+            Assert.AreEqual(Query1.InstructionNamespace(), info.Value.Namespace);
+            Assert.AreEqual(typeof(Query1Handler), info.Value.HandlerType);
         }
 
-        [TestMethod]
-        public void HandlerFor_ShouldReturnCorrectHandlerInstance()
+        private ImmutableArray<QueryInfo> GetQueryInfoList()
         {
-            mockResolver
-                .Setup(r => r.Resolve(It.IsAny<Type>(), It.IsAny<ResolutionContextName>()))
-                .Returns(new Query1Handler());
-            var handlerMap = new Dictionary<Type, Type>
-            {
-                [typeof(Query1)] = typeof(Query1Handler),
-                [typeof(Query2)] = typeof(Query2Handler)
-            };
-            var manifest = new QueryManifest(mockResolver.Object, handlerMap);
-
-            var handlerInstance = manifest.HandlerFor<Query1, Query1Result>();
-            Assert.IsNotNull(handlerInstance);
-        }
-    }
-
-    public class NonDecoratedQuery : IQuery<int>
-    {
-        public InstructionURI InstructionURI => default;
-    }
-
-    public interface IQuery1Handler2 : IQueryHandler<Query1, Query1Result>
-    { }
-
-    public abstract class Query1Handler2 : Query1Handler
-    { }
-
-    public class GenericQuery1Handler3<T> : IQueryHandler<Query1, Query1Result>
-    {
-        public Task<Luna.Common.IResult<Query1Result>> ExecuteQuery(Query1 query)
-        {
-            throw new NotImplementedException();
+            return ImmutableArray.Create(
+                new QueryInfo(
+                    Query1.InstructionNamespace(),
+                    typeof(Query1),
+                    typeof(Query1Handler),
+                    (x, y, z) => Task.CompletedTask,
+                    (x) => 0),
+                new QueryInfo(
+                    new InstructionNamespace("Query2.Namespace"),
+                    typeof(Query2),
+                    typeof(Query2Handler),
+                    (x, y, z) => Task.CompletedTask,
+                    (x) => 0),
+                new QueryInfo(
+                    new InstructionNamespace("Query3.Namespace"),
+                    typeof(Query3),
+                    typeof(Query3Handler),
+                    (x, y, z) => Task.CompletedTask,
+                    (x) => 0));
         }
     }
 }

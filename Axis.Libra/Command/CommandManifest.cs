@@ -23,6 +23,8 @@ namespace Axis.Libra.Command
         public CommandManifestBuilder()
         { }
 
+        public static CommandManifestBuilder NewBuilder() => new();
+
         /// <summary>
         /// 
         /// </summary>
@@ -92,7 +94,7 @@ namespace Axis.Libra.Command
         /// </summary>
         private readonly Dictionary<Type, CommandInfo> _commandTypeMap = new();
 
-        public CommandManifest(IEnumerable<CommandInfo> infoList)
+        internal CommandManifest(IEnumerable<CommandInfo> infoList)
         {
             infoList
                 .ThrowIfNull(() => new ArgumentNullException(nameof(infoList)))

@@ -19,7 +19,7 @@ namespace Axis.Libra.Tests.Unit.URI
             inamespace = new InstructionNamespace("abc-xyz");
             Assert.AreNotEqual(default, inamespace);
 
-            inamespace = new InstructionNamespace("abc:xyz:123");
+            inamespace = new InstructionNamespace("abc.xyz.123");
             Assert.AreNotEqual(default, inamespace);
 
             inamespace = default;
@@ -36,13 +36,13 @@ namespace Axis.Libra.Tests.Unit.URI
             Assert.ThrowsException<ArgumentException>(() => new InstructionNamespace("^%$%^&"));
             Assert.ThrowsException<ArgumentException>(() => new InstructionNamespace(":abc"));
             Assert.ThrowsException<ArgumentException>(() => new InstructionNamespace("1abc-something"));
-            Assert.ThrowsException<ArgumentException>(() => new InstructionNamespace("me:you:they:them::us"));
+            Assert.ThrowsException<ArgumentException>(() => new InstructionNamespace("me.you.they.them..us"));
         }
 
         [TestMethod]
         public void Name_ShouldContainSuppliedName()
         {
-            var name = "name:space:is-here";
+            var name = "name.space.is-here";
             var inamespace = new InstructionNamespace(name);
             Assert.AreEqual(name, inamespace.Name);
         }
@@ -50,7 +50,7 @@ namespace Axis.Libra.Tests.Unit.URI
         [TestMethod]
         public void ToString_ShouldContainSuppliedName()
         {
-            var name = "name:space:is-here";
+            var name = "name.space.is-here";
             var inamespace = new InstructionNamespace(name);
             Assert.AreEqual(name, inamespace.ToString());
         }
@@ -58,7 +58,7 @@ namespace Axis.Libra.Tests.Unit.URI
         [TestMethod]
         public void ImplicitConversion_ShouldConvertFromString()
         {
-            var name = "the:name-space";
+            var name = "the.name-space";
             InstructionNamespace @namespace = name;
             Assert.AreEqual(name, @namespace.Name);
         }
@@ -66,11 +66,13 @@ namespace Axis.Libra.Tests.Unit.URI
         [TestMethod]
         public void Equality_Tests()
         {
-            var namespace1 = new InstructionNamespace("the:namespace");
-            var namespace2 = new InstructionNamespace("the:other:namespace");
-            var namespace3 = new InstructionNamespace("the:namespace");
+            var namespace1 = new InstructionNamespace("the.namespace");
+            var namespace2 = new InstructionNamespace("the.other.namespace");
+            var namespace3 = new InstructionNamespace("the.namespace");
 
+#pragma warning disable CS1718 // Comparison made to same variable
             Assert.IsTrue(namespace1 == namespace1);
+#pragma warning restore CS1718 // Comparison made to same variable
             Assert.IsTrue(namespace1.Equals(namespace1));
             Assert.AreEqual(namespace1, namespace1);
             Assert.AreEqual(namespace1, namespace3);
