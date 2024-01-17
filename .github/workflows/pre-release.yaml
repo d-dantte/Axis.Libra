@@ -18,6 +18,6 @@ jobs:
 
     # Axis.Libra.Command
     - name: Pack
-      run: dotnet pack ./Axis.Libra.Command/Axis.Libra.Command.csproj --configuration Release /p:Version=${VERSION} --output .
+      run: dotnet pack ./Axis.Libra/Axis.Libra.csproj --configuration Release /p:Version=${VERSION} --output .
     - name: Push
-      run: dotnet nuget push Axis.Libra.Command.${VERSION}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_TOKEN }}
+      run: dotnet nuget push Axis.Libra.${VERSION}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_TOKEN }}
