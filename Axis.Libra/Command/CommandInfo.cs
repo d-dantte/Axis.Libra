@@ -48,8 +48,8 @@ namespace Axis.Libra.Command
 
         public static CommandInfo Default => default;
 
-        public bool IsDefault =>
-            Namespace.IsDefault
+        public bool IsDefault
+            => Namespace.IsDefault
             && CommandType is null
             && HandlerType is null
             && Handler is null

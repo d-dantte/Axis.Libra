@@ -9,6 +9,8 @@
 
         Query,
 
-        Request
+        Request,
+
+        Event
     }
 }

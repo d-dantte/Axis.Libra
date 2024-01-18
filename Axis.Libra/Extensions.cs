@@ -17,6 +17,7 @@ namespace Axis.Libra
                 Scheme.Command => "cmd",
                 Scheme.Request => "req",
                 Scheme.Query => "qry",
+                Scheme.Event => "evt",
                 _ => throw new ArgumentException($"Invalid scheme: {scheme}")
             };
         }
@@ -28,6 +29,7 @@ namespace Axis.Libra
                 "cmd" => Scheme.Command,
                 "qry" => Scheme.Query,
                 "req" => Scheme.Request,
+                "evt" => Scheme.Event,
                 _ => throw new ArgumentException($"Invalid scheme: {scheme}")
             };
         }
