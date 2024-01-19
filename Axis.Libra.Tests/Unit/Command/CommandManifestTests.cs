@@ -93,7 +93,10 @@ namespace Axis.Libra.Tests.Unit.Command
             Assert.AreEqual(typeof(Command1Handler), info.Value.StatusRequestHandlerType);
         }
 
-        private ImmutableArray<CommandInfo> GetCommandInfoList()
+        internal static InstructionNamespace Command3Namespace =
+                    new InstructionNamespace("Command3.Namespace");
+
+        internal static ImmutableArray<CommandInfo> GetCommandInfoList()
         {
             return ImmutableArray.Create(
                 new CommandInfo(
@@ -101,24 +104,24 @@ namespace Axis.Libra.Tests.Unit.Command
                     typeof(Command1),
                     typeof(Command1Handler),
                     typeof(Command1Handler),
-                    (x, y, z) => Task.CompletedTask,
-                    (x, y) => Task.FromResult(ICommandStatus.OfSuccess(x)),
+                    (x, y, z) => ((Command1Handler)z).ExecuteCommand((Command1)x),
+                    (x, y) => ((Command1Handler)y).ExecuteSatusRequest(x),
                     (x) => 0),
                 new CommandInfo(
                     Command2.InstructionNamespace(),
                     typeof(Command2),
                     typeof(Command2Handler),
                     typeof(Command2Handler),
-                    (x, y, z) => Task.CompletedTask,
-                    (x, y) => Task.FromResult(ICommandStatus.OfSuccess(x)),
+                    (x, y, z) => ((Command2Handler)z).ExecuteCommand((Command2)x),
+                    (x, y) => ((Command2Handler)y).ExecuteSatusRequest(x),
                     (x) => 0),
                 new CommandInfo(
-                    new InstructionNamespace("Command3.Namespace"),
+                    Command3Namespace,
                     typeof(Command3),
                     typeof(Command3Handler),
                     typeof(Command3Handler),
-                    (x, y, z) => Task.CompletedTask,
-                    (x, y) => Task.FromResult(ICommandStatus.OfSuccess(x)),
+                    (x, y, z) => ((Command3Handler)z).ExecuteCommand((Command3)x),
+                    (x, y) => ((Command3Handler)y).ExecuteSatusRequest(x),
                     (x) => 0));
         }
     }

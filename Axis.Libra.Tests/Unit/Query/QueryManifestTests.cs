@@ -89,26 +89,26 @@ namespace Axis.Libra.Tests.Unit.Query
             Assert.AreEqual(typeof(Query1Handler), info.Value.HandlerType);
         }
 
-        private ImmutableArray<QueryInfo> GetQueryInfoList()
+        internal static ImmutableArray<QueryInfo> GetQueryInfoList()
         {
             return ImmutableArray.Create(
                 new QueryInfo(
                     Query1.InstructionNamespace(),
                     typeof(Query1),
                     typeof(Query1Handler),
-                    (x, y, z) => Task.CompletedTask,
+                    (x, y, z) => ((Query1Handler)z).ExecuteQuery((Query1)x),
                     (x) => 0),
                 new QueryInfo(
                     new InstructionNamespace("Query2.Namespace"),
                     typeof(Query2),
                     typeof(Query2Handler),
-                    (x, y, z) => Task.CompletedTask,
+                    (x, y, z) => ((Query2Handler)z).ExecuteQuery((Query2)x),
                     (x) => 0),
                 new QueryInfo(
                     new InstructionNamespace("Query3.Namespace"),
                     typeof(Query3),
                     typeof(Query3Handler),
-                    (x, y, z) => Task.CompletedTask,
+                    (x, y, z) => ((Query3Handler)z).ExecuteQuery((Query3)x),
                     (x) => 0));
         }
     }

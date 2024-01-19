@@ -31,7 +31,7 @@ namespace Axis.Libra.Instruction
         /// </summary>
         /// <param name="instructionURI"></param>
         /// <returns></returns>
-        Task<ICommandStatus> DispatchCommandStatusRequest(InstructionURI instructionURI);
+        Task<ICommandStatus> DispatchCommandStatusQuery(InstructionURI instructionURI);
         #endregion
 
         #region Query
@@ -63,9 +63,7 @@ namespace Axis.Libra.Instruction
         /// <typeparam name="TEvent">The event type</typeparam>
         /// <param name="event">The event instance</param>
         /// <returns>A cancellation source instance that can be used to abort the event broadcast process</returns>
-        public CancellationTokenSource BroadcastEvent<TEvent>(
-            TEvent @event)
-            where TEvent : IDomainEvent;
+        public CancellationTokenSource BroadcastEvent<TEvent>(TEvent @event);
         #endregion
     }
 
@@ -76,6 +74,11 @@ namespace Axis.Libra.Instruction
         private readonly QueryManifest _queryManifest;
         private readonly RequestManifest _requestManifest;
         private readonly EventManifest _eventManifest;
+
+        internal CommandManifest CommandManifest => _commandManifest;
+        internal RequestManifest RequestManifest => _requestManifest;
+        internal QueryManifest QueryManifest => _queryManifest;
+        internal EventManifest EventManifest => _eventManifest;
 
         internal DefaultDispatcher(
             IResolverContract resolver,
@@ -121,7 +124,7 @@ namespace Axis.Libra.Instruction
             return uri;
         }
 
-        public async Task<ICommandStatus> DispatchCommandStatusRequest(InstructionURI instructionURI)
+        public async Task<ICommandStatus> DispatchCommandStatusQuery(InstructionURI instructionURI)
         {
             if (instructionURI.IsDefault)
                 throw new ArgumentException(
@@ -199,9 +202,7 @@ namespace Axis.Libra.Instruction
         #endregion
 
         #region Event
-        public CancellationTokenSource BroadcastEvent<TEvent>(
-            TEvent @event)
-            where TEvent: IDomainEvent
+        public CancellationTokenSource BroadcastEvent<TEvent>(TEvent @event)
         {
             ArgumentNullException.ThrowIfNull(@event);
 
@@ -230,26 +231,29 @@ namespace Axis.Libra.Instruction
                 throw new AggregateException(unresolvedHandlerErrors);
 
             // Create a child token source used to abort THIS broadcast sessions.
-            var tokenSource = CancellationTokenSource.CreateLinkedTokenSource(
-                _eventManifest.EventNotificationOptions.CancellationTokenSource.Token);
+            var parentTokenSource = _eventManifest.EventNotificationOptions.CancellationTokenSource;
+            var childTokenSource = CancellationTokenSource.CreateLinkedTokenSource(parentTokenSource.Token);
 
             // Broadcast
-            _eventManifest.TaskFactory.StartNew(
-                cancellationToken: tokenSource.Token,
+            _ = _eventManifest.TaskFactory.StartNew(
+                cancellationToken: childTokenSource.Token,
                 action: () =>
                 {
                     for (int cnt = 0; cnt < resolvedHandlers.Count; cnt++)
                     {
+                        if (parentTokenSource.Token.IsCancellationRequested)
+                            return;
+
                         try
                         {
                             // Fire and forget
-                            _ = resolvedHandlers[cnt].Notify(@event, tokenSource.Token);
+                            _ = resolvedHandlers[cnt].Notify(@event, childTokenSource.Token);
                         }
                         catch { }
                     }
                 });
 
-            return tokenSource;
+            return childTokenSource;
         }
         #endregion
     }

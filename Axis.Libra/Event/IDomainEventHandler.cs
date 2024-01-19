@@ -7,7 +7,7 @@ namespace Axis.Libra.Event
     /// Represents a handler for the event type <typeparamref name="TEvent"/>
     /// </summary>
     /// <typeparam name="TEvent">The event type this handler is designated to handle</typeparam>
-    public interface IDomainEventHandler<TEvent> where TEvent : IDomainEvent
+    public interface IDomainEventHandler<TEvent>
     {
         /// <summary>
         /// Respond to the given event.

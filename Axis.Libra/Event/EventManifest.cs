@@ -16,6 +16,10 @@ namespace Axis.Libra.Event
         private readonly Dictionary<Type, HashSet<Type>> _eventHandlerMap = new();
         private Options _options;
 
+        internal int RegisteredHandlers => _eventHandlerMap.Sum(kvp => kvp.Value.Count);
+
+        internal int RegisteredEvents => _eventHandlerMap.Count;
+
         public EventManifestBuilder()
         { }
 
@@ -29,13 +33,12 @@ namespace Axis.Libra.Event
         }
 
         public EventManifestBuilder AddEventHandler<TEvent, TEventHandler>()
-            where TEvent: IDomainEvent
             where TEventHandler: IDomainEventHandler<TEvent>
         {
             _eventHandlerMap
                 .GetOrAdd(typeof(TEvent), _ => new HashSet<Type>())
                 .Add(typeof(TEventHandler))
-                .ThrowIf(false, _ => new ArgumentException(
+                .ThrowIf(false, _ => new InvalidOperationException(
                     $"Invalid handler type: duplicate value '{typeof(TEventHandler)}'"));
             return this;
         }
@@ -75,12 +78,6 @@ namespace Axis.Libra.Event
             EventNotificationOptions = options.ThrowIfDefault(
                 _ => new ArgumentException($"Invalid {options}: default"));
 
-            TaskFactory = new TaskFactory(
-                options.CancellationTokenSource.Token,
-                options.TaskCreationOptions,
-                TaskContinuationOptions.None,
-                options.TaskScheduler);
-
             _eventMap = infoList
                 .ThrowIfNull(() => new ArgumentNullException(nameof(infoList)))
                 .ThrowIfAny(
@@ -89,6 +86,12 @@ namespace Axis.Libra.Event
                 .ToDictionary(
                     _info => _info.EventType,
                     _info => _info);
+
+            TaskFactory = new TaskFactory(
+                options.CancellationTokenSource.Token,
+                options.TaskCreationOptions,
+                TaskContinuationOptions.None,
+                options.TaskScheduler);
         }
 
         /// <summary>
@@ -107,7 +110,7 @@ namespace Axis.Libra.Event
         /// </summary>
         /// <typeparam name="TEvent"></typeparam>
         /// <returns></returns>
-        internal EventInfo? GetEventInfo<TEvent>() where TEvent : IDomainEvent
+        internal EventInfo? GetEventInfo<TEvent>()
         {
             if (_isDisposed)
                 throw new InvalidOperationException($"Invalid state: disposed");

@@ -22,8 +22,10 @@
 2024/Jan/15 ============================================================
 
 1.  Make Command/Query/Request Dispatchers interfaces, and then implement the interfaces.
+    [Deprecated]
 2.  Kill the ICommand/IQuery/IRequest interfaces. The goal here is to keep the coupling users have with Axis.Libra to
     only the dependency on the dispatchers.
+    [Done]
 3.  As a consequence of #2, while doing the mandatory Command/Query/Request registrations with the respective manifests,
     registration will require 2 new arguments:
     a. Command/Query/Request namespace, in the form of a string - converted to the appropriate type internally.
@@ -31,6 +33,9 @@
     
     Together, the above is used to generate the `InstructionUri`, a unique identifier for the interaction. This identifier
     can be cached, along with the result, so subsequent calls need not go through to the Command/Query/Request handler.
+    [Done]
 4.  Implement support for `Instruction caching` - described in #3 above, this is a situation where a dispatcher receives
     an instruction, extracts the `InstructionUri`, and checks a cache if that uri has a response. If it does, it returns
     the response.
+5.  Add event broadcasting to Libra. This will obviate the need for the `Axis.Nix` library.
+    [Done]

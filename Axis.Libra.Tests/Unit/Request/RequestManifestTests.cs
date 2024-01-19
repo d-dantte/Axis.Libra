@@ -89,26 +89,26 @@ namespace Axis.Libra.Tests.Unit.Request
             Assert.AreEqual(typeof(Request1Handler), info.Value.HandlerType);
         }
 
-        private ImmutableArray<RequestInfo> GetRequestInfoList()
+        internal static ImmutableArray<RequestInfo> GetRequestInfoList()
         {
             return ImmutableArray.Create(
                 new RequestInfo(
                     new InstructionNamespace("Request1.Namespace"),
                     typeof(Request1),
                     typeof(Request1Handler),
-                    (x, y, z) => Task.CompletedTask,
+                    (x, y, z) => ((Request1Handler)z).ExecuteRequest((Request1)x),
                     (x) => 0),
                 new RequestInfo(
                     new InstructionNamespace("Request2.Namespace"),
                     typeof(Request2),
                     typeof(Request2Handler),
-                    (x, y, z) => Task.CompletedTask,
+                    (x, y, z) => ((Request2Handler)z).ExecuteRequest((Request2)x),
                     (x) => 0),
                 new RequestInfo(
                     new InstructionNamespace("Request3.Namespace"),
                     typeof(Request3),
                     typeof(Request3Handler),
-                    (x, y, z) => Task.CompletedTask,
+                    (x, y, z) => ((Request3Handler)z).ExecuteRequest((Request3)x),
                     (x) => 0));
         }
     }
